@@ -1,0 +1,23 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="divide_height">1.5dp</dimen>
+
+    <dimen name="text_12">12sp</dimen>
+    <dimen name="text_14">14sp</dimen>
+    <dimen name="text_16">16sp</dimen>
+    <dimen name="text_18">18sp</dimen>
+    <dimen name="text_20">20sp</dimen>
+
+    <!--刷新-->
+    <dimen name="refresh_header_height_twitter">80dp</dimen>
+    <dimen name="load_more_footer_height_twitter">60dp</dimen>
+
+    <dimen name="load_more_footer_height_classic">60dp</dimen>
+
+    <dimen name="title_hight_lever1">50dp</dimen>
+    <dimen name="title_back_width">50dp</dimen>
+
+    <!--广告-->
+    <dimen name="advert_height">80dp</dimen>
+</resources>
