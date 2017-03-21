@@ -45,7 +45,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
     @BindView(R.id.swipe_target)
     RecyclerView swipeTarget;
     private CommonAdapter adapter;
-    private List<GoodsDetailsBean.ResultBean.ContentBean> goodsDetailsBeen;
+    private List<GoodsDetailsBean.ResultBean> goodsDetailsBeen;
     View headerView;
     HeaderAndFooterWrapper wrapper;
 
@@ -104,8 +104,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                     @Override
                     public void onResponseOK(GoodsDetailsBean response, int id) {
                         super.onResponseOK(response, id);
-                        List<GoodsDetailsBean.ResultBean.ContentBean> temp = response.getResult()
-                                .getContent();
+                        List<GoodsDetailsBean.ResultBean> temp = response.getResult();
                         goodsDetailsBeen.clear();
                         goodsDetailsBeen.addAll(temp);
                         wrapper.notifyDataSetChanged();
@@ -115,23 +114,24 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
 
     private void setmAdapter() {
         goodsDetailsBeen = new ArrayList<>();
-        adapter = new CommonAdapter<GoodsDetailsBean.ResultBean.ContentBean>(c, R.layout
+        adapter = new CommonAdapter<GoodsDetailsBean.ResultBean>(c, R.layout
                 .item_pick_up, goodsDetailsBeen) {
             @Override
-            protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean.ContentBean
+            protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean
                     details, int position) {
                 holder.setText(R.id.order_No, details.getOldOrderNo());
                 holder.setText(R.id.name, details.getItemName());
                 holder.setText(R.id.volume, String.valueOf(details.getVolume()) + "m³");
-                holder.setText(R.id.grossWeight, String.valueOf(details.getGrossWeight()) + "kg");
+                holder.setText(R.id.grossWeight, details.getGroosWeight() == null ? "0kg" : details
+                        .getGroosWeight() + "kg");
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                AppConfig.currentType = AppConfig.SCAN_TYPE_CODE_SN;
-                AppConfig.enterType = AppConfig.ENTER_TYPE_ZHISAO;
                 Intent intent = new Intent();
+                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
                 intent.putExtra(AppConfig.ORDER_ID, goodsDetailsBeen.get(position + 1).getOrderId
                         ());
                 intent.putExtra(AppConfig.SCAN_MODE, goodsDetailsBeen.get(position + 1)

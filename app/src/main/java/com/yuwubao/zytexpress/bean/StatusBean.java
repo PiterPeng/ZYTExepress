@@ -6,33 +6,9 @@ package com.yuwubao.zytexpress.bean;
  * description:
  */
 
-public class StatusBean {
+public class StatusBean extends BaseBean {
 
-    /**
-     * message : null
-     * status : 0
-     * result : true
-     */
-
-    private Object message;
-    private int status;
     private boolean result;
-
-    public Object getMessage() {
-        return message;
-    }
-
-    public void setMessage(Object message) {
-        this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public boolean isResult() {
         return result;

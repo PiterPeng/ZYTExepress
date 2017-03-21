@@ -47,4 +47,6 @@ dependencies {
     compile files('libs/com.baidu.tts_2.2.7.20160616_81bcb05_release.jar')
     compile project(':baseadapter-recyclerview')
     compile project(':zxingcore')
+    compile project(':picture_library')
+    compile project(':ucrop')
 }

@@ -37,9 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ScannerResultActivity"/>
         <activity android:name=".activity.PickUpActivity"/>
         <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.IncludeActivity"/>
+        <activity android:name=".activity.DispatchActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
     </application>
 

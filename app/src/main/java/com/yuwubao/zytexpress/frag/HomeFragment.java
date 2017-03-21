@@ -3,10 +3,10 @@ package com.yuwubao.zytexpress.frag;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.karics.library.zxing.android.CaptureActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.activity.DispatchActivity;
 import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
@@ -62,12 +62,11 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     @OnClick(R.id.rl_td)
     public void onTiedanClick() {
-        JumpToActivity(CaptureActivity.class);
+        JumpToActivity(DispatchActivity.class);
     }
 
     @OnClick(R.id.rl_zc)
     public void onZhuangCheClick() {
-        JumpToActivity(CaptureActivity.class);
     }
 
     @Override

@@ -1,2 +1,2 @@
-include ':app', ':okhttputils', ':baseadapter-recyclerview'
+include ':app', ':okhttputils', ':baseadapter-recyclerview', ':ucrop', ':picture_library'
 include ':zxingcore'

@@ -18,7 +18,7 @@ public class Urls {
     public static final String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
 
     //指定扫描列表
-    public static final String PICK_UP = HEAD_URL + "orderItem/itemWaitingForDelivery";
+    public static final String PICK_UP = HEAD_URL + "order/designated";
     //盲扫列表
     public static final String MANG_SCAN = HEAD_URL + "orderItem/queryItemTaked";
     //调度列表

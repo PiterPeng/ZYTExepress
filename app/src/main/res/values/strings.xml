@@ -42,4 +42,7 @@
 
     <!--待提货-->
     <string name="total">数量\n（未提货/已提货）</string>
+    <string name="include">备案</string>
+    <!--调度-->
+    <string name="dispatch">调度清单</string>
 </resources>

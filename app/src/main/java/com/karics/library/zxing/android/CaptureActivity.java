@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.karics.library.zxing.view.ViewfinderView;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
+import com.yuwubao.zytexpress.activity.IncludeActivity;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.helper.UIHelper;
@@ -31,12 +33,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
-import static com.yuwubao.zytexpress.AppConfig.currentType;
-import static com.yuwubao.zytexpress.AppConfig.enterType;
 
 /**
  * 这个activity打开相机，在后台线程做常规的扫描；它绘制了一个结果view来帮助正确地显示条形码，在扫描的时候显示反馈信息，
@@ -92,13 +91,22 @@ public final class CaptureActivity extends BaseActivity implements
     @Override
     protected void init() {
 // 保持Activity处于唤醒状态
-//        Window window = getWindow();
-//        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 ////隐藏状态栏
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
-                .LayoutParams.FLAG_FULLSCREEN);
-        orderId = getIntent().getStringExtra(AppConfig.ORDER_ID);
-        scanMode = getIntent().getStringExtra(AppConfig.SCAN_MODE);
+//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
+//                .LayoutParams.FLAG_FULLSCREEN);
+
+        orderId = getIntent().getExtras().getInt(AppConfig.ORDER_ID);
+        scanMode = getIntent().getExtras().getInt(AppConfig.SCAN_MODE);
+        currentType = getIntent().getExtras().getInt(AppConfig.CURRENT_SCAN_TYPE);
+        enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
+        code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
+
+        Log.d("handleDecode", "orderId" + orderId + "," + "scanMode" + scanMode + "," +
+                "currentType" +
+                currentType + "," + "enterType" + enterType + "," + "code69Intent" + code69Intent);
+
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
@@ -163,7 +171,6 @@ public final class CaptureActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         inactivityTimer.shutdown();
-        currentType = AppConfig.SCAN_TYPE_CODE_69;
         OkHttpUtils.getInstance().cancelTag(this);
         super.onDestroy();
     }
@@ -232,16 +239,18 @@ public final class CaptureActivity extends BaseActivity implements
             beepManager.playBeepSoundAndVibrate();
             codedContent = rawResult.getText();
             Toast.makeText(this, "扫描成功", Toast.LENGTH_SHORT).show();
-
+            Log.d("handleDecode", "currentType" + currentType);
             switch (currentType) {
                 case AppConfig.SCAN_TYPE_CODE_69:
-                    result = "请确认69码:【" + rawResult.getText() + "】";
+//                    result = "请确认69码:【" + rawResult.getText() + "】";
                     code69 = rawResult.getText();
                     check69IsInclude();
                     break;
-                case SCAN_TYPE_CODE_SN:
-                    result = "请确认SN码:【" + rawResult.getText() + "】";
+                case AppConfig.SCAN_TYPE_CODE_SN:
+                    Log.d("handleDecode", "wwwwwwwwwwwwwwwwwwww");
+//                    result = "请确认SN码:【" + rawResult.getText() + "】";
                     codeSN = rawResult.getText();
+                    Log.d("handleDecode", "enterType" + enterType);
                     switch (enterType) {
                         case AppConfig.ENTER_TYPE_MANGSAO:
                             blindSnForMangSao();
@@ -255,7 +264,7 @@ public final class CaptureActivity extends BaseActivity implements
             }
 //            viewfinderView.setHintText2(result);
             alertDialog = new AlertDialog.Builder(c).create();
-            mHandler.postDelayed(runnable, 1000);
+//            mHandler.postDelayed(runnable, 1000);
         }
     }
 
@@ -267,7 +276,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE_ZHISAO)//
-                .addParams("id", orderId)//
+                .addParams("id", String.valueOf(orderId))//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -289,7 +298,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
-                .addParams("code", code69)//
+                .addParams("code", code69Intent)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -323,14 +332,20 @@ public final class CaptureActivity extends BaseActivity implements
 
                                 @Override
                                 public void onClick(View v) {
-                                    UIHelper.showMessage(c, "备案");
+                                    Intent intent = new Intent();
+                                    intent.putExtra("code69", code69);
+                                    JumpToActivity(IncludeActivity.class, intent);
+                                    finish();
                                 }
                             });
                         } else {
-                            currentType = SCAN_TYPE_CODE_SN;
+                            Log.d("handleDecode", "qqqqqqqqqqqqqqq");
                             Intent intent = new Intent();
-                            intent.putExtra("codedContent", codedContent);
-                            JumpToActivityForResult(CaptureActivity.class, intent, 1);
+                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
+                                    .SCAN_TYPE_CODE_SN);
+                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                            intent.putExtra(AppConfig.CODE_69, code69);
+                            JumpToActivity(CaptureActivity.class, intent);
                         }
                     }
                 });
@@ -338,11 +353,14 @@ public final class CaptureActivity extends BaseActivity implements
     }
 
     String result = "";
-    String orderId = "";
-    String scanMode = "";
-    String code69 = "";
-    String codeSN = "";
+    int orderId;//订单id
+    int scanMode;//扫描类型
+    String code69 = "";//69码，结果
+    String code69Intent = "";//69码,接收
+    String codeSN = "";//SN码
     String codedContent = "";
+    int currentType;//当前的扫描类型69 or SN
+    int enterType;//进入类型 盲扫 or 制定扫描
     int time = 5;
     private final static int ISTIME = 0;
     private AlertDialog alertDialog;

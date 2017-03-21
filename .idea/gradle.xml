@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/baseadapter-recyclerview" />
             <option value="$PROJECT_DIR$/okhttputils" />
+            <option value="$PROJECT_DIR$/picture_library" />
+            <option value="$PROJECT_DIR$/ucrop" />
             <option value="$PROJECT_DIR$/zxingcore" />
           </set>
         </option>

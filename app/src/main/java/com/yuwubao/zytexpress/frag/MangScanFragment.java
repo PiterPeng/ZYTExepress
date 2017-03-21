@@ -1,5 +1,6 @@
 package com.yuwubao.zytexpress.frag;
 
+import android.content.Intent;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,9 +68,10 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         toScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppConfig.currentType = AppConfig.SCAN_TYPE_CODE_69;
-                AppConfig.enterType = AppConfig.ENTER_TYPE_MANGSAO;
-                JumpToActivity(CaptureActivity.class);
+                Intent intent = new Intent();
+                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                JumpToActivity(CaptureActivity.class, intent);
             }
         });
         wrapper.addHeaderView(headerView);

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimary"
+              android:orientation="vertical">
+
+    <com.yuwubao.zytexpress.widget.HeaderBar
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/activity_bg"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="69码"
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_16"
+            />
+
+        <TextView
+            android:id="@+id/code69"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:text="69125522445522"
+            android:textColor="@color/userInfo_font"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击下方”+“拍照或选择相册，大小不要超过5M"
+            android:textColor="@color/userInfo_font_small"
+            android:textSize="@dimen/text_12"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_login"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="上传备案"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_18"/>
+
+    </LinearLayout>
+
+</LinearLayout>
