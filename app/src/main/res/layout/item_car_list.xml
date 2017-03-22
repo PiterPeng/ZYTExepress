@@ -25,6 +25,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:text="HB-ZYT4220170000001"
+            android:textColor="@color/userInfo_font"
+            android:textSize="@dimen/text_14"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商品编号："
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="TBY112094502-01-01"
             android:textColor="@color/userInfo_font"
             android:textSize="@dimen/text_14"/>
 
@@ -50,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
+            android:text="创维电视32X3黑色"
             android:textColor="@color/userInfo_font"
             android:textSize="@dimen/text_14"/>
 
@@ -65,31 +92,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="体积："
+            android:text="提货时间："
             android:textColor="@color/base_black"
-            android:textSize="@dimen/text_14"/>
+            android:textSize="@dimen/text_16"/>
 
         <TextView
-            android:id="@+id/volume"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:textColor="@color/userInfo_font"
-            android:textSize="@dimen/text_14"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="重量："
-            android:textColor="@color/base_black"
-            android:textSize="@dimen/text_14"/>
-
-        <TextView
-            android:id="@+id/grossWeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="2017-03-16 09:38:22.22+0000"
             android:textColor="@color/userInfo_font"
             android:textSize="@dimen/text_14"/>
 

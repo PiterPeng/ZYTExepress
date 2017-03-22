@@ -38,19 +38,23 @@ public class AppConfig {
     public final static int SCANNIN_GREQUEST_CODE = 1;
     public final static String ORDER_ID = "ORDER_ID";
     public final static String SCAN_MODE = "SCAN_MODE";
+    public final static String ORDER_CODE = "ORDER_CODE";
     public final static String CURRENT_SCAN_TYPE = "CURRENT_SCAN_TYPE";
     public final static String ENTER_TYPE = "ENTER_TYPE";
     public final static String CODE_69 = "CODE_69";
+    public final static String CODE_SN = "CODE_SN";
     public final static int SCAN_TYPE_CODE_69 = 69;
     public final static int SCAN_TYPE_CODE_SN = 70;
     public final static int SCAN_TYPE_CODE_CAR = 71;
+    public final static int SCAN_TYPE_CODE_SIGN = 74;
+    public final static int SCAN_TYPE_CODE_REJECTION = 75;
     public final static int ENTER_TYPE_MANGSAO = 72;
     public final static int ENTER_TYPE_ZHISAO = 73;
-    //    public static int currentType = SCAN_TYPE_CODE_69;
-    public static int enterType = ENTER_TYPE_MANGSAO;
     public final static String SHOW_VOICE_69 = "请扫描六九码";
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
+    public final static String SHOW_VOICE_CAR = "请扫描车号";
+    public final static String SHOW_VOICE_ORDER = "请扫描运单号";
 
 
     //--返回码值

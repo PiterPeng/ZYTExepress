@@ -66,6 +66,7 @@ public class IncludeActivity extends BaseActivity {
     private void initData() {
         code = getIntent().getStringExtra("code69");
         localMediaList = new ArrayList<>();
+        files = new HashMap<>();
         code69.setText(code);
     }
 
@@ -155,7 +156,6 @@ public class IncludeActivity extends BaseActivity {
             if (resultList == null) {
                 resultList = new ArrayList<>();
             }
-            files = new HashMap<>();
             if (!resultList.isEmpty()) {
                 for (int i = 0; i < resultList.size(); i++) {
                     File file = new File(resultList.get(i).getPath());

@@ -34,9 +34,9 @@
 
     <!--main-->
     <string name="tab_travel">首页</string>
-    <string name="tab_news">收录</string>
-    <string name="tab_interaction">备案</string>
-    <string name="tab_services">个人</string>
+    <string name="tab_interaction">仓库</string>
+    <string name="tab_news">签收</string>
+    <string name="tab_services">我的</string>
     <string name="start_outof">秒跳过</string>
     <string name="quit_app">再按一次退出App</string>
 
@@ -45,4 +45,8 @@
     <string name="include">备案</string>
     <!--调度-->
     <string name="dispatch">调度清单</string>
+    <!--待装车-->
+    <string name="into_car">待装车</string>
+    <!--拒收-->
+    <string name="rejection">拒收</string>
 </resources>

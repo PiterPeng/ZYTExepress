@@ -7,6 +7,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.DispatchActivity;
+import com.yuwubao.zytexpress.activity.IntoCarListActivity;
 import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
@@ -67,6 +68,7 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     @OnClick(R.id.rl_zc)
     public void onZhuangCheClick() {
+        JumpToActivity(IntoCarListActivity.class);
     }
 
     @Override

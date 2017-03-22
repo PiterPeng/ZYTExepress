@@ -159,5 +159,19 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:background="@color/base_line"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="友情提醒：点击某项内容可跳入相应扫描界面。"
+        android:textColor="@color/userInfo_font_small"
+        android:textSize="@dimen/text_12"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
         android:visibility="invisible"/>
 </LinearLayout>

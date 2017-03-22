@@ -33,5 +33,27 @@ public class Urls {
     public static final String BLIND_SN_CODE = HEAD_URL + "order/blindSn";
     //扫描指定SN
     public static final String BLIND_SN_CODE_ZHISAO = HEAD_URL + "order/designatedSn";
+    //待装车列表
+    public static final String INTO_CAR_LIST = HEAD_URL + "orderItem/queryItemCar";
+    //盲扫扫车
+    public static final String SCAN_CAR_MANGSAO = HEAD_URL + "orderItem/itemScanInCar";
+    //指定扫描 扫车
+    public static final String SCAN_CAR_ZHISAO = HEAD_URL + "orderItem/itemInCar";
+    //自由查询
+    public static final String FREE_INQUIRY = HEAD_URL + "orderItem/itemStickScanning";
+    //商品贴标
+    public static final String COMMODITY_LABELING = HEAD_URL + "orderItem/itemStick";
+    //商品复核
+    public static final String STICK_CHECK = HEAD_URL + "orderItem/itemStickCheck";
+    //入库
+    public static final String IN_STORAGE = HEAD_URL + "order/inStorage";
+    //出库
+    public static final String OUT_STORAGE = HEAD_URL + "order/outStorage";
+    //订单签收验证码
+    public static final String PHONE_VERIFICATION_CODE = HEAD_URL + "order/sms";
+    //订单签收
+    public static final String ORDER_SIGN = HEAD_URL + "order/sign";
+    //订单拒收
+    public static final String ORDER_REJECTION = HEAD_URL + "order/deny";
 
 }

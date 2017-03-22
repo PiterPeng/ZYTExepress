@@ -22,6 +22,8 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
 import com.yuwubao.zytexpress.activity.IncludeActivity;
+import com.yuwubao.zytexpress.activity.RejectionActivity;
+import com.yuwubao.zytexpress.activity.SignActivity;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.helper.UIHelper;
@@ -35,6 +37,8 @@ import java.util.Map;
 
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 
 /**
@@ -102,6 +106,7 @@ public final class CaptureActivity extends BaseActivity implements
         currentType = getIntent().getExtras().getInt(AppConfig.CURRENT_SCAN_TYPE);
         enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
+        codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
 
         Log.d("handleDecode", "orderId" + orderId + "," + "scanMode" + scanMode + "," +
                 "currentType" +
@@ -238,19 +243,16 @@ public final class CaptureActivity extends BaseActivity implements
         if (fromLiveScan) {
             beepManager.playBeepSoundAndVibrate();
             codedContent = rawResult.getText();
+
             Toast.makeText(this, "扫描成功", Toast.LENGTH_SHORT).show();
-            Log.d("handleDecode", "currentType" + currentType);
+
             switch (currentType) {
                 case AppConfig.SCAN_TYPE_CODE_69:
-//                    result = "请确认69码:【" + rawResult.getText() + "】";
                     code69 = rawResult.getText();
                     check69IsInclude();
                     break;
                 case AppConfig.SCAN_TYPE_CODE_SN:
-                    Log.d("handleDecode", "wwwwwwwwwwwwwwwwwwww");
-//                    result = "请确认SN码:【" + rawResult.getText() + "】";
                     codeSN = rawResult.getText();
-                    Log.d("handleDecode", "enterType" + enterType);
                     switch (enterType) {
                         case AppConfig.ENTER_TYPE_MANGSAO:
                             blindSnForMangSao();
@@ -259,13 +261,91 @@ public final class CaptureActivity extends BaseActivity implements
                             blindSnForZhiSao();
                             break;
                     }
-//                    currentType = AppConfig.SCAN_TYPE_CODE_CAR;
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_CAR:
+                    codeCar = rawResult.getText();
+                    switch (enterType) {
+                        case AppConfig.ENTER_TYPE_MANGSAO:
+                            intoCarForMangsao();
+                            break;
+                        case AppConfig.ENTER_TYPE_ZHISAO:
+                            intoCarForZhiSao();
+                            break;
+                    }
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_SIGN:
+                    codeOrder = rawResult.getText();
+                    enterSignActivity();
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_REJECTION:
+                    codeOrder = rawResult.getText();
+                    enterRejectionActivity();
                     break;
             }
 //            viewfinderView.setHintText2(result);
-            alertDialog = new AlertDialog.Builder(c).create();
+//            alertDialog = new AlertDialog.Builder(c).create();
 //            mHandler.postDelayed(runnable, 1000);
         }
+    }
+
+    /**
+     * 拿到运单号，进入拒收页面
+     */
+    private void enterRejectionActivity() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
+        JumpToActivity(RejectionActivity.class);
+    }
+
+    /**
+     * 拿到运单号，进入签收页面
+     */
+    private void enterSignActivity() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
+        JumpToActivity(SignActivity.class);
+    }
+
+    /**
+     * 指定扫描-->装车
+     */
+    private void intoCarForZhiSao() {
+        OkHttpUtils//
+                .post()//
+                .tag(this)//
+                .url(Urls.SCAN_CAR_ZHISAO)//
+                .addParams("carNo", codeCar)//
+                .addParams("id", String.valueOf(orderId))//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, "装车成功！");
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 盲扫-->装车
+     */
+    private void intoCarForMangsao() {
+        OkHttpUtils//
+                .post()//
+                .tag(this)//
+                .url(Urls.SCAN_CAR_MANGSAO)//
+                .addParams("carNo", codeCar)//
+                .addParams("sn", codeSNIntent)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, "装车成功！");
+                        finish();
+                    }
+                });
     }
 
     /**
@@ -305,7 +385,20 @@ public final class CaptureActivity extends BaseActivity implements
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "配货成功！");
+                        UIHelper.showMyCustomDialog(c, "配货成功，是否装车？", "去装车", new View
+                                .OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent();
+                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
+                                        .SCAN_TYPE_CODE_CAR);
+                                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                                intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                JumpToActivity(CaptureActivity.class, intent);
+                            }
+                        });
                         finish();
                     }
                 });
@@ -339,7 +432,6 @@ public final class CaptureActivity extends BaseActivity implements
                                 }
                             });
                         } else {
-                            Log.d("handleDecode", "qqqqqqqqqqqqqqq");
                             Intent intent = new Intent();
                             intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
                                     .SCAN_TYPE_CODE_SN);
@@ -358,6 +450,9 @@ public final class CaptureActivity extends BaseActivity implements
     String code69 = "";//69码，结果
     String code69Intent = "";//69码,接收
     String codeSN = "";//SN码
+    String codeSNIntent = "";//SN码,接收
+    String codeCar = "";//车号
+    String codeOrder = "";//运单号
     String codedContent = "";
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
@@ -376,7 +471,6 @@ public final class CaptureActivity extends BaseActivity implements
             if (ISTIME <= time) {
                 alertDialog.setMessage(result);
                 alertDialog.show();
-
                 mHandler.postDelayed(this, 1000);
             } else {
                 alertDialog.dismiss();
@@ -411,12 +505,12 @@ public final class CaptureActivity extends BaseActivity implements
             text1 = SHOW_VOICE_SN;
 
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_CAR) {
-            UIHelper.showMyCustomDialog(c, "是否装车", "装车", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UIHelper.showMessage(c, "跳入装车页面");
-                }
-            });
+            voice = SHOW_VOICE_CAR;
+            text1 = SHOW_VOICE_CAR;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SIGN || currentType == AppConfig
+                .SCAN_TYPE_CODE_REJECTION) {
+            voice = SHOW_VOICE_ORDER;
+            text1 = SHOW_VOICE_ORDER;
         }
         showVioce(voice);
         viewfinderView.setHintText1(text1);

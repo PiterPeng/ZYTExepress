@@ -41,6 +41,9 @@
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.IncludeActivity"/>
         <activity android:name=".activity.DispatchActivity"/>
+        <activity android:name=".activity.IntoCarListActivity"/>
+        <activity android:name=".activity.SignActivity"/>
+        <activity android:name=".activity.RejectionActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
     </application>
 
