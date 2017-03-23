@@ -112,42 +112,40 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                 });
     }
 
-        private void setmAdapter() {
-            goodsDetailsBeen = new ArrayList<>();
-            adapter = new CommonAdapter<GoodsDetailsBean.ResultBean>(c, R.layout
-                    .item_pick_up, goodsDetailsBeen) {
-                @Override
-                protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean
-                        details, int position) {
-                    holder.setText(R.id.order_No, details.getOldOrderNo());
-                    holder.setText(R.id.name, details.getItemName());
-                    holder.setText(R.id.volume, String.valueOf(details.getVolume()) + "m³");
-                    holder.setText(R.id.grossWeight, details.getGroosWeight() == null ? "0kg" : details
-                            .getGroosWeight() + "kg");
-                }
-            };
-            adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    Intent intent = new Intent();
-                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-                    intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
-                    intent.putExtra(AppConfig.ORDER_ID, goodsDetailsBeen.get(position + 1).getOrderId
-                            ());
-                    intent.putExtra(AppConfig.SCAN_MODE, goodsDetailsBeen.get(position + 1)
-                            .getScanMode());
-                    JumpToActivity(CaptureActivity.class, intent);
-                }
+    private void setmAdapter() {
+        goodsDetailsBeen = new ArrayList<>();
+        adapter = new CommonAdapter<GoodsDetailsBean.ResultBean>(c, R.layout
+                .item_pick_up, goodsDetailsBeen) {
+            @Override
+            protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean
+                    details, int position) {
+                holder.setText(R.id.order_No, details.getOldOrderNo());
+                holder.setText(R.id.name, details.getItemName());
+                holder.setText(R.id.volume, String.valueOf(details.getVolume()) + "m³");
+                holder.setText(R.id.grossWeight, details.getGroosWeight() == null ? "0kg" : details
+                        .getGroosWeight() + "kg");
+            }
+        };
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent();
+                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
+                intent.putExtra(AppConfig.ORDER_ID, goodsDetailsBeen.get(position - 1).getOrderId());
+                intent.putExtra(AppConfig.SCAN_MODE, goodsDetailsBeen.get(position - 1).getScanMode());
+                JumpToActivity(CaptureActivity.class, intent);
+            }
 
-                @Override
-                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                        position) {
-                    return false;
-                }
-            });
-            swipeTarget.setLayoutManager(new LinearLayoutManager(c));
-            swipeTarget.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration.VERTICAL));
-        }
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
+                    position) {
+                return false;
+            }
+        });
+        swipeTarget.setLayoutManager(new LinearLayoutManager(c));
+        swipeTarget.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration.VERTICAL));
+    }
 
     private void setSwipe() {
         swipeToLoadLayout.setOnRefreshListener(this);

@@ -49,4 +49,6 @@
     <string name="into_car">待装车</string>
     <!--拒收-->
     <string name="rejection">拒收</string>
+    <string name="sign">签收</string>
+    <string name="query">查询</string>
 </resources>

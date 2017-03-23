@@ -30,7 +30,7 @@
         android:theme="@style/TranslucentTheme"
         tools:replace="Android:icon, android:theme">
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -38,12 +38,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.PickUpActivity"/>
-        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.IncludeActivity"/>
         <activity android:name=".activity.DispatchActivity"/>
         <activity android:name=".activity.IntoCarListActivity"/>
         <activity android:name=".activity.SignActivity"/>
         <activity android:name=".activity.RejectionActivity"/>
+        <activity android:name=".activity.StickScanActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
     </application>
 

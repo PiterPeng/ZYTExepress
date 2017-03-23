@@ -144,7 +144,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
-                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position + 1).getId());
+                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position-1).getId());
                 JumpToActivity(CaptureActivity.class, intent);
             }
 

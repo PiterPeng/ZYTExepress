@@ -48,8 +48,8 @@ public class IncludeActivity extends BaseActivity {
 
     ShowImgAdapter showImgAdapter;
     List<LocalMedia> localMediaList;
-    String code;
     Map<String, File> files;
+    String code;
 
     @Override
     protected int getContentResourseId() {

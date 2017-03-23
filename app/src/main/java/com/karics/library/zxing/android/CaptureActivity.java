@@ -24,6 +24,7 @@ import com.yuwubao.zytexpress.activity.BaseActivity;
 import com.yuwubao.zytexpress.activity.IncludeActivity;
 import com.yuwubao.zytexpress.activity.RejectionActivity;
 import com.yuwubao.zytexpress.activity.SignActivity;
+import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.helper.UIHelper;
@@ -40,6 +41,7 @@ import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
 
 /**
  * 这个activity打开相机，在后台线程做常规的扫描；它绘制了一个结果view来帮助正确地显示条形码，在扫描的时候显示反馈信息，
@@ -260,6 +262,18 @@ public final class CaptureActivity extends BaseActivity implements
                         case AppConfig.ENTER_TYPE_ZHISAO:
                             blindSnForZhiSao();
                             break;
+                        case AppConfig.ENTER_TYPE_IN:
+                            toScanStorageNo();
+                            break;
+                        case AppConfig.ENTER_TYPE_OUT:
+                            outStorage();
+                            break;
+                        case AppConfig.ENTER_TYPE_QUERY:
+                            query();
+                            break;
+                        case AppConfig.ENTER_TYPE_CHECK:
+                            check();
+                            break;
                     }
                     break;
                 case AppConfig.SCAN_TYPE_CODE_CAR:
@@ -281,6 +295,10 @@ public final class CaptureActivity extends BaseActivity implements
                     codeOrder = rawResult.getText();
                     enterRejectionActivity();
                     break;
+                case AppConfig.SCAN_TYPE_CODE_STORAGE:
+                    storageNo = rawResult.getText();
+                    inStorage();
+                    break;
             }
 //            viewfinderView.setHintText2(result);
 //            alertDialog = new AlertDialog.Builder(c).create();
@@ -289,12 +307,133 @@ public final class CaptureActivity extends BaseActivity implements
     }
 
     /**
+     * 商品贴标复核
+     */
+    private void check() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.STICK_CHECK)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+
+                    }
+                });
+    }
+
+    /**
+     * 查询商品是否贴标
+     */
+    private void query() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.FREE_INQUIRY)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new AppGsonCallback<QueryBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(QueryBean response, int id) {
+                        super.onResponseOK(response, id);
+                        int status = response.getStatus();
+                        String showTitle;
+//                        String showVoice;
+                        if (status == 1) {
+                            showTitle = "请贴面单和子单1";
+                        } else {
+                            showTitle = "请贴子单" + status;
+                        }
+                        showVioce(showTitle);
+                        UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
+                                .OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                OkHttpUtils//
+                                        .get()//
+                                        .tag(this)//
+                                        .url(Urls.COMMODITY_LABELING)//
+                                        .addParams("sn", codeSN)//
+                                        .build()//
+                                        .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                                                     @Override
+                                                     public void onResponseOK(StatusBean response, int id) {
+                                                         super.onResponseOK(response, id);
+                                                         UIHelper.showMessage(c, "贴标成功");
+                                                         finish();
+                                                     }
+                                                 }
+
+                                        );
+                            }
+                        });
+                    }
+                });
+    }
+
+    /**
+     * 如果得到SN，就去扫描储位号
+     */
+    private void toScanStorageNo() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_STORAGE);
+        JumpToActivity(CaptureActivity.class, intent);
+    }
+
+    /**
+     * 货物入库
+     */
+    private void inStorage() {
+        OkHttpUtils//
+                .post()//
+                .tag(this)//
+                .url(Urls.IN_STORAGE)//
+                .addParams("sn", codeSNIntent)//
+                .addParams("storageNo", storageNo)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, "入库成功");
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 货物出库
+     */
+    private void outStorage() {
+        OkHttpUtils//
+                .post()//
+                .tag(this)//
+                .url(Urls.OUT_STORAGE)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, "出库成功");
+                        finish();
+                    }
+                });
+    }
+
+    /**
      * 拿到运单号，进入拒收页面
      */
     private void enterRejectionActivity() {
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
-        JumpToActivity(RejectionActivity.class);
+        JumpToActivity(RejectionActivity.class, intent);
     }
 
     /**
@@ -303,7 +442,7 @@ public final class CaptureActivity extends BaseActivity implements
     private void enterSignActivity() {
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
-        JumpToActivity(SignActivity.class);
+        JumpToActivity(SignActivity.class, intent);
     }
 
     /**
@@ -311,7 +450,7 @@ public final class CaptureActivity extends BaseActivity implements
      */
     private void intoCarForZhiSao() {
         OkHttpUtils//
-                .post()//
+                .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_ZHISAO)//
                 .addParams("carNo", codeCar)//
@@ -332,7 +471,7 @@ public final class CaptureActivity extends BaseActivity implements
      */
     private void intoCarForMangsao() {
         OkHttpUtils//
-                .post()//
+                .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_MANGSAO)//
                 .addParams("carNo", codeCar)//
@@ -352,7 +491,7 @@ public final class CaptureActivity extends BaseActivity implements
      * 指定扫-->配货
      */
     private void blindSnForZhiSao() {
-        OkHttpUtils//
+        OkHttpUtils //
                 .post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE_ZHISAO)//
@@ -395,11 +534,11 @@ public final class CaptureActivity extends BaseActivity implements
                                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
                                         .SCAN_TYPE_CODE_CAR);
                                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                intent.putExtra(AppConfig.CODE_SN, code69Intent);
                                 JumpToActivity(CaptureActivity.class, intent);
+                                finish();
                             }
                         });
-                        finish();
                     }
                 });
 
@@ -453,6 +592,7 @@ public final class CaptureActivity extends BaseActivity implements
     String codeSNIntent = "";//SN码,接收
     String codeCar = "";//车号
     String codeOrder = "";//运单号
+    String storageNo = "";//储位号
     String codedContent = "";
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
@@ -503,7 +643,6 @@ public final class CaptureActivity extends BaseActivity implements
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_SN) {
             voice = SHOW_VOICE_SN;
             text1 = SHOW_VOICE_SN;
-
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_CAR) {
             voice = SHOW_VOICE_CAR;
             text1 = SHOW_VOICE_CAR;
@@ -511,6 +650,9 @@ public final class CaptureActivity extends BaseActivity implements
                 .SCAN_TYPE_CODE_REJECTION) {
             voice = SHOW_VOICE_ORDER;
             text1 = SHOW_VOICE_ORDER;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_STORAGE) {
+            voice = SHOW_VOICE_STORAGE;
+            text1 = SHOW_VOICE_STORAGE;
         }
         showVioce(voice);
         viewfinderView.setHintText1(text1);

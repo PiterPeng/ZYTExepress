@@ -9,6 +9,7 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.DispatchActivity;
 import com.yuwubao.zytexpress.activity.IntoCarListActivity;
 import com.yuwubao.zytexpress.activity.PickUpActivity;
+import com.yuwubao.zytexpress.activity.StickScanActivity;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
 import com.yuwubao.zytexpress.widget.BGABanner;
@@ -56,19 +57,36 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
         urls.add(AppConfig.BANNER_IAMGE_URL_04);
     }
 
+    /**
+     * 待提货列表
+     */
     @OnClick(R.id.rl_th)
     public void onTihuoClick() {
         JumpToActivity(PickUpActivity.class);
     }
 
+    /**
+     * 调度列表
+     */
     @OnClick(R.id.rl_td)
     public void onTiedanClick() {
         JumpToActivity(DispatchActivity.class);
     }
 
+    /**
+     * 待装车列表
+     */
     @OnClick(R.id.rl_zc)
     public void onZhuangCheClick() {
         JumpToActivity(IntoCarListActivity.class);
+    }
+
+    /**
+     * 查询 复核
+     */
+    @OnClick(R.id.rl_qt)
+    public void onCkeckClick() {
+        JumpToActivity(StickScanActivity.class);
     }
 
     @Override

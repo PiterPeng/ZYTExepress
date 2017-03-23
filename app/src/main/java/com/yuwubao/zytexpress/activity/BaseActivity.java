@@ -61,15 +61,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
         setIntent(intent);
+        super.onNewIntent(intent);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
         OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroy();
     }
 
 
