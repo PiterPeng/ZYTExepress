@@ -41,6 +41,7 @@ public class LoginActivity extends BaseActivity {
         Window window = getWindow();
         //设置当前窗体为全屏显示
         window.setFlags(flag, flag);
+
     }
 
     @OnClick(R.id.bt_login)
