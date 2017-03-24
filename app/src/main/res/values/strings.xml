@@ -51,4 +51,5 @@
     <string name="rejection">拒收</string>
     <string name="sign">签收</string>
     <string name="query">查询</string>
+    <string name="PDA">PDA专用扫描</string>
 </resources>

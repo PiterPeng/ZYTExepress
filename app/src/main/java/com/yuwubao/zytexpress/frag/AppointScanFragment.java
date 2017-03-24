@@ -15,6 +15,7 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.activity.PDAScanActivity;
 import com.yuwubao.zytexpress.bean.CountBean;
 import com.yuwubao.zytexpress.bean.GoodsDetailsBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -48,6 +49,9 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
     private List<GoodsDetailsBean.ResultBean> goodsDetailsBeen;
     View headerView;
     HeaderAndFooterWrapper wrapper;
+    int currentPage = 1;
+    int pageSize = 10;
+    private boolean isLoadmoreColose = false;
 
     @Override
     protected int getContentResourseId() {
@@ -59,7 +63,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         setSwipe();
         setmAdapter();
         addHeader();
-        initData();
+//        initData();
     }
 
     private void addHeader() {
@@ -67,10 +71,16 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         headerView = LayoutInflater.from(c).inflate(R.layout.header_zhisao, null);
         wrapper.addHeaderView(headerView);
         swipeTarget.setAdapter(wrapper);
+
+    }
+
+    private void initData() {
         OkHttpUtils//
                 .get()//
                 .tag(this)//
                 .addParams("type", "2")
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")
+                .addParams(AppConfig.PAGE_SIZE, pageSize + "")
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c)) {
@@ -88,12 +98,9 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                         yiTH.setText(resultBean.getTakeNum() + "");
                         weiZC.setText(resultBean.getLastCar() + "");
                         yiZC.setText(resultBean.getCarNum() + "");
-                        wrapper.notifyItemChanged(1);
+
                     }
                 });
-    }
-
-    private void initData() {
         OkHttpUtils//
                 .get()//
                 .tag(this)//
@@ -104,10 +111,32 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                     @Override
                     public void onResponseOK(GoodsDetailsBean response, int id) {
                         super.onResponseOK(response, id);
+                        if (currentPage == 1) {
+                            goodsDetailsBeen.clear();
+                        }
                         List<GoodsDetailsBean.ResultBean> temp = response.getResult();
-                        goodsDetailsBeen.clear();
+                        if (pageSize > temp.size()) {
+                            isLoadmoreColose = true;
+                        } else {
+                            swipeToLoadLayout.setLoadMoreEnabled(true);
+                        }
                         goodsDetailsBeen.addAll(temp);
                         wrapper.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
+                        currentPage++;
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        super.onAfter(id);
+                        if (swipeToLoadLayout.isRefreshing()) {
+                            swipeToLoadLayout.setRefreshing(false);
+                        } else if (swipeToLoadLayout.isLoadingMore()) {
+                            swipeToLoadLayout.setLoadingMore(false);
+                            if (isLoadmoreColose) {
+                                swipeToLoadLayout.setLoadMoreEnabled(false);
+                            }
+                        }
                     }
                 });
     }
@@ -134,7 +163,11 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
                 intent.putExtra(AppConfig.ORDER_ID, goodsDetailsBeen.get(position - 1).getOrderId());
                 intent.putExtra(AppConfig.SCAN_MODE, goodsDetailsBeen.get(position - 1).getScanMode());
-                JumpToActivity(CaptureActivity.class, intent);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
             }
 
             @Override
@@ -164,28 +197,30 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                 }
             }
         });
-//        swipeToLoadLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                swipeToLoadLayout.setRefreshing(true);
-//            }
-//        });
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
     }
 
     @Override
     public void onLoadMore() {
-
+        initData();
     }
 
     @Override
     public void onRefresh() {
-        swipeToLoadLayout.setRefreshing(false);
+        currentPage = 1;
+        initData();
     }
 
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        currentPage = 1;
         OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroyView();
     }
 }

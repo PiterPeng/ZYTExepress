@@ -15,6 +15,7 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.activity.PDAScanActivity;
 import com.yuwubao.zytexpress.bean.CountBean;
 import com.yuwubao.zytexpress.bean.MangScanBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -47,6 +48,8 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
     private List<MangScanBean.ResultBean.ContentBean> mangScanBeen;
     View headerView;
     HeaderAndFooterWrapper wrapper;
+    int currentPage = 1;
+    int pageSize = 10;
 
     @Override
     protected int getContentResourseId() {
@@ -58,7 +61,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         setSwipe();
         initAdapter();
         addHeader();
-        initData();
+//        initData();
     }
 
     private void addHeader() {
@@ -71,35 +74,15 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                JumpToActivity(CaptureActivity.class, intent);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
             }
         });
         wrapper.addHeaderView(headerView);
         swipeTarget.setAdapter(wrapper);
-        OkHttpUtils//
-                .get()//
-                .tag(this)//
-                .addParams("type", "1")
-                .url(Urls.COUNT)//
-                .build()//
-                .execute(new AppGsonCallback<CountBean>(new RequestModel(c)) {
-                    @Override
-                    public void onResponseOK(CountBean response, int id) {
-                        super.onResponseOK(response, id);
-                        CountBean.ResultBean resultBean = response.getResult().get(0);
-                        TextView total = (TextView) headerView.findViewById(R.id.tv_total);
-                        TextView weiTH = (TextView) headerView.findViewById(R.id.tv_weiTH);
-                        TextView yiTH = (TextView) headerView.findViewById(R.id.tv_yiTH);
-                        TextView weiZC = (TextView) headerView.findViewById(R.id.tv_weiZC);
-                        TextView yiZC = (TextView) headerView.findViewById(R.id.tv_yiZC);
-                        total.setText(resultBean.getTotle() + "");
-                        weiTH.setText(resultBean.getLastTake() + "");
-                        yiTH.setText(resultBean.getTakeNum() + "");
-                        weiZC.setText(resultBean.getLastCar() + "");
-                        yiZC.setText(resultBean.getCarNum() + "");
-                        wrapper.notifyItemChanged(1);
-                    }
-                });
     }
 
     private void initAdapter() {
@@ -124,21 +107,71 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         swipeTarget.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration.VERTICAL));
     }
 
+    private boolean isLoadmoreColose = false;
+
     private void initData() {
         OkHttpUtils//
                 .get()//
+                .tag(this)//
+                .addParams("type", "1")
+                .url(Urls.COUNT)//
+                .build()//
+                .execute(new AppGsonCallback<CountBean>(new RequestModel(c).setShowProgress(false)) {
+                    @Override
+                    public void onResponseOK(CountBean response, int id) {
+                        super.onResponseOK(response, id);
+                        CountBean.ResultBean resultBean = response.getResult().get(0);
+                        TextView total = (TextView) headerView.findViewById(R.id.tv_total);
+                        TextView weiTH = (TextView) headerView.findViewById(R.id.tv_weiTH);
+                        TextView yiTH = (TextView) headerView.findViewById(R.id.tv_yiTH);
+                        TextView weiZC = (TextView) headerView.findViewById(R.id.tv_weiZC);
+                        TextView yiZC = (TextView) headerView.findViewById(R.id.tv_yiZC);
+                        total.setText(resultBean.getTotle() + "");
+                        weiTH.setText(resultBean.getLastTake() + "");
+                        yiTH.setText(resultBean.getTakeNum() + "");
+                        weiZC.setText(resultBean.getLastCar() + "");
+                        yiZC.setText(resultBean.getCarNum() + "");
+                    }
+                });
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
                 .url(Urls.MANG_SCAN)//
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
+                .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//
                 .execute(new AppGsonCallback<MangScanBean>(new
                         RequestModel(c)) {
                     @Override
                     public void onResponseOK(MangScanBean response, int id) {
                         super.onResponseOK(response, id);
+                        if (currentPage == 1) {
+                            mangScanBeen.clear();
+                        }
                         List<MangScanBean.ResultBean.ContentBean> temp = response.getResult()
                                 .getContent();
-                        mangScanBeen.clear();
+                        if (pageSize > temp.size()) {
+                            isLoadmoreColose = true;
+                        } else {
+                            swipeToLoadLayout.setLoadMoreEnabled(true);
+                        }
                         mangScanBeen.addAll(temp);
+                        adapter.notifyDataSetChanged();
                         wrapper.notifyDataSetChanged();
+                        currentPage++;
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        super.onAfter(id);
+                        if (swipeToLoadLayout.isRefreshing()) {
+                            swipeToLoadLayout.setRefreshing(false);
+                        } else if (swipeToLoadLayout.isLoadingMore()) {
+                            swipeToLoadLayout.setLoadingMore(false);
+                            if (isLoadmoreColose) {
+                                swipeToLoadLayout.setLoadMoreEnabled(false);
+                            }
+                        }
                     }
                 });
     }
@@ -155,26 +188,33 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
                         swipeToLoadLayout.setLoadingMore(true);
-
                     }
                 }
             }
         });
-//        swipeToLoadLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                swipeToLoadLayout.setRefreshing(true);
-//            }
-//        });
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
     }
 
     @Override
     public void onLoadMore() {
-
+        initData();
     }
 
     @Override
     public void onRefresh() {
-        swipeToLoadLayout.setRefreshing(false);
+        currentPage = 1;
+        initData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        OkHttpUtils.getInstance().cancelTag(this);
+        currentPage = 1;
+        super.onDestroyView();
     }
 }

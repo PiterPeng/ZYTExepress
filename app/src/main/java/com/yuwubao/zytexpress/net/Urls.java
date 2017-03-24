@@ -12,7 +12,8 @@ public class Urls {
     /**
      * 默认的API头地址
      */
-    public static final String TEST_HEAD_URL = "http://192.168.100.123:8080/oms/";
+//    public static final String TEST_HEAD_URL = "http://192.168.100.123:8080/oms/";//wl
+    public static final String TEST_HEAD_URL = "http://192.168.100.66:8080/oms/";//xs
     public static final String ONLINE_HEAD_URL = "http://192.168.100.123:8080/oms/";
 
     public static final String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;

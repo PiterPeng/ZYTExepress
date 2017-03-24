@@ -29,12 +29,16 @@ import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
+import com.yuwubao.zytexpress.net.GsonSerializator;
 import com.yuwubao.zytexpress.net.Urls;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.GenericsCallback;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+
+import okhttp3.Call;
 
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
@@ -96,12 +100,12 @@ public final class CaptureActivity extends BaseActivity implements
 
     @Override
     protected void init() {
-// 保持Activity处于唤醒状态
         Window window = getWindow();
+        // 保持Activity处于唤醒状态
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-////隐藏状态栏
-//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
-//                .LayoutParams.FLAG_FULLSCREEN);
+        //隐藏状态栏
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
+                .LayoutParams.FLAG_FULLSCREEN);
 
         orderId = getIntent().getExtras().getInt(AppConfig.ORDER_ID);
         scanMode = getIntent().getExtras().getInt(AppConfig.SCAN_MODE);
@@ -110,9 +114,10 @@ public final class CaptureActivity extends BaseActivity implements
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
         codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
 
-        Log.d("handleDecode", "orderId" + orderId + "," + "scanMode" + scanMode + "," +
-                "currentType" +
-                currentType + "," + "enterType" + enterType + "," + "code69Intent" + code69Intent);
+        Log.d(TAG, "orderId-->" + orderId + "," + "scanMode-->" + scanMode + "," +
+                "currentType-->" +
+                currentType + "," + "enterType-->" + enterType + "," + "code69Intent-->" + code69Intent + "," +
+                "codeSNIntent-->" + codeSNIntent);
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -244,10 +249,7 @@ public final class CaptureActivity extends BaseActivity implements
         // 这里处理解码完成后的结果，此处将参数回传到Activity处理
         if (fromLiveScan) {
             beepManager.playBeepSoundAndVibrate();
-            codedContent = rawResult.getText();
-
             Toast.makeText(this, "扫描成功", Toast.LENGTH_SHORT).show();
-
             switch (currentType) {
                 case AppConfig.SCAN_TYPE_CODE_69:
                     code69 = rawResult.getText();
@@ -335,43 +337,20 @@ public final class CaptureActivity extends BaseActivity implements
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
                 .build()//
-                .execute(new AppGsonCallback<QueryBean>(new RequestModel(c)) {
+                .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
-                    public void onResponseOK(QueryBean response, int id) {
-                        super.onResponseOK(response, id);
-                        int status = response.getStatus();
-                        String showTitle;
-//                        String showVoice;
-                        if (status == 1) {
-                            showTitle = "请贴面单和子单1";
-                        } else {
-                            showTitle = "请贴子单" + status;
-                        }
-                        showVioce(showTitle);
-                        UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
-                                .OnClickListener() {
+                    public void onError(Call call, Exception e, int id) {
 
+                    }
 
-                            @Override
-                            public void onClick(View v) {
-                                OkHttpUtils//
-                                        .get()//
-                                        .tag(this)//
-                                        .url(Urls.COMMODITY_LABELING)//
-                                        .addParams("sn", codeSN)//
-                                        .build()//
-                                        .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
-                                                     @Override
-                                                     public void onResponseOK(StatusBean response, int id) {
-                                                         super.onResponseOK(response, id);
-                                                         UIHelper.showMessage(c, "贴标成功");
-                                                         finish();
-                                                     }
-                                                 }
+                    @Override
+                    public void onResponse(QueryBean response, int id) {
+                        if (response != null) {
+                            if (response.getStatus() != -1) {
+//处理status等于 1 2 3 时的情况
 
-                                        );
                             }
-                        });
+                        }
                     }
                 });
     }
@@ -593,35 +572,8 @@ public final class CaptureActivity extends BaseActivity implements
     String codeCar = "";//车号
     String codeOrder = "";//运单号
     String storageNo = "";//储位号
-    String codedContent = "";
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
-    int time = 5;
-    private final static int ISTIME = 0;
-    private AlertDialog alertDialog;
-
-    Handler mHandler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            time--;
-            if (alertDialog == null) {
-                return;
-            }
-            if (ISTIME <= time) {
-                alertDialog.setMessage(result);
-                alertDialog.show();
-                mHandler.postDelayed(this, 1000);
-            } else {
-                alertDialog.dismiss();
-                Intent intent = new Intent(CaptureActivity.this, CaptureActivity.class);
-                intent.putExtra("codedContent", codedContent);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, 1);
-                mHandler.removeCallbacks(this);
-            }
-        }
-    };
 
 
     @Override

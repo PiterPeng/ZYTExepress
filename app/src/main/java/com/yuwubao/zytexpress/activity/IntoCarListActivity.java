@@ -50,6 +50,8 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
     CommonAdapter adapter;
     HeaderAndFooterWrapper wrapper;
     TextView textView;
+    int currentPage = 1;
+    int pageSize = 10;
 
     @Override
     protected int getContentResourseId() {
@@ -62,7 +64,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
         setSwipe();
         setmAdapter();
         addHeader();
-        initData();
+//        initData();
     }
 
     private void addHeader() {
@@ -73,25 +75,50 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
         swipeTarget.setAdapter(wrapper);
     }
 
+    private boolean isLoadmoreColose = false;
+
     private void initData() {
         OkHttpUtils//
                 .get()//
                 .tag(this)//
                 .url(Urls.INTO_CAR_LIST)//
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")
+                .addParams(AppConfig.PAGE_SIZE, pageSize + "")
                 .build()//
                 .execute(new AppGsonCallback<IntoCarListBean>(new
                         RequestModel(c)) {
                     @Override
                     public void onResponseOK(IntoCarListBean response, int id) {
                         super.onResponseOK(response, id);
+                        if (currentPage == 1) {
+                            contentBeen.clear();
+                        }
+                        currentPage++;
                         textView.setText("商品总数：" + String.valueOf(response.getResult()
-                                .getTotalElements
-                                        ()));
+                                .getTotalElements()));
                         List<IntoCarListBean.ResultBean.ContentBean> temp = response.getResult()
                                 .getContent();
-                        contentBeen.clear();
+                        if (pageSize > temp.size()) {
+                            isLoadmoreColose = true;
+                        } else {
+                            swipeToLoadLayout.setLoadMoreEnabled(true);
+                        }
                         contentBeen.addAll(temp);
                         wrapper.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onAfter(int id) {
+                        super.onAfter(id);
+                        if (swipeToLoadLayout.isRefreshing()) {
+                            swipeToLoadLayout.setRefreshing(false);
+                        } else if (swipeToLoadLayout.isLoadingMore()) {
+                            swipeToLoadLayout.setLoadingMore(false);
+                            if (isLoadmoreColose) {
+                                swipeToLoadLayout.setLoadMoreEnabled(false);
+                            }
+                        }
                     }
                 });
     }
@@ -117,12 +144,12 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 }
             }
         });
-//        swipeToLoadLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                swipeToLoadLayout.setRefreshing(true);
-//            }
-//        });
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
     }
 
     private void setmAdapter() {
@@ -144,8 +171,12 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
-                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position-1).getId());
-                JumpToActivity(CaptureActivity.class, intent);
+                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position - 1).getId());
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
             }
 
             @Override
@@ -160,17 +191,19 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
 
     @Override
     public void onRefresh() {
-        swipeToLoadLayout.setRefreshing(false);
+        currentPage = 1;
+        initData();
     }
 
     @Override
     public void onLoadMore() {
-
+        initData();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        currentPage = 1;
         OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroy();
     }
 }

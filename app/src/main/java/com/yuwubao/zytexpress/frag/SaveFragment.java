@@ -6,6 +6,7 @@ import android.view.View;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.activity.PDAScanActivity;
 
 import butterknife.OnClick;
 
@@ -38,6 +39,10 @@ public class SaveFragment extends BaseFragement {
                 break;
         }
         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-        JumpToActivity(CaptureActivity.class, intent);
+        if (AppConfig.isPDA) {
+            JumpToActivity(PDAScanActivity.class, intent);
+        } else {
+            JumpToActivity(CaptureActivity.class, intent);
+        }
     }
 }

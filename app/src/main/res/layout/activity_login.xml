@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
         android:src="@drawable/login"
         />
 
@@ -27,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_text"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <EditText

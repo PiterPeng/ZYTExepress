@@ -91,7 +91,11 @@ public class IncludeActivity extends BaseActivity {
                         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                         intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
                         UIHelper.showMessage(c, "备案成功！请扫描SN码");
-                        JumpToActivity(CaptureActivity.class, intent);
+                        if (AppConfig.isPDA) {
+                            JumpToActivity(PDAScanActivity.class, intent);
+                        } else {
+                            JumpToActivity(CaptureActivity.class, intent);
+                        }
                         finish();
                     }
                 });

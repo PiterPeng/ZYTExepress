@@ -33,8 +33,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void setTop() {
-        //隐藏状态栏
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         //定义全屏参数
         int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         //获得当前窗体对象
@@ -47,5 +45,6 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.bt_login)
     public void onClick() {
         JumpToActivity(MainActivity.class);
+
     }
 }

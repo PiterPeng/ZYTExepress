@@ -91,9 +91,9 @@ public class ImageLoaderKit {
 //
     private static final DisplayImageOptions createNormalOptions() {
         return new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.icon_message)
-                .showImageForEmptyUri(R.drawable.icon_message)
-                .showImageOnFail(R.drawable.icon_message)
+                .showImageOnLoading(R.drawable.img_loading_fail_big)
+                .showImageForEmptyUri(R.drawable.img_loading_fail_big)
+                .showImageOnFail(R.drawable.img_loading_fail_big)
                 .cacheInMemory(true).cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
     }

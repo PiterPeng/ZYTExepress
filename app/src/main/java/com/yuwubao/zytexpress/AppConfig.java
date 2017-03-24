@@ -64,16 +64,26 @@ public class AppConfig {
     public final static String SHOW_VOICE_CAR = "请扫描车号";
     public final static String SHOW_VOICE_ORDER = "请扫描运单号";
     public final static String SHOW_VOICE_STORAGE = "请扫描储位号";
-
+    /***PDA扫描SCAN****/
+    public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" +
+            ".broadcast";
+    public static final String SCN_CUST_EX_SCODE = "scannerdata";
+    /* defined by MEXXEN */
+    public static final String SCN_CUST_ACTION_START = "android.intent.action.SCANNER_BUTTON_DOWN";
+    public static final String SCN_CUST_ACTION_CANCEL = "android.intent.action.SCANNER_BUTTON_UP";
 
     //--返回码值
     public static final int RESULT_OK = 0;//成功
     public static final int RESULT_LOGINOUT = 301;//异地登录
+
     //--
     public static final String ISCHECKVERSION = "isCheckVersion";
     public static final String LASTVERSIONCODE = "LASTVERSIONCODE";// 上一次更新的版本id
     public static final String LASTVERSIONSIZE = "LASTVERSIONSIZE";// 更新版本的apk大小
     public static final String NEWVERSIONCODE = "NEWVERSIONCODE";// 最新的版本
+    //--分页 请求参数
+    public static final String CURRENT_PAGE = "page";// 当前第几页
+    public static final String PAGE_SIZE = "pageSize";// 每页显示条数
 
     //banner图临时图片url
     public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" +

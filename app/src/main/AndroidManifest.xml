@@ -45,6 +45,7 @@
         <activity android:name=".activity.SignActivity"/>
         <activity android:name=".activity.RejectionActivity"/>
         <activity android:name=".activity.StickScanActivity"/>
+        <activity android:name=".activity.PDAScanActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
     </application>
 

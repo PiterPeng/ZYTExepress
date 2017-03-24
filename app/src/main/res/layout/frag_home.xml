@@ -10,17 +10,18 @@
     <com.yuwubao.zytexpress.widget.BGABanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="0dp"
         android:layout_margin="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
+        android:layout_weight="1.2"
         app:banner_isShowIndicator="true"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:background="@color/white"
         android:orientation="vertical"
         >
@@ -41,8 +42,8 @@
 
                 <ImageView
                     android:id="@+id/iv_th"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/icon_th"/>
 
@@ -69,8 +70,8 @@
 
                 <ImageView
                     android:id="@+id/iv_td"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/icon_td"/>
 
@@ -102,8 +103,8 @@
 
                 <ImageView
                     android:id="@+id/iv_zc"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/icon_zc"/>
 
@@ -125,8 +126,8 @@
 
                 <ImageView
                     android:id="@+id/iv_qt"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/icon_qt"/>
 
