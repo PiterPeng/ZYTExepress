@@ -92,7 +92,7 @@ public class UIHelper {
      * @param okListener  点击事件
      */
     public static void showMyCustomDialog(final Context context, String titleValus, String
-            submitValus, final View.OnClickListener okListener) {
+            submitValus, final View.OnClickListener okListener, final View.OnClickListener cancelListener) {
 //        if (dialog == null) {
         dialog = new Dialog(context, R.style.dialogActivity);
         View view = LayoutInflater.from(context).inflate(R.layout.my_custom_dialog_layout,
@@ -106,13 +106,18 @@ public class UIHelper {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (cancelListener != null) {
+                    cancelListener.onClick(v);
+                }
                 dialog.dismiss();
             }
         });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                okListener.onClick(v);
+                if (okListener != null) {
+                    okListener.onClick(v);
+                }
                 dialog.dismiss();
             }
         });

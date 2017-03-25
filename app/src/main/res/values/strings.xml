@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">宅易通EC系统</string>
+    <string name="app_name">宅易通物流终端</string>
 
     <!--common-->
     <string name="search_hint">输入目的地、路况、节目、主播、活动</string>

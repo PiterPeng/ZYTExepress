@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,6 +23,7 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
 import com.yuwubao.zytexpress.activity.IncludeActivity;
+import com.yuwubao.zytexpress.activity.PDAScanActivity;
 import com.yuwubao.zytexpress.activity.RejectionActivity;
 import com.yuwubao.zytexpress.activity.SignActivity;
 import com.yuwubao.zytexpress.bean.QueryBean;
@@ -302,9 +304,6 @@ public final class CaptureActivity extends BaseActivity implements
                     inStorage();
                     break;
             }
-//            viewfinderView.setHintText2(result);
-//            alertDialog = new AlertDialog.Builder(c).create();
-//            mHandler.postDelayed(runnable, 1000);
         }
     }
 
@@ -322,7 +321,8 @@ public final class CaptureActivity extends BaseActivity implements
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
                     }
                 });
     }
@@ -340,15 +340,65 @@ public final class CaptureActivity extends BaseActivity implements
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        UIHelper.showMessage(c, "服务器异常");
                     }
 
                     @Override
                     public void onResponse(QueryBean response, int id) {
                         if (response != null) {
-                            if (response.getStatus() != -1) {
-//处理status等于 1 2 3 时的情况
+                            int status = response.getStatus();
+                            String msg = response.getMessage();
+                            if (status != -1) {
+                                String showTitle;
+                                if (TextUtils.equals(msg, "提货不完整")) {
+                                    showTitle = "提货不完整";
+                                    showVioce(showTitle);
+                                    UIHelper.showMessage(c, showTitle);
+                                    finish();
+                                } else {
+                                    if (status == 1) {
+                                        showTitle = "请贴面单和子单1";
+                                    } else {
+                                        showTitle = "请贴子单" + status;
+                                    }
+                                    showVioce(showTitle);
+                                    UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
+                                            .OnClickListener() {
 
+
+                                        @Override
+                                        public void onClick(View v) {
+                                            OkHttpUtils//
+                                                    .get()//
+                                                    .tag(this)//
+                                                    .url(Urls.COMMODITY_LABELING)//
+                                                    .addParams("sn", codeSN)//
+                                                    .build()//
+                                                    .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                                                                 @Override
+                                                                 public void onResponseOK(StatusBean response, int id) {
+                                                                     super.onResponseOK(response, id);
+                                                                     UIHelper.showMessage(c, "贴标成功");
+                                                                     finish();
+                                                                 }
+                                                             }
+
+                                                    );
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent();
+                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
+                                            JumpToActivity(PDAScanActivity.class, intent);
+                                            finish();
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                UIHelper.showMessage(c, msg);
                             }
                         }
                     }
@@ -517,6 +567,11 @@ public final class CaptureActivity extends BaseActivity implements
                                 JumpToActivity(CaptureActivity.class, intent);
                                 finish();
                             }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
                         });
                     }
                 });
@@ -547,6 +602,16 @@ public final class CaptureActivity extends BaseActivity implements
                                     intent.putExtra("code69", code69);
                                     JumpToActivity(IncludeActivity.class, intent);
                                     finish();
+                                }
+                            }, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent();
+                                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
+                                            .SCAN_TYPE_CODE_SN);
+                                    intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                                    intent.putExtra(AppConfig.CODE_69, code69);
+                                    JumpToActivity(CaptureActivity.class, intent);
                                 }
                             });
                         } else {

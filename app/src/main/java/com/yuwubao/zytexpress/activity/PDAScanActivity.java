@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -16,11 +17,14 @@ import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
+import com.yuwubao.zytexpress.net.GsonSerializator;
 import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.GenericsCallback;
 
 import butterknife.BindView;
+import okhttp3.Call;
 
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
@@ -221,7 +225,7 @@ public class PDAScanActivity extends BaseActivity {
                                     JumpToActivity(IncludeActivity.class, intent);
                                     finish();
                                 }
-                            });
+                            }, null);
                         } else {
                             Intent intent = new Intent();
                             intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
@@ -265,7 +269,7 @@ public class PDAScanActivity extends BaseActivity {
                                 JumpToActivity(PDAScanActivity.class, intent);
                                 finish();
                             }
-                        });
+                        }, null);
                     }
                 });
 
@@ -355,43 +359,61 @@ public class PDAScanActivity extends BaseActivity {
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
                 .build()//
-                .execute(new AppGsonCallback<QueryBean>(new RequestModel(c)) {
+                .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
-                    public void onResponseOK(QueryBean response, int id) {
-                        super.onResponseOK(response, id);
-                        int status = response.getStatus();
-                        String showTitle;
-//                        String showVoice;
-                        if (status == 1) {
-                            showTitle = "请贴面单和子单1";
-                        } else {
-                            showTitle = "请贴子单" + status;
-                        }
-                        showVioce(showTitle);
-                        UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
-                                .OnClickListener() {
+                    public void onError(Call call, Exception e, int id) {
+                        UIHelper.showMessage(c, "服务器异常");
+                    }
+
+                    @Override
+                    public void onResponse(QueryBean response, int id) {
+                        if (response != null) {
+                            int status = response.getStatus();
+                            String msg = response.getMessage();
+                            if (status != -1) {
+                                String showTitle;
+                                if (TextUtils.equals(msg, "提货不完整")) {
+                                    showTitle = "提货不完整";
+                                    showVioce(showTitle);
+                                    UIHelper.showMessage(c, showTitle);
+                                    finish();
+                                } else {
+                                    if (status == 1) {
+                                        showTitle = "请贴面单和子单1";
+                                    } else {
+                                        showTitle = "请贴子单" + status;
+                                    }
+                                    showVioce(showTitle);
+                                    UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
+                                            .OnClickListener() {
 
 
-                            @Override
-                            public void onClick(View v) {
-                                OkHttpUtils//
-                                        .get()//
-                                        .tag(this)//
-                                        .url(Urls.COMMODITY_LABELING)//
-                                        .addParams("sn", codeSN)//
-                                        .build()//
-                                        .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
-                                                     @Override
-                                                     public void onResponseOK(StatusBean response, int id) {
-                                                         super.onResponseOK(response, id);
-                                                         UIHelper.showMessage(c, "贴标成功");
-                                                         finish();
-                                                     }
-                                                 }
+                                        @Override
+                                        public void onClick(View v) {
+                                            OkHttpUtils//
+                                                    .get()//
+                                                    .tag(this)//
+                                                    .url(Urls.COMMODITY_LABELING)//
+                                                    .addParams("sn", codeSN)//
+                                                    .build()//
+                                                    .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                                                                 @Override
+                                                                 public void onResponseOK(StatusBean response, int id) {
+                                                                     super.onResponseOK(response, id);
+                                                                     UIHelper.showMessage(c, "贴标成功");
+                                                                     finish();
+                                                                 }
+                                                             }
 
-                                        );
+                                                    );
+                                        }
+                                    }, null);
+                                }
+
+                            } else {
+                                UIHelper.showMessage(c, msg);
                             }
-                        });
+                        }
                     }
                 });
     }
@@ -410,7 +432,8 @@ public class PDAScanActivity extends BaseActivity {
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
                     }
                 });
     }

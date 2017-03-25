@@ -4,6 +4,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 
 import butterknife.BindView;
 
@@ -19,9 +21,10 @@ public class MineFragment extends BaseFragement {
     @BindView(R.id.userName)
     TextView userName;
     @BindView(R.id.account)
-    TextView account;
+    TextView tvAccount;
     @BindView(R.id.companyName)
     TextView companyName;
+    String name, account, company;
 
     @Override
     protected int getContentResourseId() {
@@ -30,6 +33,14 @@ public class MineFragment extends BaseFragement {
 
     @Override
     protected void init() {
-
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            account = user.getAccount();
+            company = user.getCompanyName();
+            name = user.getName();
+            tvAccount.setText(account);
+            companyName.setText(company);
+            userName.setText(name);
+        }
     }
 }
