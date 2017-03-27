@@ -607,11 +607,10 @@ public final class CaptureActivity extends BaseActivity implements
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent();
-                                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
-                                            .SCAN_TYPE_CODE_SN);
+                                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
                                     intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                    intent.putExtra(AppConfig.CODE_69, code69);
                                     JumpToActivity(CaptureActivity.class, intent);
+                                    finish();
                                 }
                             });
                         } else {
@@ -621,6 +620,7 @@ public final class CaptureActivity extends BaseActivity implements
                             intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
                             intent.putExtra(AppConfig.CODE_69, code69);
                             JumpToActivity(CaptureActivity.class, intent);
+                            finish();
                         }
                     }
                 });
