@@ -22,9 +22,9 @@ import com.karics.library.zxing.view.ViewfinderView;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
-import com.yuwubao.zytexpress.activity.IncludeActivity;
-import com.yuwubao.zytexpress.activity.PDAScanActivity;
+import com.yuwubao.zytexpress.activity.IncludeListActivity;
 import com.yuwubao.zytexpress.activity.RejectionActivity;
+import com.yuwubao.zytexpress.activity.ShowDetailsActivity;
 import com.yuwubao.zytexpress.activity.SignActivity;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -115,6 +115,8 @@ public final class CaptureActivity extends BaseActivity implements
         enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
         codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
+        inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
+
 
         Log.d(TAG, "orderId-->" + orderId + "," + "scanMode-->" + scanMode + "," +
                 "currentType-->" +
@@ -255,10 +257,23 @@ public final class CaptureActivity extends BaseActivity implements
             switch (currentType) {
                 case AppConfig.SCAN_TYPE_CODE_69:
                     code69 = rawResult.getText();
+                    if (!code69.toUpperCase().startsWith("69")) {
+                        UIHelper.showMessage(c, "六九码错误请重新扫描");
+                        Log.d("扫描成功", code69);
+                        onPause();
+                        onResume();
+                        return;
+                    }
                     check69IsInclude();
                     break;
                 case AppConfig.SCAN_TYPE_CODE_SN:
                     codeSN = rawResult.getText();
+                    if (!codeSN.toUpperCase().startsWith("SN")) {
+                        UIHelper.showMessage(c, "SN码错误请重新扫描");
+                        onPause();
+                        onResume();
+                        return;
+                    }
                     switch (enterType) {
                         case AppConfig.ENTER_TYPE_MANGSAO:
                             blindSnForMangSao();
@@ -267,7 +282,14 @@ public final class CaptureActivity extends BaseActivity implements
                             blindSnForZhiSao();
                             break;
                         case AppConfig.ENTER_TYPE_IN:
-                            toScanStorageNo();
+                            switch (inType) {
+                                case AppConfig.IN_TYPE_THOERY:
+                                    inStorageForThoery();
+                                    break;
+                                case AppConfig.IN_TYPE_FACT:
+                                    toScanStorageNo();
+                                    break;
+                            }
                             break;
                         case AppConfig.ENTER_TYPE_OUT:
                             outStorage();
@@ -277,6 +299,9 @@ public final class CaptureActivity extends BaseActivity implements
                             break;
                         case AppConfig.ENTER_TYPE_CHECK:
                             check();
+                            break;
+                        case AppConfig.ENTER_TYPE_SCAN:
+                            scan();
                             break;
                     }
                     break;
@@ -305,6 +330,69 @@ public final class CaptureActivity extends BaseActivity implements
                     break;
             }
         }
+    }
+
+    /**
+     * 查件扫描
+     */
+    private void scan() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.FREE_INQUIRY)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
+                        Log.d("onError", "onError--->" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(QueryBean response, int id) {
+                        if (response != null) {
+                            int status = response.getStatus();
+                            String msg = response.getMessage();
+                            if (status != -1) {
+                                String showTitle;
+                                if (TextUtils.equals(msg, "提货不完整")) {
+                                    showTitle = "提货不完整";
+                                    showVioce(showTitle);
+                                    UIHelper.showMessage(c, showTitle);
+                                } else {
+
+                                }
+                                Intent intent = new Intent();
+                                intent.putExtra("querybean", response);
+                                JumpToActivity(ShowDetailsActivity.class, intent);
+                                finish();
+                            } else {
+                                UIHelper.showMessage(c, msg);
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 理论入库
+     */
+    private void inStorageForThoery() {
+        OkHttpUtils
+                .post()//
+                .tag(this)//
+                .url(Urls.IN_STORAGE_THOERY)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
     }
 
     /**
@@ -340,7 +428,8 @@ public final class CaptureActivity extends BaseActivity implements
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        UIHelper.showMessage(c, "服务器异常");
+                        UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
+                        Log.d("onError", "onError--->" + e.getMessage());
                     }
 
                     @Override
@@ -388,11 +477,13 @@ public final class CaptureActivity extends BaseActivity implements
                                     }, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Intent intent = new Intent();
-                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-                                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
-                                            JumpToActivity(PDAScanActivity.class, intent);
-                                            finish();
+//                                            Intent intent = new Intent();
+//                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+//                                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
+//                                            JumpToActivity(CaptureActivity.class, intent);
+//                                            finish();
+                                            onPause();
+                                            onResume();
                                         }
                                     });
                                 }
@@ -406,7 +497,7 @@ public final class CaptureActivity extends BaseActivity implements
     }
 
     /**
-     * 如果得到SN，就去扫描储位号
+     * 实际入库 如果得到SN，就去扫描储位号
      */
     private void toScanStorageNo() {
         Intent intent = new Intent();
@@ -563,7 +654,7 @@ public final class CaptureActivity extends BaseActivity implements
                                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
                                         .SCAN_TYPE_CODE_CAR);
                                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                intent.putExtra(AppConfig.CODE_SN, code69Intent);
+                                intent.putExtra(AppConfig.CODE_SN, codeSN);
                                 JumpToActivity(CaptureActivity.class, intent);
                                 finish();
                             }
@@ -600,17 +691,19 @@ public final class CaptureActivity extends BaseActivity implements
                                 public void onClick(View v) {
                                     Intent intent = new Intent();
                                     intent.putExtra("code69", code69);
-                                    JumpToActivity(IncludeActivity.class, intent);
+                                    JumpToActivity(IncludeListActivity.class, intent);
                                     finish();
                                 }
                             }, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent();
-                                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
-                                    intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                    JumpToActivity(CaptureActivity.class, intent);
-                                    finish();
+//                                    Intent intent = new Intent();
+//                                    intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+//                                    intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+//                                    JumpToActivity(CaptureActivity.class, intent);
+//                                    finish();
+                                    onPause();
+                                    onResume();
                                 }
                             });
                         } else {
@@ -627,9 +720,9 @@ public final class CaptureActivity extends BaseActivity implements
 
     }
 
-    String result = "";
     int orderId;//订单id
     int scanMode;//扫描类型
+    int inType;//入库类型
     String code69 = "";//69码，结果
     String code69Intent = "";//69码,接收
     String codeSN = "";//SN码

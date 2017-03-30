@@ -10,7 +10,6 @@ import com.yuwubao.zytexpress.activity.DispatchActivity;
 import com.yuwubao.zytexpress.activity.IntoCarListActivity;
 import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.activity.StickScanActivity;
-import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
 import com.yuwubao.zytexpress.widget.BGABanner;
 
@@ -91,7 +90,7 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     @Override
     public void onBannerItemClick(BGABanner banner, View view, Object model, int position) {
-        UIHelper.showMessage(c, "点击了第" + position + "张图片");
+
     }
 
     @Override

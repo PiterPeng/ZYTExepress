@@ -144,6 +144,11 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         swipeToLoadLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -163,6 +168,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 holder.setText(R.id.number, details.getItemCode());
                 holder.setText(R.id.name, details.getItemName());
                 holder.setText(R.id.time, details.getUpdateTime());
+                holder.setText(R.id.sn_code, details.getProductCode());
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -172,6 +178,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
                 intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position - 1).getId());
+                intent.putExtra(AppConfig.CODE_SN, contentBeen.get(position - 1).getProductCode());
                 if (AppConfig.isPDA) {
                     JumpToActivity(PDAScanActivity.class, intent);
                 } else {

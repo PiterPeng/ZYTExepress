@@ -197,6 +197,12 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                 }
             }
         });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         swipeToLoadLayout.post(new Runnable() {
             @Override
             public void run() {

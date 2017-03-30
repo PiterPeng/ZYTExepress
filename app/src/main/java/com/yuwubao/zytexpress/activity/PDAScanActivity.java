@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -55,6 +56,7 @@ public class PDAScanActivity extends BaseActivity {
 
     int orderId;//订单id
     int scanMode;//扫描类型
+    int inType;//入库类型
     String code69 = "";//69码，结果
     String code69Intent = "";//69码,接收
     String codeSN = "";//SN码
@@ -107,6 +109,7 @@ public class PDAScanActivity extends BaseActivity {
         enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
         codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
+        inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
     }
 
     private void setHeader() {
@@ -149,7 +152,14 @@ public class PDAScanActivity extends BaseActivity {
                                     blindSnForZhiSao();
                                     break;
                                 case AppConfig.ENTER_TYPE_IN:
-                                    toScanStorageNo();
+                                    switch (inType) {
+                                        case AppConfig.IN_TYPE_THOERY:
+                                            inStorageForThoery();
+                                            break;
+                                        case AppConfig.IN_TYPE_FACT:
+                                            toScanStorageNo();
+                                            break;
+                                    }
                                     break;
                                 case AppConfig.ENTER_TYPE_OUT:
                                     outStorage();
@@ -159,6 +169,9 @@ public class PDAScanActivity extends BaseActivity {
                                     break;
                                 case AppConfig.ENTER_TYPE_CHECK:
                                     check();
+                                    break;
+                                case AppConfig.ENTER_TYPE_SCAN:
+                                    scan();
                                     break;
                             }
                             break;
@@ -201,6 +214,49 @@ public class PDAScanActivity extends BaseActivity {
     };
 
     /**
+     * 查件扫描
+     */
+    private void scan() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.FREE_INQUIRY)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
+                        Log.d("onError", "onError--->" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(QueryBean response, int id) {
+                        if (response != null) {
+                            int status = response.getStatus();
+                            String msg = response.getMessage();
+                            if (status != -1) {
+                                String showTitle;
+                                if (TextUtils.equals(msg, "提货不完整")) {
+                                    showTitle = "提货不完整";
+                                    showVioce(showTitle);
+                                    UIHelper.showMessage(c, showTitle);
+                                } else {
+
+                                }
+                                Intent intent = new Intent();
+                                intent.putExtra("querybean", response);
+                                JumpToActivity(ShowDetailsActivity.class, intent);
+                                finish();
+                            } else {
+                                UIHelper.showMessage(c, msg);
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
      * 盲扫-->检查69码是否备案
      */
     private void check69IsInclude() {
@@ -222,7 +278,7 @@ public class PDAScanActivity extends BaseActivity {
                                 public void onClick(View v) {
                                     Intent intent = new Intent();
                                     intent.putExtra("code69", code69);
-                                    JumpToActivity(IncludeActivity.class, intent);
+                                    JumpToActivity(IncludeListActivity.class, intent);
                                     finish();
                                 }
                             }, null);
@@ -265,11 +321,16 @@ public class PDAScanActivity extends BaseActivity {
                                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
                                         .SCAN_TYPE_CODE_CAR);
                                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                intent.putExtra(AppConfig.CODE_SN, code69Intent);
+                                intent.putExtra(AppConfig.CODE_SN, codeSN);
                                 JumpToActivity(PDAScanActivity.class, intent);
                                 finish();
                             }
-                        }, null);
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
+                        });
                     }
                 });
 
@@ -327,6 +388,25 @@ public class PDAScanActivity extends BaseActivity {
                 });
     }
 
+    /**
+     * 理论入库
+     */
+    private void inStorageForThoery() {
+        OkHttpUtils
+                .post()//
+                .tag(this)//
+                .url(Urls.IN_STORAGE_THOERY)//
+                .addParams("sn", codeSN)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
 
     /**
      * 货物入库
@@ -370,6 +450,7 @@ public class PDAScanActivity extends BaseActivity {
                         if (response != null) {
                             int status = response.getStatus();
                             String msg = response.getMessage();
+                            Log.d("onResponse....", "status-->" + status + "msg-->" + msg);
                             if (status != -1) {
                                 String showTitle;
                                 if (TextUtils.equals(msg, "提货不完整")) {

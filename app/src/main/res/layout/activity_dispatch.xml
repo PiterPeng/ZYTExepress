@@ -12,7 +12,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/activity_bg"
         android:orientation="vertical">
 
@@ -28,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="商品类型"
+                android:text="商品\n类型"
                 android:textColor="@color/base_black"
                 android:textSize="@dimen/text_16"/>
 
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="商品总件数"
+                android:text="商品\n总件数"
                 android:textColor="@color/base_black"
                 android:textSize="@dimen/text_16"/>
 
@@ -47,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="商品总体积"
+                android:text="商品\n总体积"
                 android:textColor="@color/base_black"
                 android:textSize="@dimen/text_16"/>
 
@@ -57,7 +58,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="商品总重量"
+                android:text="商品\n总重量"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="提货\n仓库"
                 android:textColor="@color/base_black"
                 android:textSize="@dimen/text_16"/>
 
@@ -66,8 +76,62 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/dispatchList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="10dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/base_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/base_blue_selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="本页总计："
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总数量\n（0）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总体积\n（0.00000m³）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_weight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总重量\n（0.0kg）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
     </LinearLayout>
 
 </LinearLayout>

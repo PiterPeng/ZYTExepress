@@ -134,7 +134,7 @@ public class IntoCarListBean extends BaseBean {
              */
 
             private int id;
-            private Object productCode;
+            private String productCode;
             private String orderNo;
             private String itemCode;
             private String itemName;
@@ -148,11 +148,11 @@ public class IntoCarListBean extends BaseBean {
                 this.id = id;
             }
 
-            public Object getProductCode() {
+            public String getProductCode() {
                 return productCode;
             }
 
-            public void setProductCode(Object productCode) {
+            public void setProductCode(String productCode) {
                 this.productCode = productCode;
             }
 

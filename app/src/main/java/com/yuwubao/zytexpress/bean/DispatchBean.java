@@ -107,13 +107,31 @@ public class DispatchBean extends BaseBean {
              * itemName : 未知
              * quantity : 4
              * volume : 0.6572
-             * width : 3.32
+             * weight : 3.32
+             * shipperName : "酷友北京DDC",//提货仓库
              */
 
             private String itemName;
             private int quantity;
             private double volume;
-            private double width;
+            private double weight;
+            private String shipperName;
+
+            public String getShipperName() {
+                return shipperName;
+            }
+
+            public void setShipperName(String shipperName) {
+                this.shipperName = shipperName;
+            }
+
+            public double getWeight() {
+                return weight;
+            }
+
+            public void setWeight(double weight) {
+                this.weight = weight;
+            }
 
             public String getItemName() {
                 return itemName;
@@ -139,13 +157,6 @@ public class DispatchBean extends BaseBean {
                 this.volume = volume;
             }
 
-            public double getWidth() {
-                return width;
-            }
-
-            public void setWidth(double width) {
-                this.width = width;
-            }
         }
     }
 }

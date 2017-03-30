@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -30,6 +31,8 @@ public class LoginActivity extends BaseActivity {
     EditText etUsername;
     @BindView(R.id.et_password)
     EditText etPassword;
+    @BindView(R.id.login_text)
+    ImageView loginText;
 
     @Override
     protected int getContentResourseId() {
@@ -90,5 +93,12 @@ public class LoginActivity extends BaseActivity {
     protected void onDestroy() {
         OkHttpUtils.getInstance().cancelTag(this);
         super.onDestroy();
+    }
+
+
+    @OnClick(R.id.test)
+    public void onTestClick() {
+        JumpToActivity(MainActivity.class);
+        finish();
     }
 }

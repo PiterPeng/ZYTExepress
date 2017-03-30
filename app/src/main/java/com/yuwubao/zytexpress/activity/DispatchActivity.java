@@ -3,8 +3,10 @@ package com.yuwubao.zytexpress.activity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.Count2Bean;
 import com.yuwubao.zytexpress.bean.DispatchBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
@@ -33,6 +35,13 @@ public class DispatchActivity extends BaseActivity {
     RecyclerView dispatchList;
     CommonAdapter adapter;
     List<DispatchBean.ResultBean.ContentBean> contentBeen;
+    List<Count2Bean.ResultBean> countBeen;
+    @BindView(R.id.total_quantity)
+    TextView totalQuantity;
+    @BindView(R.id.total_volume)
+    TextView totalVolume;
+    @BindView(R.id.total_weight)
+    TextView totalWeight;
 
     @Override
     protected int getContentResourseId() {
@@ -41,14 +50,40 @@ public class DispatchActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        setCount();
         setTitleBar();
         setComAdapter();
         initData();
     }
 
+    private void setCount() {
+        countBeen = new ArrayList<>();
+        OkHttpUtils
+                .get()//
+                .tag(this)//
+                .url(Urls.DISPATCH_COUNT)//
+                .build()//
+                .execute(new AppGsonCallback<Count2Bean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(Count2Bean response, int id) {
+                        super.onResponseOK(response, id);
+                        List<Count2Bean.ResultBean> temp = response.getResult();
+                        countBeen.clear();
+                        countBeen.addAll(temp);
+                        if (!countBeen.isEmpty()) {
+                            Count2Bean.ResultBean bean = countBeen.get(0);
+                            totalQuantity.setText("总数量\n（" + bean.getQuantity() + "）");
+                            totalWeight.setText("总重量\n（" + String.valueOf(bean.getWeight()) + "kg）");
+                            totalVolume.setText("总体积\n（" + String.valueOf(bean.getVolume()) + "m³）");
+                        }
+                    }
+                });
+    }
+
     private void initData() {
         OkHttpUtils//
                 .get()//
+                .tag(this)//
                 .url(Urls.DISPATCH)//
                 .build()//
                 .execute(new AppGsonCallback<DispatchBean>(new RequestModel(c)) {
@@ -74,8 +109,8 @@ public class DispatchActivity extends BaseActivity {
                 holder.setText(R.id.itemName, o.getItemName());
                 holder.setText(R.id.quantity, String.valueOf(o.getQuantity()));
                 holder.setText(R.id.volume, String.valueOf(o.getVolume()) + "m³");
-                holder.setText(R.id.width, String.valueOf(o.getWidth()) + "kg");
-
+                holder.setText(R.id.width, String.valueOf(o.getWeight()) + "kg");
+                holder.setText(R.id.shipperName, o.getShipperName());
             }
 
         };
@@ -87,5 +122,11 @@ public class DispatchActivity extends BaseActivity {
 
     private void setTitleBar() {
         title.setTitle(getString(R.string.dispatch));
+    }
+
+    @Override
+    protected void onDestroy() {
+        OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroy();
     }
 }

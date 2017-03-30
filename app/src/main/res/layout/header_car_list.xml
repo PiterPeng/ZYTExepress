@@ -8,13 +8,12 @@
 
     <TextView
         android:id="@+id/total"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="总数：25"
         android:textColor="@color/base_black"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="友情提醒：点击某项内容可跳入相应扫描界面。"

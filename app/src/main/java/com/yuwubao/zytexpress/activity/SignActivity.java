@@ -4,9 +4,7 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -79,33 +77,7 @@ public class SignActivity extends BaseActivity {
     protected void init() {
         setHeader();
         initDatas();
-        setEditextWatch();
         setRecAdapter();
-    }
-
-    private void setEditextWatch() {
-        code.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (TextUtils.equals(s, String.valueOf(mobileCode)) && count == 6) {
-                    code.setBackgroundResource(R.drawable.shape_black_broder);
-                    sign.setClickable(true);
-                } else {
-                    code.setBackgroundResource(R.drawable.shape_red_broder);
-                    sign.setClickable(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
     }
 
     private void setRecAdapter() {
@@ -166,7 +138,6 @@ public class SignActivity extends BaseActivity {
                 for (int i = 0; i < resultList.size(); i++) {
                     File file = new File(resultList.get(i).getPath());
                     files.put(file.getName(), file);
-                    Log.d("path", file.getName() + "," + resultList.get(i).getPath());
                 }
             }
             showImgAdapter.update(resultList, ShowImgAdapter.UPDATE_REPLACE);
@@ -193,9 +164,7 @@ public class SignActivity extends BaseActivity {
             UIHelper.showMessage(c, "请输入正确的手机号");
             return;
         }
-
-        OkHttpUtils//
-                .post()//
+        post()//
                 .tag(this)//
                 .url(Urls.PHONE_VERIFICATION_CODE)//
                 .addParams("mobile", mobileNumber)//
@@ -216,26 +185,44 @@ public class SignActivity extends BaseActivity {
         if (TextUtils.isEmpty(codeNumber) || TextUtils.isEmpty(mobileNumber)) {
             return;
         }
-        if (files.isEmpty()) {
-            UIHelper.showMessage(c, "请至少选择一张照片");
+        if (!TextUtils.equals(codeNumber, String.valueOf(mobileCode))) {
+            UIHelper.showMessage(c, "验证码错误");
             return;
         }
-
-        //
-        post()//
-                .tag(this)//
-                .url(Urls.ORDER_SIGN)//
-                .addParams("no", orderIntent)//
-                .addParams("pic", "")//
-                .build()//
-                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
-                    @Override
-                    public void onResponseOK(StatusBean response, int id) {
-                        super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "签收成功");
-                        finish();
-                    }
-                });
+        Log.d("files", files.toString());
+        if (files.isEmpty()) {
+            OkHttpUtils
+                    .post()//
+                    .tag(this)//
+                    .url(Urls.ORDER_SIGN)//
+                    .addParams("no", orderIntent)//
+                    .addParams("pic", "")//
+                    .build()//
+                    .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                        @Override
+                        public void onResponseOK(StatusBean response, int id) {
+                            super.onResponseOK(response, id);
+                            UIHelper.showMessage(c, "签收成功");
+                            finish();
+                        }
+                    });
+        } else {
+            OkHttpUtils
+                    .post()//
+                    .tag(this)//
+                    .url(Urls.ORDER_SIGN)//
+                    .addParams("no", orderIntent)//
+                    .files("pic", files)//
+                    .build()//
+                    .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                        @Override
+                        public void onResponseOK(StatusBean response, int id) {
+                            super.onResponseOK(response, id);
+                            UIHelper.showMessage(c, "签收成功");
+                            finish();
+                        }
+                    });
+        }
 
 
     }
@@ -263,6 +250,7 @@ public class SignActivity extends BaseActivity {
             if (signActivity.currentTime == signActivity.ISTIMEOUT) {
                 signActivity.handler.removeCallbacks(this);
                 signActivity.getCode.setText("重新获取验证码");
+                signActivity.currentTime = 60;
             } else {
                 signActivity.handler.postDelayed(this, 1000);
             }

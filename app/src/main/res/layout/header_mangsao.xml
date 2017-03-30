@@ -188,7 +188,7 @@
             android:background="@drawable/selector_text_bg"
             android:gravity="center"
             android:padding="8dp"
-            android:text="检查全部提货"
+            android:text="结束当日作业"
             android:textColor="@color/white"
             android:textSize="@dimen/text_18"
             />

@@ -32,7 +32,6 @@
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:lines="2"
-            android:text="69125522445522"
             android:textColor="@color/userInfo_font"
             android:textSize="@dimen/text_14"/>
 

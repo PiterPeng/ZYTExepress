@@ -2,20 +2,22 @@ package com.yuwubao.zytexpress.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Peng on 2017/3/23
  * e-mail: phlxplus@163.com
  * description: 查询商品
  */
 
-public class QueryBean extends BaseBean {
+public class QueryBean extends BaseBean implements Serializable {
 
     /**
-     * result : {"id":26,"orderId":23,"orderNo":"FH20170308000254826","subFaceOrderNo":null,
-     * "itemCode":"KUP001010101010100004","itemName":"彩电-49寸-D49A620U 黑色","grossWeight":22,
-     * "volume":0.1643,"packageUnit":null,"length":1.32,"width":0.83,"height":0.15,"color":null,
-     * "price":0,"cargoValue":2699,"remarks":null,"qty":1,"packageQuantity":null,
-     * "productCode":"99999","oneCode":"","status":10,"acceptNum":0,"carNo":"","oldOrderNo":""}
+     * result : {"id":69,"orderId":50,"orderNo":"ZYT4220170000005","subFaceOrderNo":"SBD0009-1","itemCode":"电冰箱",
+     * "itemName":"电冰箱","groosWeight":0,"volume":0.617,"packageUnit":null,"length":null,"weight":49,"height":null,
+     * "color":null,"price":null,"cargoValue":null,"note":"","quantity":null,"acceptNum":0,"packageQuantity":null,
+     * "productCode":"SN7832627554782","oneCode":null,"status":70,"carNo":"CAR4782","oldOrderNo":"","scanType":"",
+     * "statusName":"理论出库"}
      */
 
     private ResultBean result;
@@ -28,59 +30,63 @@ public class QueryBean extends BaseBean {
         this.result = result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
         /**
-         * id : 26
-         * orderId : 23
-         * orderNo : FH20170308000254826
-         * subFaceOrderNo : null
-         * itemCode : KUP001010101010100004
-         * itemName : 彩电-49寸-D49A620U 黑色
-         * grossWeight : 22
-         * volume : 0.1643
+         * id : 69
+         * orderId : 50
+         * orderNo : ZYT4220170000005
+         * subFaceOrderNo : SBD0009-1
+         * itemCode : 电冰箱
+         * itemName : 电冰箱
+         * groosWeight : 0
+         * volume : 0.617
          * packageUnit : null
-         * length : 1.32
-         * width : 0.83
-         * height : 0.15
+         * length : null
+         * weight : 49
+         * height : null
          * color : null
-         * price : 0
-         * cargoValue : 2699
-         * remarks : null
-         * qty : 1
-         * packageQuantity : null
-         * productCode : 99999
-         * oneCode :
-         * status : 10
+         * price : null
+         * cargoValue : null
+         * note :
+         * quantity : null
          * acceptNum : 0
-         * carNo :
+         * packageQuantity : null
+         * productCode : SN7832627554782
+         * oneCode : null
+         * status : 70
+         * carNo : CAR4782
          * oldOrderNo :
+         * scanType :
+         * statusName : 理论出库
          */
 
         private int id;
         private int orderId;
         private String orderNo;
-        private Object subFaceOrderNo;
+        private String subFaceOrderNo;
         private String itemCode;
         private String itemName;
-        private int grossWeight;
+        private double groosWeight;
         private double volume;
         private Object packageUnit;
-        private double length;
-        private double width;
-        private double height;
+        private Object length;
+        private double weight;
+        private Object height;
         private Object color;
-        private int price;
-        private int cargoValue;
-        private Object remarks;
-        private int qty;
+        private Object price;
+        private Object cargoValue;
+        private String note;
+        private Object quantity;
+        private int acceptNum;
         private Object packageQuantity;
         private String productCode;
-        private String oneCode;
+        private Object oneCode;
         @SerializedName("status")
         private int statusX;
-        private int acceptNum;
         private String carNo;
         private String oldOrderNo;
+        private String scanType;
+        private String statusName;
 
         public int getId() {
             return id;
@@ -106,11 +112,11 @@ public class QueryBean extends BaseBean {
             this.orderNo = orderNo;
         }
 
-        public Object getSubFaceOrderNo() {
+        public String getSubFaceOrderNo() {
             return subFaceOrderNo;
         }
 
-        public void setSubFaceOrderNo(Object subFaceOrderNo) {
+        public void setSubFaceOrderNo(String subFaceOrderNo) {
             this.subFaceOrderNo = subFaceOrderNo;
         }
 
@@ -130,12 +136,12 @@ public class QueryBean extends BaseBean {
             this.itemName = itemName;
         }
 
-        public int getGrossWeight() {
-            return grossWeight;
+        public double getGroosWeight() {
+            return groosWeight;
         }
 
-        public void setGrossWeight(int grossWeight) {
-            this.grossWeight = grossWeight;
+        public void setGroosWeight(double groosWeight) {
+            this.groosWeight = groosWeight;
         }
 
         public double getVolume() {
@@ -154,27 +160,27 @@ public class QueryBean extends BaseBean {
             this.packageUnit = packageUnit;
         }
 
-        public double getLength() {
+        public Object getLength() {
             return length;
         }
 
-        public void setLength(double length) {
+        public void setLength(Object length) {
             this.length = length;
         }
 
-        public double getWidth() {
-            return width;
+        public double getWeight() {
+            return weight;
         }
 
-        public void setWidth(double width) {
-            this.width = width;
+        public void setWeight(double weight) {
+            this.weight = weight;
         }
 
-        public double getHeight() {
+        public Object getHeight() {
             return height;
         }
 
-        public void setHeight(double height) {
+        public void setHeight(Object height) {
             this.height = height;
         }
 
@@ -186,36 +192,44 @@ public class QueryBean extends BaseBean {
             this.color = color;
         }
 
-        public int getPrice() {
+        public Object getPrice() {
             return price;
         }
 
-        public void setPrice(int price) {
+        public void setPrice(Object price) {
             this.price = price;
         }
 
-        public int getCargoValue() {
+        public Object getCargoValue() {
             return cargoValue;
         }
 
-        public void setCargoValue(int cargoValue) {
+        public void setCargoValue(Object cargoValue) {
             this.cargoValue = cargoValue;
         }
 
-        public Object getRemarks() {
-            return remarks;
+        public String getNote() {
+            return note;
         }
 
-        public void setRemarks(Object remarks) {
-            this.remarks = remarks;
+        public void setNote(String note) {
+            this.note = note;
         }
 
-        public int getQty() {
-            return qty;
+        public Object getQuantity() {
+            return quantity;
         }
 
-        public void setQty(int qty) {
-            this.qty = qty;
+        public void setQuantity(Object quantity) {
+            this.quantity = quantity;
+        }
+
+        public int getAcceptNum() {
+            return acceptNum;
+        }
+
+        public void setAcceptNum(int acceptNum) {
+            this.acceptNum = acceptNum;
         }
 
         public Object getPackageQuantity() {
@@ -234,11 +248,11 @@ public class QueryBean extends BaseBean {
             this.productCode = productCode;
         }
 
-        public String getOneCode() {
+        public Object getOneCode() {
             return oneCode;
         }
 
-        public void setOneCode(String oneCode) {
+        public void setOneCode(Object oneCode) {
             this.oneCode = oneCode;
         }
 
@@ -248,14 +262,6 @@ public class QueryBean extends BaseBean {
 
         public void setStatusX(int statusX) {
             this.statusX = statusX;
-        }
-
-        public int getAcceptNum() {
-            return acceptNum;
-        }
-
-        public void setAcceptNum(int acceptNum) {
-            this.acceptNum = acceptNum;
         }
 
         public String getCarNo() {
@@ -272,6 +278,22 @@ public class QueryBean extends BaseBean {
 
         public void setOldOrderNo(String oldOrderNo) {
             this.oldOrderNo = oldOrderNo;
+        }
+
+        public String getScanType() {
+            return scanType;
+        }
+
+        public void setScanType(String scanType) {
+            this.scanType = scanType;
+        }
+
+        public String getStatusName() {
+            return statusName;
+        }
+
+        public void setStatusName(String statusName) {
+            this.statusName = statusName;
         }
     }
 }

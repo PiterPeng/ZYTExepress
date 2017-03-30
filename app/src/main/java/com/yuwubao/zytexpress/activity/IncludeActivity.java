@@ -50,6 +50,7 @@ public class IncludeActivity extends BaseActivity {
     List<LocalMedia> localMediaList;
     Map<String, File> files;
     String code;
+    int id;
 
     @Override
     protected int getContentResourseId() {
@@ -65,6 +66,7 @@ public class IncludeActivity extends BaseActivity {
 
     private void initData() {
         code = getIntent().getStringExtra("code69");
+        id = getIntent().getExtras().getInt("id");
         localMediaList = new ArrayList<>();
         files = new HashMap<>();
         code69.setText(code);
@@ -80,6 +82,7 @@ public class IncludeActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.INCLUDE_69_CODE)//
+                .addParams("id", String.valueOf(id))//
                 .addParams("code", code)//
                 .files("pics", files)
                 .build()//
@@ -90,6 +93,7 @@ public class IncludeActivity extends BaseActivity {
                         Intent intent = new Intent();
                         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                         intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                        intent.putExtra(AppConfig.CODE_69, code);
                         UIHelper.showMessage(c, "备案成功！请扫描SN码");
                         if (AppConfig.isPDA) {
                             JumpToActivity(PDAScanActivity.class, intent);

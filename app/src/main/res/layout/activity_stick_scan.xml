@@ -25,6 +25,12 @@
             >
 
             <ImageView
+                android:id="@+id/scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/scan"/>
+
+            <ImageView
                 android:id="@+id/query"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,7 +40,6 @@
                 android:id="@+id/check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
                 android:src="@drawable/check"/>
         </LinearLayout>
     </RelativeLayout>
