@@ -40,7 +40,7 @@
         <activity android:name=".activity.PickUpActivity"/>
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.IncludeActivity"/>
-        <activity android:name=".activity.DispatchActivity"/>
+        <activity android:name=".activity.DisPatchAndCountActivity"/>
         <activity android:name=".activity.IntoCarListActivity"/>
         <activity android:name=".activity.SignActivity"/>
         <activity android:name=".activity.RejectionActivity"/>

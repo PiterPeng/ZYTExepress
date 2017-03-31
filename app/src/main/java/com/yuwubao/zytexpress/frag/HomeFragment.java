@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
-import com.yuwubao.zytexpress.activity.DispatchActivity;
+import com.yuwubao.zytexpress.activity.DisPatchAndCountActivity;
 import com.yuwubao.zytexpress.activity.IntoCarListActivity;
 import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.activity.StickScanActivity;
@@ -69,7 +69,7 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
      */
     @OnClick(R.id.rl_td)
     public void onTiedanClick() {
-        JumpToActivity(DispatchActivity.class);
+        JumpToActivity(DisPatchAndCountActivity.class);
     }
 
     /**

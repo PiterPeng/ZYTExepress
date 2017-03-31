@@ -222,6 +222,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
@@ -265,6 +266,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.SEARCH_69_CODE)//
                 .addParams("code", code69)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -305,6 +307,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
                 .addParams("code", code69Intent)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -345,6 +348,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams("id", String.valueOf(orderId))//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -376,6 +380,7 @@ public class PDAScanActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.OUT_STORAGE)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -396,6 +401,7 @@ public class PDAScanActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE_THOERY)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -417,6 +423,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.IN_STORAGE)//
                 .addParams("sn", codeSNIntent)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("storageNo", storageNo)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -438,6 +445,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
@@ -475,6 +483,7 @@ public class PDAScanActivity extends BaseActivity {
                                                     .get()//
                                                     .tag(this)//
                                                     .url(Urls.COMMODITY_LABELING)//
+                                                    .addParams(AppConfig.USER_ID, AppConfig.userId)//
                                                     .addParams("sn", codeSN)//
                                                     .build()//
                                                     .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -508,6 +517,7 @@ public class PDAScanActivity extends BaseActivity {
                 .tag(this)//
                 .url(Urls.STICK_CHECK)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -527,6 +537,7 @@ public class PDAScanActivity extends BaseActivity {
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_MANGSAO)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("sn", codeSNIntent)//
                 .build()//
@@ -548,6 +559,7 @@ public class PDAScanActivity extends BaseActivity {
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_ZHISAO)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("id", String.valueOf(orderId))//
                 .build()//

@@ -59,6 +59,7 @@ public class RejectionActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.ORDER_REJECTION)//
+                .addParams(AppConfig.USER_ID,AppConfig.userId)//
                 .addParams("no", orderCode)//
                 .addParams("remark", et_remake)//
                 .build()//

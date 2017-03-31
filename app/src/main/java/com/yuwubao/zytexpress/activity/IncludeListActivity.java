@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 
+import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.IncludeListBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -66,6 +67,7 @@ public class IncludeListActivity extends BaseActivity {
                 .get()//
                 .tag(this)//
                 .url(Urls.INCLUDE_LIST)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("name", name)//
                 .build()//
                 .execute(new AppGsonCallback<IncludeListBean>(new RequestModel(c)) {

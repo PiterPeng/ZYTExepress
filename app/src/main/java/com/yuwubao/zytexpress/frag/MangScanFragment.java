@@ -114,6 +114,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .get()//
                 .tag(this)//
                 .addParams("type", "1")
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c).setShowProgress(false)) {
@@ -137,6 +138,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .get()//
                 .tag(this)//
                 .url(Urls.MANG_SCAN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//

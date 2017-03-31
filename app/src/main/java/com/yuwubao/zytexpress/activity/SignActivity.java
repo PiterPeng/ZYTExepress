@@ -37,8 +37,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhy.http.okhttp.OkHttpUtils.post;
-
 /**
  * Created by Peng on 2017/3/22
  * e-mail: phlxplus@163.com
@@ -164,9 +162,11 @@ public class SignActivity extends BaseActivity {
             UIHelper.showMessage(c, "请输入正确的手机号");
             return;
         }
-        post()//
+        OkHttpUtils
+                .post()//
                 .tag(this)//
                 .url(Urls.PHONE_VERIFICATION_CODE)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("mobile", mobileNumber)//
                 .build()//
                 .execute(new AppGsonCallback<CodeBean>(new RequestModel(c)) {
@@ -196,6 +196,7 @@ public class SignActivity extends BaseActivity {
                     .tag(this)//
                     .url(Urls.ORDER_SIGN)//
                     .addParams("no", orderIntent)//
+                    .addParams(AppConfig.USER_ID,AppConfig.userId)//
                     .addParams("pic", "")//
                     .build()//
                     .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -211,6 +212,7 @@ public class SignActivity extends BaseActivity {
                     .post()//
                     .tag(this)//
                     .url(Urls.ORDER_SIGN)//
+                    .addParams(AppConfig.USER_ID,AppConfig.userId)//
                     .addParams("no", orderIntent)//
                     .files("pic", files)//
                     .build()//

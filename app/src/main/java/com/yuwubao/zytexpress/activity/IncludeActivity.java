@@ -84,6 +84,7 @@ public class IncludeActivity extends BaseActivity {
                 .url(Urls.INCLUDE_69_CODE)//
                 .addParams("id", String.valueOf(id))//
                 .addParams("code", code)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .files("pics", files)
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {

@@ -1,4 +1,4 @@
-package com.yuwubao.zytexpress.activity;
+package com.yuwubao.zytexpress.frag;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +10,6 @@ import com.yuwubao.zytexpress.bean.DispatchBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
-import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -21,15 +20,13 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * Created by Peng on 2017/3/21
+ * Created by Peng on 2017/3/31
  * e-mail: phlxplus@163.com
- * description: 调度
+ * description: 调度清单
  */
 
-public class DispatchActivity extends BaseActivity {
+public class DispatchFragment extends BaseFragement {
 
-    @BindView(R.id.title)
-    HeaderBar title;
     @BindView(R.id.dispatchList)
     RecyclerView dispatchList;
     CommonAdapter adapter;
@@ -88,8 +85,9 @@ public class DispatchActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroyView() {
         OkHttpUtils.getInstance().cancelTag(this);
-        super.onDestroy();
+        super.onDestroyView();
     }
+
 }

@@ -82,6 +82,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 .get()//
                 .tag(this)//
                 .url(Urls.INTO_CAR_LIST)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")
                 .build()//

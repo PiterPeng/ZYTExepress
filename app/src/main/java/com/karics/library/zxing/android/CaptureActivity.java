@@ -341,6 +341,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
@@ -384,6 +385,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .tag(this)//
                 .url(Urls.IN_STORAGE_THOERY)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -404,6 +406,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .tag(this)//
                 .url(Urls.STICK_CHECK)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -423,6 +426,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .get()//
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
@@ -461,6 +465,7 @@ public final class CaptureActivity extends BaseActivity implements
                                                     .get()//
                                                     .tag(this)//
                                                     .url(Urls.COMMODITY_LABELING)//
+                                                    .addParams(AppConfig.USER_ID, AppConfig.userId)//
                                                     .addParams("sn", codeSN)//
                                                     .build()//
                                                     .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -514,6 +519,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSNIntent)//
                 .addParams("storageNo", storageNo)//
                 .build()//
@@ -536,6 +542,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .tag(this)//
                 .url(Urls.OUT_STORAGE)//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -573,6 +580,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_ZHISAO)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("id", String.valueOf(orderId))//
                 .build()//
@@ -594,6 +602,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_MANGSAO)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("sn", codeSNIntent)//
                 .build()//
@@ -617,6 +626,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .url(Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams("id", String.valueOf(orderId))//
                 .addParams("sn", codeSN)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -638,6 +648,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
                 .addParams("code", code69Intent)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -677,6 +688,7 @@ public final class CaptureActivity extends BaseActivity implements
                 .get()//
                 .tag(this)//
                 .url(Urls.SEARCH_69_CODE)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("code", code69)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {

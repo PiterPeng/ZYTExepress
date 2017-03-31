@@ -34,6 +34,9 @@ public class AppConfig {
     public static final String STARTCOUNT = "startCount";
     //记录设备是否为PDA
     public static boolean isPDA = false;
+    //记录登录返回的userId
+    public static String userId;
+    public final static String USER_ID = "userId";
     //请求扫码界面时调用
     public final static int SCANNIN_GREQUEST_CODE = 1;
     public final static String ORDER_ID = "ORDER_ID";
@@ -64,7 +67,7 @@ public class AppConfig {
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
     public final static String SHOW_VOICE_CAR = "请扫描车号";
-    public final static String SHOW_VOICE_ORDER = "请扫描运单号";
+    public final static String SHOW_VOICE_ORDER = "请扫描运单号或SN码";
     public final static String SHOW_VOICE_STORAGE = "请扫描储位号";
     /***PDA扫描SCAN****/
     public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" +

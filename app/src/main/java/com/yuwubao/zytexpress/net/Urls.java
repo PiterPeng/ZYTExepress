@@ -12,8 +12,8 @@ public class Urls {
     /**
      * 默认的API头地址
      */
-    public static final String TEST_HEAD_URL = "http://192.168.100.123:8080/";//wl
-//    public static final String TEST_HEAD_URL = "http://192.168.100.66:8080/";//xs
+//    public static final String TEST_HEAD_URL = "http://192.168.100.123:8080/";//wl
+    public static final String TEST_HEAD_URL = "http://192.168.100.66:8080/";//xs
     public static final String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
     public static final String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
@@ -64,5 +64,6 @@ public class Urls {
     public static final String ORDER_REJECTION = HEAD_URL + "oms/order/deny";
     //调度汇总
     public static final String DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
-
+    //统计汇总
+    public static final String COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
 }

@@ -5,11 +5,6 @@
               android:background="@color/colorPrimary"
               android:orientation="vertical">
 
-    <com.yuwubao.zytexpress.widget.HeaderBar
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -78,60 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="10dp"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/base_line"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/base_blue_selector"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        >
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="本页总计："
-            android:textColor="@color/red"
-            android:textSize="@dimen/text_14"/>
-
-        <TextView
-            android:id="@+id/total_quantity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="总数量\n（0）"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_14"/>
-
-        <TextView
-            android:id="@+id/total_volume"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="总体积\n（0.00000m³）"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_14"/>
-
-        <TextView
-            android:id="@+id/total_weight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="总重量\n（0.0kg）"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_14"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -78,9 +78,10 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams("type", "2")
-                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")
-                .addParams(AppConfig.PAGE_SIZE, pageSize + "")
+                .addParams("type", "2")//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
+                .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c)) {
@@ -104,6 +105,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         OkHttpUtils//
                 .get()//
                 .tag(this)//
+                .addParams(AppConfig.USER_ID, AppConfig.userId)
                 .url(Urls.PICK_UP)//
                 .build()//
                 .execute(new AppGsonCallback<GoodsDetailsBean>(new
