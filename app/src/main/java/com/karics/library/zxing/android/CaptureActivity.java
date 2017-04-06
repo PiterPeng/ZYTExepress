@@ -259,7 +259,6 @@ public final class CaptureActivity extends BaseActivity implements
                     code69 = rawResult.getText();
                     if (!code69.toUpperCase().startsWith("69")) {
                         UIHelper.showMessage(c, "六九码错误请重新扫描");
-                        Log.d("扫描成功", code69);
                         onPause();
                         onResume();
                         return;
@@ -268,7 +267,7 @@ public final class CaptureActivity extends BaseActivity implements
                     break;
                 case AppConfig.SCAN_TYPE_CODE_SN:
                     codeSN = rawResult.getText();
-                    if (!codeSN.toUpperCase().startsWith("SN")) {
+                    if (codeSN.toUpperCase().startsWith("69")) {
                         UIHelper.showMessage(c, "SN码错误请重新扫描");
                         onPause();
                         onResume();

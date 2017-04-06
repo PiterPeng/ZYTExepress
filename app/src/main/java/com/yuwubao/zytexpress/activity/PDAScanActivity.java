@@ -136,11 +136,19 @@ public class PDAScanActivity extends BaseActivity {
                     switch (currentType) {
                         case AppConfig.SCAN_TYPE_CODE_69:
                             code69 = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
+                            if (!code69.toUpperCase().startsWith("69")) {
+                                UIHelper.showMessage(c, "六九码错误请重新扫描");
+                                return;
+                            }
                             scan_code_69.setText("69码：" + code69);
                             check69IsInclude();
                             break;
                         case AppConfig.SCAN_TYPE_CODE_SN:
                             codeSN = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
+                            if (codeSN.toUpperCase().startsWith("69")) {
+                                UIHelper.showMessage(c, "SN码错误请重新扫描");
+                                return;
+                            }
                             scan_code_69.setText("69码：" + code69Intent);
                             scan_code_sn.setText("SN码：" + codeSN);
                             scan_code_sn.setVisibility(View.VISIBLE);
