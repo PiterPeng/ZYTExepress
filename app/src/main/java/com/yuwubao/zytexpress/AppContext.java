@@ -65,6 +65,9 @@ public class AppContext extends Application {
     private boolean isPDA() {
         if (Build.BRAND.equals("SUPOIN") || Build.MANUFACTURER.equals("SUPOIN")) {
             return true;
+        } else if (android.os.Build.MODEL.equals("i6200s") || android.os.Build.MODEL.equals("i6100s") || android.os
+                .Build.MODEL.equals("i6200A")) {
+            return true;
         } else {
             return false;
         }
@@ -127,13 +130,10 @@ public class AppContext extends Application {
         for (int i = 0; i < arr.length; i++) {
             String h = Integer.toHexString(arr[i]);
             int l = h.length();
-            if (l == 1)
-                h = "0" + h;
-            if (l > 2)
-                h = h.substring(l - 2, l);
+            if (l == 1) h = "0" + h;
+            if (l > 2) h = h.substring(l - 2, l);
             str.append(h.toUpperCase());
-            if (i < (arr.length - 1))
-                str.append(':');
+            if (i < (arr.length - 1)) str.append(':');
         }
         return str.toString();
     }

@@ -52,4 +52,5 @@ dependencies {
     compile project(':zxingcore')
     compile project(':picture_library')
     compile project(':ucrop')
+    compile files('libs/platform_sdk_v2.4.0210.jar')
 }

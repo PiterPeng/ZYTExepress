@@ -8,7 +8,7 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static final boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
+    public static final boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */

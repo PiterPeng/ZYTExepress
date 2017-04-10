@@ -24,8 +24,10 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
 import com.yuwubao.zytexpress.activity.IncludeListActivity;
 import com.yuwubao.zytexpress.activity.RejectionActivity;
+import com.yuwubao.zytexpress.activity.SelectOneToBindActivity;
 import com.yuwubao.zytexpress.activity.ShowDetailsActivity;
 import com.yuwubao.zytexpress.activity.SignActivity;
+import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
@@ -37,7 +39,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.GenericsCallback;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -53,8 +57,7 @@ import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
  * 这个activity打开相机，在后台线程做常规的扫描；它绘制了一个结果view来帮助正确地显示条形码，在扫描的时候显示反馈信息，
  * 然后在扫描成功的时候覆盖扫描结果
  */
-public final class CaptureActivity extends BaseActivity implements
-        SurfaceHolder.Callback {
+public final class CaptureActivity extends BaseActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
 
@@ -106,8 +109,7 @@ public final class CaptureActivity extends BaseActivity implements
         // 保持Activity处于唤醒状态
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //隐藏状态栏
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
-                .LayoutParams.FLAG_FULLSCREEN);
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         orderId = getIntent().getExtras().getInt(AppConfig.ORDER_ID);
         scanMode = getIntent().getExtras().getInt(AppConfig.SCAN_MODE);
@@ -118,10 +120,9 @@ public final class CaptureActivity extends BaseActivity implements
         inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
 
 
-        Log.d(TAG, "orderId-->" + orderId + "," + "scanMode-->" + scanMode + "," +
-                "currentType-->" +
-                currentType + "," + "enterType-->" + enterType + "," + "code69Intent-->" + code69Intent + "," +
-                "codeSNIntent-->" + codeSNIntent);
+        Log.d(TAG, "orderId-->" + orderId + "," + "scanMode-->" + scanMode + "," + "currentType-->" + currentType +
+                "," + "enterType-->" + enterType + "," + "code69Intent-->" + code69Intent + "," + "codeSNIntent-->" +
+                codeSNIntent);
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -205,8 +206,7 @@ public final class CaptureActivity extends BaseActivity implements
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
     }
 
@@ -227,8 +227,7 @@ public final class CaptureActivity extends BaseActivity implements
             cameraManager.openDriver(surfaceHolder);
             // 创建一个handler来打开预览，并抛出一个运行时异常
             if (handler == null) {
-                handler = new CaptureActivityHandler(this, decodeFormats,
-                        decodeHints, characterSet, cameraManager);
+                handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
             }
         } catch (IOException ioe) {
             Log.w(TAG, ioe);
@@ -346,7 +345,9 @@ public final class CaptureActivity extends BaseActivity implements
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
-                        Log.d("onError", "onError--->" + e.getMessage());
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
                     }
 
                     @Override
@@ -379,14 +380,21 @@ public final class CaptureActivity extends BaseActivity implements
      * 理论入库
      */
     private void inStorageForThoery() {
-        OkHttpUtils
-                .post()//
+        OkHttpUtils.post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE_THOERY)//
                 .addParams("sn", codeSN)//
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
@@ -408,6 +416,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
@@ -432,7 +448,9 @@ public final class CaptureActivity extends BaseActivity implements
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
-                        Log.d("onError", "onError--->" + e.getMessage());
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
                     }
 
                     @Override
@@ -454,8 +472,7 @@ public final class CaptureActivity extends BaseActivity implements
                                         showTitle = "请贴子单" + status;
                                     }
                                     showVioce(showTitle);
-                                    UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View
-                                            .OnClickListener() {
+                                    UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View.OnClickListener() {
 
 
                                         @Override
@@ -524,6 +541,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
                         UIHelper.showMessage(c, "入库成功");
@@ -544,6 +569,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
@@ -585,6 +618,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
                         UIHelper.showMessage(c, "装车成功！");
@@ -607,6 +648,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
                         UIHelper.showMessage(c, "装车成功！");
@@ -628,6 +677,14 @@ public final class CaptureActivity extends BaseActivity implements
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
@@ -652,17 +709,23 @@ public final class CaptureActivity extends BaseActivity implements
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMyCustomDialog(c, "配货成功，是否装车？", "去装车", new View
-                                .OnClickListener() {
+                        UIHelper.showMyCustomDialog(c, "配货成功，是否装车？", "去装车", new View.OnClickListener() {
 
 
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent();
-                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
-                                        .SCAN_TYPE_CODE_CAR);
+                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
                                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
                                 intent.putExtra(AppConfig.CODE_SN, codeSN);
                                 JumpToActivity(CaptureActivity.class, intent);
@@ -690,13 +753,21 @@ public final class CaptureActivity extends BaseActivity implements
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .addParams("code", code69)//
                 .build()//
-                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                .execute(new AppGsonCallback<NewStatusBean>(new RequestModel(c)) {
                     @Override
-                    public void onResponseOK(StatusBean response, int id) {
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(NewStatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        if (response.isResult()) {
-                            UIHelper.showMyCustomDialog(c, "商品未备案，是否备案？", "去备案", new View
-                                    .OnClickListener() {
+                        List<NewStatusBean.ResultBean> list = response.getResult();
+                        if (list == null || list.isEmpty()) {
+                            UIHelper.showMyCustomDialog(c, "商品未备案，是否备案？", "去备案", new View.OnClickListener() {
 
                                 @Override
                                 public void onClick(View v) {
@@ -718,14 +789,24 @@ public final class CaptureActivity extends BaseActivity implements
                                 }
                             });
                         } else {
-                            Intent intent = new Intent();
-                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
-                                    .SCAN_TYPE_CODE_SN);
-                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                            intent.putExtra(AppConfig.CODE_69, code69);
-                            JumpToActivity(CaptureActivity.class, intent);
-                            finish();
+                            if (list.size() == 1) {
+                                int mId = list.get(0).getId();
+                                Intent intent = new Intent();
+                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                                intent.putExtra(AppConfig.CODE_69, String.valueOf(mId));
+                                JumpToActivity(CaptureActivity.class, intent);
+                                finish();
+                            } else {
+                                //这里需要处理一个69码有多个商品的情况，判断返回的List集合长度
+                                Intent intent = new Intent();
+                                intent.putExtra("bean", (Serializable) list);
+                                intent.putExtra(AppConfig.CODE_69, code69);
+                                JumpToActivity(SelectOneToBindActivity.class, intent);
+                                finish();
+                            }
                         }
+
                     }
                 });
 
@@ -767,8 +848,7 @@ public final class CaptureActivity extends BaseActivity implements
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_CAR) {
             voice = SHOW_VOICE_CAR;
             text1 = SHOW_VOICE_CAR;
-        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SIGN || currentType == AppConfig
-                .SCAN_TYPE_CODE_REJECTION) {
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SIGN || currentType == AppConfig.SCAN_TYPE_CODE_REJECTION) {
             voice = SHOW_VOICE_ORDER;
             text1 = SHOW_VOICE_ORDER;
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_STORAGE) {
