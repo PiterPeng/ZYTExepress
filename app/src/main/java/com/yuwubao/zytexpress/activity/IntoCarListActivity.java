@@ -22,7 +22,6 @@ import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -38,8 +37,7 @@ import butterknife.BindView;
  * description: 待装车列表
  */
 
-public class IntoCarListActivity extends BaseActivity implements OnRefreshListener,
-        OnLoadMoreListener {
+public class IntoCarListActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener {
     @BindView(R.id.title)
     HeaderBar title;
     @BindView(R.id.swipeToLoadLayout)
@@ -52,6 +50,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
     TextView textView;
     int currentPage = 1;
     int pageSize = 10;
+    String code_69;
 
     @Override
     protected int getContentResourseId() {
@@ -71,6 +70,19 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
         wrapper = new HeaderAndFooterWrapper(adapter);
         View headerView = LayoutInflater.from(c).inflate(R.layout.header_car_list, null);
         textView = (TextView) headerView.findViewById(R.id.total);
+        headerView.findViewById(R.id.to_Scan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CAR);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
+            }
+        });
         wrapper.addHeaderView(headerView);
         swipeTarget.setAdapter(wrapper);
     }
@@ -83,11 +95,9 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 .tag(this)//
                 .url(Urls.INTO_CAR_LIST)//
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
-                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")
-                .addParams(AppConfig.PAGE_SIZE, pageSize + "")
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "").addParams(AppConfig.PAGE_SIZE, pageSize + "")
                 .build()//
-                .execute(new AppGsonCallback<IntoCarListBean>(new
-                        RequestModel(c)) {
+                .execute(new AppGsonCallback<IntoCarListBean>(new RequestModel(c)) {
                     @Override
                     public void onResponseOK(IntoCarListBean response, int id) {
                         super.onResponseOK(response, id);
@@ -95,10 +105,8 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                             contentBeen.clear();
                         }
                         currentPage++;
-                        textView.setText("商品总数：" + String.valueOf(response.getResult()
-                                .getTotalElements()));
-                        List<IntoCarListBean.ResultBean.ContentBean> temp = response.getResult()
-                                .getContent();
+                        textView.setText("商品总数：" + String.valueOf(response.getResult().getTotalElements()));
+                        List<IntoCarListBean.ResultBean.ContentBean> temp = response.getResult().getContent();
                         if (pageSize > temp.size()) {
                             isLoadmoreColose = true;
                         } else {
@@ -160,11 +168,9 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
 
     private void setmAdapter() {
         contentBeen = new ArrayList<>();
-        adapter = new CommonAdapter<IntoCarListBean.ResultBean.ContentBean>(c, R.layout
-                .item_car_list, contentBeen) {
+        adapter = new CommonAdapter<IntoCarListBean.ResultBean.ContentBean>(c, R.layout.item_car_list, contentBeen) {
             @Override
-            protected void convert(ViewHolder holder, IntoCarListBean.ResultBean.ContentBean
-                    details, int position) {
+            protected void convert(ViewHolder holder, IntoCarListBean.ResultBean.ContentBean details, int position) {
                 holder.setText(R.id.order_No, details.getOrderNo());
                 holder.setText(R.id.number, details.getItemCode());
                 holder.setText(R.id.name, details.getItemName());
@@ -172,27 +178,26 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 holder.setText(R.id.sn_code, details.getProductCode());
             }
         };
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                Intent intent = new Intent();
-                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
-                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position - 1).getId());
-                intent.putExtra(AppConfig.CODE_SN, contentBeen.get(position - 1).getProductCode());
-                if (AppConfig.isPDA) {
-                    JumpToActivity(PDAScanActivity.class, intent);
-                } else {
-                    JumpToActivity(CaptureActivity.class, intent);
-                }
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-                return false;
-            }
-        });
+//        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                Intent intent = new Intent();
+//                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
+//                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
+//                intent.putExtra(AppConfig.ORDER_ID, contentBeen.get(position - 1).getId());
+//                intent.putExtra(AppConfig.CODE_SN, contentBeen.get(position - 1).getProductCode());
+//                if (AppConfig.isPDA) {
+//                    JumpToActivity(PDAScanActivity.class, intent);
+//                } else {
+//                    JumpToActivity(CaptureActivity.class, intent);
+//                }
+//            }
+//
+//            @Override
+//            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+//                return false;
+//            }
+//        });
         swipeTarget.setLayoutManager(new LinearLayoutManager(c));
         swipeTarget.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration.VERTICAL));
     }

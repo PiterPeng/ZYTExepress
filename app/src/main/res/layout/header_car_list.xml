@@ -20,6 +20,19 @@
         android:textColor="@color/userInfo_font_small"
         android:textSize="@dimen/text_12"/>
 
+    <TextView
+        android:id="@+id/to_Scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_text_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="开始扫描"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_18"
+        />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

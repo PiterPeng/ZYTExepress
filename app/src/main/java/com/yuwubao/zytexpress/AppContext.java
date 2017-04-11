@@ -65,8 +65,8 @@ public class AppContext extends Application {
     private boolean isPDA() {
         if (Build.BRAND.equals("SUPOIN") || Build.MANUFACTURER.equals("SUPOIN")) {
             return true;
-        } else if (android.os.Build.MODEL.equals("i6200s") || android.os.Build.MODEL.equals("i6100s") || android.os
-                .Build.MODEL.equals("i6200A")) {
+        } else if (Build.MODEL.toUpperCase().equals("I6200S") || Build.MODEL.toUpperCase().equals("I6100S") || Build
+                .MODEL.toUpperCase().equals("I6200A")) {
             return true;
         } else {
             return false;

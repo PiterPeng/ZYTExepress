@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.device.ScanManager;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -103,9 +104,14 @@ public class PDAScanActivity extends BaseActivity {
     }
 
     private void setBroadcast() {
-        IntentFilter intentFilter = new IntentFilter(AppConfig.SCN_CUST_ACTION_SCODE);
+        IntentFilter intentFilter;
+        if (Build.MODEL.toUpperCase().equals("I6200S") || Build.MODEL.toUpperCase().equals("I6100S") || Build.MODEL
+                .toUpperCase().equals("I6200A")) {
+            intentFilter = new IntentFilter(ScanManager.ACTION_DECODE);
+        } else {
+            intentFilter = new IntentFilter(AppConfig.SCN_CUST_ACTION_SCODE);
+        }
         registerReceiver(mSamDataReceiver, intentFilter);
-
     }
 
     private void resolveIntent() {
@@ -123,8 +129,8 @@ public class PDAScanActivity extends BaseActivity {
     }
 
     private void onTouchButton() {
-        if (android.os.Build.MODEL.equals("i6200s") || android.os.Build.MODEL.equals("i6100s") || android.os.Build
-                .MODEL.equals("i6200A")) {
+        if (Build.MODEL.toUpperCase().equals("I6200S") || Build.MODEL.toUpperCase().equals("I6100S") || Build.MODEL
+                .toUpperCase().equals("I6200A")) {
             scanMgr.startDecode();
         } else {
             Intent scannerIntent = new Intent(AppConfig.SCN_CUST_ACTION_START);
@@ -133,8 +139,8 @@ public class PDAScanActivity extends BaseActivity {
     }
 
     private void onReleaseButton() {
-        if (android.os.Build.MODEL.equals("i6200s") || android.os.Build.MODEL.equals("i6100s") || android.os.Build
-                .MODEL.equals("i6200A")) {
+        if (Build.MODEL.toUpperCase().equals("I6200S") || Build.MODEL.toUpperCase().equals("I6100S") || Build.MODEL
+                .toUpperCase().equals("I6200A")) {
             scanMgr.stopDecode();
         } else {
             Intent scannerIntent = new Intent(AppConfig.SCN_CUST_ACTION_CANCEL);
@@ -165,7 +171,11 @@ public class PDAScanActivity extends BaseActivity {
                                 UIHelper.showMessage(c, "SN码错误请重新扫描");
                                 return;
                             }
-                            scan_code_69.setText("69码：" + code69Intent);
+                            if (TextUtils.isEmpty(code69Intent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("69码：" + code69Intent);
+                            }
                             scan_code_sn.setText("SN码：" + codeSN);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             switch (enterType) {
@@ -197,11 +207,18 @@ public class PDAScanActivity extends BaseActivity {
                                 case AppConfig.ENTER_TYPE_SCAN:
                                     scan();
                                     break;
+                                case AppConfig.ENTER_TYPE_CAR:
+                                    inToCar();
+                                    break;
                             }
                             break;
                         case AppConfig.SCAN_TYPE_CODE_CAR:
                             codeCar = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            scan_code_69.setText("SN码：" + codeSNIntent);
+                            if (TextUtils.isEmpty(codeSNIntent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("SN码：" + codeSNIntent);
+                            }
                             scan_code_sn.setText("车号：" + codeCar);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             switch (enterType) {
@@ -223,13 +240,17 @@ public class PDAScanActivity extends BaseActivity {
                             break;
                         case AppConfig.SCAN_TYPE_CODE_STORAGE:
                             storageNo = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            scan_code_69.setText("SN码：" + codeSNIntent);
+                            if (TextUtils.isEmpty(codeSNIntent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("SN码：" + codeSNIntent);
+                            }
                             scan_code_sn.setText("储位号：" + storageNo);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             inStorage();
                             break;
                     }
-                } else {
+                } else if (intent.getAction().equals(ScanManager.ACTION_DECODE)) {
                     switch (currentType) {
                         case AppConfig.SCAN_TYPE_CODE_69:
                             code69 = getScanResultCode(intent);
@@ -246,7 +267,11 @@ public class PDAScanActivity extends BaseActivity {
                                 UIHelper.showMessage(c, "SN码错误请重新扫描");
                                 return;
                             }
-                            scan_code_69.setText("69码：" + code69Intent);
+                            if (TextUtils.isEmpty(code69Intent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("69码：" + code69Intent);
+                            }
                             scan_code_sn.setText("SN码：" + codeSN);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             switch (enterType) {
@@ -278,11 +303,18 @@ public class PDAScanActivity extends BaseActivity {
                                 case AppConfig.ENTER_TYPE_SCAN:
                                     scan();
                                     break;
+                                case AppConfig.ENTER_TYPE_CAR:
+                                    inToCar();
+                                    break;
                             }
                             break;
                         case AppConfig.SCAN_TYPE_CODE_CAR:
                             codeCar = getScanResultCode(intent);
-                            scan_code_69.setText("SN码：" + codeSNIntent);
+                            if (TextUtils.isEmpty(codeSNIntent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("SN码：" + codeSNIntent);
+                            }
                             scan_code_sn.setText("车号：" + codeCar);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             switch (enterType) {
@@ -304,7 +336,11 @@ public class PDAScanActivity extends BaseActivity {
                             break;
                         case AppConfig.SCAN_TYPE_CODE_STORAGE:
                             storageNo = getScanResultCode(intent);
-                            scan_code_69.setText("SN码：" + codeSNIntent);
+                            if (TextUtils.isEmpty(codeSNIntent)) {
+                                scan_code_69.setVisibility(View.GONE);
+                            } else {
+                                scan_code_69.setText("SN码：" + codeSNIntent);
+                            }
                             scan_code_sn.setText("储位号：" + storageNo);
                             scan_code_sn.setVisibility(View.VISIBLE);
                             inStorage();
@@ -316,6 +352,18 @@ public class PDAScanActivity extends BaseActivity {
             }
         }
     };
+
+    /**
+     * 扫描SN后 扫描车号 然后装车
+     */
+    private void inToCar() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
+        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        JumpToActivity(PDAScanActivity.class, intent);
+        finish();
+    }
 
     /**
      * 获取扫描结果（型号i6200S）
@@ -392,16 +440,7 @@ public class PDAScanActivity extends BaseActivity {
                         super.onResponseOK(response, id);
                         List<NewStatusBean.ResultBean> list = response.getResult();
                         if (list == null || list.isEmpty()) {
-                            UIHelper.showMyCustomDialog(c, "商品未备案，是否备案？", "去备案", new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent();
-                                    intent.putExtra("code69", code69);
-                                    JumpToActivity(IncludeListActivity.class, intent);
-                                    finish();
-                                }
-                            }, null);
+                            UIHelper.showMyCustomDialog(c, "商品未备案，请联系管理员备案。", "好的", null, null);
                         } else {
                             if (list.size() == 1) {
                                 int mId = list.get(0).getId();
@@ -495,6 +534,7 @@ public class PDAScanActivity extends BaseActivity {
         intent.putExtra(AppConfig.CODE_SN, codeSN);
         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_STORAGE);
         JumpToActivity(PDAScanActivity.class, intent);
+        finish();
     }
 
     /**
@@ -579,12 +619,18 @@ public class PDAScanActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(QueryBean response, int id) {
+                        String showTitle, showVoice;
                         if (response != null) {
                             int status = response.getStatus();
                             String msg = response.getMessage();
-                            Log.d("onResponse....", "status-->" + status + "msg-->" + msg);
+                            String subFaceOrderNo = response.getResult().getSubFaceOrderNo();
+                            if (TextUtils.isEmpty(subFaceOrderNo)) {
+                                showTitle = "状态不对";
+                                showVioce(showTitle);
+                                UIHelper.showMessage(c, showTitle);
+                                return;
+                            }
                             if (status != -1) {
-                                String showTitle;
                                 if (TextUtils.equals(msg, "提货不完整")) {
                                     showTitle = "提货不完整";
                                     showVioce(showTitle);
@@ -592,11 +638,14 @@ public class PDAScanActivity extends BaseActivity {
                                     finish();
                                 } else {
                                     if (status == 1) {
-                                        showTitle = "请贴面单和子单1";
+                                        showTitle = "请贴面单和子单1【" + subFaceOrderNo + "】";
+                                        showVoice = "请贴面单和子单1" + subFaceOrderNo.replace("-", "杠");
                                     } else {
-                                        showTitle = "请贴子单" + status;
+                                        showTitle = "请贴子单" + status + "【" + response.getResult().getSubFaceOrderNo()
+                                                + "】";
+                                        showVoice = "请贴子单" + status + subFaceOrderNo.replace("-", "杠");
                                     }
-                                    showVioce(showTitle);
+                                    showVioce(showVoice);
                                     UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View.OnClickListener() {
 
 
@@ -703,6 +752,7 @@ public class PDAScanActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
         JumpToActivity(SignActivity.class, intent);
+        finish();
     }
 
     /**
@@ -712,6 +762,7 @@ public class PDAScanActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
         JumpToActivity(RejectionActivity.class, intent);
+        finish();
     }
 
     @Override

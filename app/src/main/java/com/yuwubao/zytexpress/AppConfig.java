@@ -63,6 +63,7 @@ public class AppConfig {
     public final static int IN_TYPE_THOERY = 81;
     public final static int IN_TYPE_FACT = 82;
     public final static int ENTER_TYPE_SCAN = 83;
+    public final static int ENTER_TYPE_CAR = 84;
     public final static String SHOW_VOICE_69 = "请扫描六九码";
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";

@@ -22,7 +22,6 @@ import com.karics.library.zxing.view.ViewfinderView;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.BaseActivity;
-import com.yuwubao.zytexpress.activity.IncludeListActivity;
 import com.yuwubao.zytexpress.activity.RejectionActivity;
 import com.yuwubao.zytexpress.activity.SelectOneToBindActivity;
 import com.yuwubao.zytexpress.activity.ShowDetailsActivity;
@@ -301,6 +300,9 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         case AppConfig.ENTER_TYPE_SCAN:
                             scan();
                             break;
+                        case AppConfig.ENTER_TYPE_CAR:
+                            inToCar();
+                            break;
                     }
                     break;
                 case AppConfig.SCAN_TYPE_CODE_CAR:
@@ -328,6 +330,18 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     break;
             }
         }
+    }
+
+    /**
+     * 扫描SN后 扫描车号 然后装车
+     */
+    private void inToCar() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
+        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        JumpToActivity(CaptureActivity.class, intent);
+        finish();
     }
 
     /**
@@ -455,11 +469,18 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
 
                     @Override
                     public void onResponse(QueryBean response, int id) {
+                        String showTitle, showVoice;
                         if (response != null) {
                             int status = response.getStatus();
                             String msg = response.getMessage();
+                            String subFaceOrderNo = response.getResult().getSubFaceOrderNo();
+                            if (TextUtils.isEmpty(subFaceOrderNo)) {
+                                showTitle = "状态不对";
+                                showVioce(showTitle);
+                                UIHelper.showMessage(c, showTitle);
+                                return;
+                            }
                             if (status != -1) {
-                                String showTitle;
                                 if (TextUtils.equals(msg, "提货不完整")) {
                                     showTitle = "提货不完整";
                                     showVioce(showTitle);
@@ -467,11 +488,15 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                     finish();
                                 } else {
                                     if (status == 1) {
-                                        showTitle = "请贴面单和子单1";
+                                        showTitle = "请贴面单和子单1【" + subFaceOrderNo + "】";
+                                        showVoice = "请贴面单和子单1" + subFaceOrderNo.replace("-", "杠");
                                     } else {
-                                        showTitle = "请贴子单" + status;
+                                        showTitle = "请贴子单" + status + "【" + response.getResult().getSubFaceOrderNo()
+                                                + "】";
+                                        showVoice = "请贴子单" + status + subFaceOrderNo.replace("-", "杠");
                                     }
-                                    showVioce(showTitle);
+                                    showVioce(showVoice);
+
                                     UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View.OnClickListener() {
 
 
@@ -525,6 +550,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         intent.putExtra(AppConfig.CODE_SN, codeSN);
         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_STORAGE);
         JumpToActivity(CaptureActivity.class, intent);
+        finish();
     }
 
     /**
@@ -593,6 +619,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
         JumpToActivity(RejectionActivity.class, intent);
+        finish();
     }
 
     /**
@@ -602,6 +629,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         Intent intent = new Intent();
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
         JumpToActivity(SignActivity.class, intent);
+        finish();
+
     }
 
     /**
@@ -767,13 +796,13 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         super.onResponseOK(response, id);
                         List<NewStatusBean.ResultBean> list = response.getResult();
                         if (list == null || list.isEmpty()) {
-                            UIHelper.showMyCustomDialog(c, "商品未备案，是否备案？", "去备案", new View.OnClickListener() {
+                            UIHelper.showMyCustomDialog(c, "商品未备案，请联系管理员备案。", "好的", new View.OnClickListener() {
 
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent();
-                                    intent.putExtra("code69", code69);
-                                    JumpToActivity(IncludeListActivity.class, intent);
+//                                    Intent intent = new Intent();
+//                                    intent.putExtra("code69", code69);
+//                                    JumpToActivity(IncludeListActivity.class, intent);
                                     finish();
                                 }
                             }, new View.OnClickListener() {

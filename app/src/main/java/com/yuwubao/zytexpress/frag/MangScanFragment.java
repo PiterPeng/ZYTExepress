@@ -38,8 +38,7 @@ import butterknife.BindView;
  * description: 盲扫
  */
 
-public class MangScanFragment extends BaseFragement implements OnRefreshListener,
-        OnLoadMoreListener {
+public class MangScanFragment extends BaseFragement implements OnRefreshListener, OnLoadMoreListener {
     @BindView(R.id.swipeToLoadLayout)
     SwipeToLoadLayout swipeToLoadLayout;
     @BindView(R.id.swipe_target)
@@ -68,6 +67,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         wrapper = new HeaderAndFooterWrapper(adapter);
         headerView = LayoutInflater.from(c).inflate(R.layout.header_mangsao, null);
         TextView toScan = (TextView) headerView.findViewById(R.id.to_Scan);
+        //点击开始扫描
         toScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +79,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 } else {
                     JumpToActivity(CaptureActivity.class, intent);
                 }
+                getActivity().finish();
             }
         });
         wrapper.addHeaderView(headerView);
@@ -87,16 +88,21 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
 
     private void initAdapter() {
         mangScanBeen = new ArrayList<>();
-        adapter = new CommonAdapter<MangScanBean.ResultBean.ContentBean>(c, R.layout
-                .item_recyclerview_mangsao, mangScanBeen) {
+        adapter = new CommonAdapter<MangScanBean.ResultBean.ContentBean>(c, R.layout.item_recyclerview_mangsao,
+                mangScanBeen) {
             @Override
-            protected void convert(ViewHolder holder, MangScanBean.ResultBean.ContentBean bean,
-                                   int position) {
+            protected void convert(ViewHolder holder, MangScanBean.ResultBean.ContentBean bean, int position) {
                 try {
+                    int weitihuo;
+                    if ((bean.getQuantity() - bean.getLENGTH()) < 0) {
+                        weitihuo = 0;
+                    } else {
+                        weitihuo = (bean.getQuantity() - bean.getLENGTH());
+                    }
                     holder.setText(R.id.name, bean.getItemName());
                     holder.setText(R.id.type, bean.getItemCode());
-                    holder.setText(R.id.count, bean.getQuantity() + "\n" + "（" + (bean.getQuantity()
-                            - bean.getLENGTH()) + "/" + bean.getLENGTH() + "）");
+                    holder.setText(R.id.count, bean.getQuantity() + "\n" + "（" + weitihuo + "/" + bean.getLENGTH() +
+                            "）");
                     holder.setText(R.id.bei, bean.getHEIGHT() == 0 ? "未备案" : "已备案");
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -113,8 +119,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams("type", "1")
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams("type", "1").addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c).setShowProgress(false)) {
@@ -142,16 +147,14 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//
-                .execute(new AppGsonCallback<MangScanBean>(new
-                        RequestModel(c)) {
+                .execute(new AppGsonCallback<MangScanBean>(new RequestModel(c)) {
                     @Override
                     public void onResponseOK(MangScanBean response, int id) {
                         super.onResponseOK(response, id);
                         if (currentPage == 1) {
                             mangScanBeen.clear();
                         }
-                        List<MangScanBean.ResultBean.ContentBean> temp = response.getResult()
-                                .getContent();
+                        List<MangScanBean.ResultBean.ContentBean> temp = response.getResult().getContent();
                         if (pageSize > temp.size()) {
                             isLoadmoreColose = true;
                         } else {
