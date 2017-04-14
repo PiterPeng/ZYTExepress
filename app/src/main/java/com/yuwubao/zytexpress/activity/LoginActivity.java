@@ -11,6 +11,7 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.bean.UserBack;
+import com.yuwubao.zytexpress.db.DataBase;
 import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
@@ -45,7 +46,12 @@ public class LoginActivity extends BaseActivity {
         setTop();
         User user = UserDao.getInstance().getLastUser();
         if (user != null) {
-            etUsername.setText(user.getName());
+            if (!DataBase.getBoolean("starType")) {
+                etUsername.setText(user.getAccount());
+                etPassword.setText("");
+            } else {
+                JumpToActivity(MainActivity.class);
+            }
         }
     }
 

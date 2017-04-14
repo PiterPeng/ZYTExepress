@@ -3,11 +3,15 @@ package com.yuwubao.zytexpress.frag;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yuwubao.zytexpress.AppManager;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.activity.LoginActivity;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by Peng on 2017/3/8
@@ -25,6 +29,7 @@ public class MineFragment extends BaseFragement {
     @BindView(R.id.companyName)
     TextView companyName;
     String name, account, company;
+    Unbinder unbinder;
 
     @Override
     protected int getContentResourseId() {
@@ -42,5 +47,12 @@ public class MineFragment extends BaseFragement {
             companyName.setText(company);
             userName.setText(name);
         }
+    }
+
+    @OnClick(R.id.switch_Account)
+    public void onViewClicked() {
+        AppManager.getAppManager().finishAllActivity();
+        UserDao.getInstance().delete();
+        JumpToActivity(LoginActivity.class);
     }
 }

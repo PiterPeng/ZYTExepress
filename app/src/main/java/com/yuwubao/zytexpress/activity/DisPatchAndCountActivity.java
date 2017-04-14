@@ -60,13 +60,12 @@ public class DisPatchAndCountActivity extends BaseActivity {
 
     private void setCount() {
         countBeen = new ArrayList<>();
-        OkHttpUtils
-                .get()//
+        OkHttpUtils.get()//
                 .tag(this)//
                 .url(Urls.DISPATCH_COUNT)//
                 .addParams(AppConfig.USER_ID, AppConfig.userId)//
                 .build()//
-                .execute(new AppGsonCallback<Count2Bean>(new RequestModel(c)) {
+                .execute(new AppGsonCallback<Count2Bean>(new RequestModel(c).setShowProgress(false)) {
                     @Override
                     public void onResponseOK(Count2Bean response, int id) {
                         super.onResponseOK(response, id);

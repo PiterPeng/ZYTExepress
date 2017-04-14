@@ -1,15 +1,20 @@
 package com.yuwubao.zytexpress.frag;
 
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.Count3Bean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.helper.SwipeToLoadLayoutHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -28,9 +33,7 @@ import butterknife.OnClick;
  * description: 货物统计
  */
 
-public class CountFragment extends BaseFragement {
-    @BindView(R.id.countList)
-    RecyclerView countList;
+public class CountFragment extends BaseFragement implements OnRefreshListener, OnLoadMoreListener {
     @BindView(R.id.tv_road_case)
     TextView tv_RoadCase;
     @BindView(R.id.tv_news)
@@ -43,11 +46,17 @@ public class CountFragment extends BaseFragement {
     View v_News;
     @BindView(R.id.v_weiquan)
     View v_Wq;
+    @BindView(R.id.swipeToLoadLayout)
+    SwipeToLoadLayout swipeToLoadLayout;
+    @BindView(R.id.swipe_target)
+    RecyclerView swipeTarget;
     private String type;
     List<Count3Bean.ResultBean> resultBeen;
     CommonAdapter adapter;
     private TextView[] textViews;
     private View[] views;
+    int currentPage = 1;
+    int pageSize = 10;
 
     @Override
     protected int getContentResourseId() {
@@ -56,9 +65,34 @@ public class CountFragment extends BaseFragement {
 
     @Override
     protected void init() {
+        setSwipe();
         initView();
         setComAdapter();
-        initData();
+//        initData();
+    }
+
+    private void setSwipe() {
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        swipeToLoadLayout.setLoadMoreEnabled(false);
+
+        SwipeToLoadLayoutHelper.enableSpeed(swipeToLoadLayout);
+        swipeTarget.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!ViewCompat.canScrollVertically(recyclerView, 1)) {
+                        swipeToLoadLayout.setLoadingMore(true);
+                    }
+                }
+            }
+        });
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
     }
 
     private void initView() {
@@ -77,6 +111,11 @@ public class CountFragment extends BaseFragement {
                 .build()//
                 .execute(new AppGsonCallback<Count3Bean>(new RequestModel(c)) {
                     @Override
+                    public void onAfter(int id) {
+                        super.onAfter(id);
+                        swipeToLoadLayout.setRefreshing(false);
+                    }
+                    @Override
                     public void onResponseOK(Count3Bean response, int id) {
                         super.onResponseOK(response, id);
                         List<Count3Bean.ResultBean> temp = response.getResult();
@@ -89,11 +128,9 @@ public class CountFragment extends BaseFragement {
 
     private void setComAdapter() {
         resultBeen = new ArrayList<>();
-        adapter = new CommonAdapter<Count3Bean.ResultBean>(c, R.layout
-                .item_recyclerview_count, resultBeen) {
+        adapter = new CommonAdapter<Count3Bean.ResultBean>(c, R.layout.item_recyclerview_count, resultBeen) {
             @Override
-            protected void convert(ViewHolder holder, Count3Bean.ResultBean o, int
-                    position) {
+            protected void convert(ViewHolder holder, Count3Bean.ResultBean o, int position) {
                 holder.setText(R.id.quantity, String.valueOf(o.getQuantity()));
                 holder.setText(R.id.volume, String.valueOf(o.getVolume()) + "m³");
                 holder.setText(R.id.width, String.valueOf(o.getWeight()) + "kg");
@@ -101,10 +138,9 @@ public class CountFragment extends BaseFragement {
             }
 
         };
-        countList.setLayoutManager(new LinearLayoutManager(c));
-        countList.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration
-                .VERTICAL));
-        countList.setAdapter(adapter);
+        swipeTarget.setLayoutManager(new LinearLayoutManager(c));
+        swipeTarget.addItemDecoration(new DividerItemDecoration(c, DividerItemDecoration.VERTICAL));
+        swipeTarget.setAdapter(adapter);
     }
 
     private int currentIndex;
@@ -161,5 +197,23 @@ public class CountFragment extends BaseFragement {
         }
         textViews[index].setTextColor(getResources().getColor(R.color.white));
         views[index].setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoadMore() {
+        initData();
+    }
+
+    @Override
+    public void onRefresh() {
+        currentPage = 1;
+        initData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        OkHttpUtils.getInstance().cancelTag(this);
+        currentPage = 1;
+        super.onDestroyView();
     }
 }

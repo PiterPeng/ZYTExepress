@@ -42,7 +42,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:background="@color/activity_bg"
         android:orientation="vertical"
@@ -96,5 +96,21 @@
                 android:textSize="16sp"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom">
+
+            <TextView
+                android:id="@+id/switch_Account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_login"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="切换账号"
+                android:textColor="@color/white"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
