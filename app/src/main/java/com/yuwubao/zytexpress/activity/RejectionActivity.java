@@ -8,6 +8,8 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -32,6 +34,7 @@ public class RejectionActivity extends BaseActivity {
     EditText remake;
     String orderCode;
     String et_remake;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -40,6 +43,10 @@ public class RejectionActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setHeader();
         orderCode = getIntent().getExtras().getString(AppConfig.ORDER_CODE);
         order.setText("运单号：" + orderCode);
@@ -59,7 +66,7 @@ public class RejectionActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.ORDER_REJECTION)//
-                .addParams(AppConfig.USER_ID,AppConfig.userId)//
+                .addParams(AppConfig.USER_ID,userId)//
                 .addParams("no", orderCode)//
                 .addParams("remark", et_remake)//
                 .build()//

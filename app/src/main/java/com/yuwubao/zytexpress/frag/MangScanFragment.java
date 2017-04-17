@@ -19,6 +19,8 @@ import com.yuwubao.zytexpress.activity.PDAScanActivity;
 import com.yuwubao.zytexpress.bean.CountBean;
 import com.yuwubao.zytexpress.bean.MangScanBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.SwipeToLoadLayoutHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -49,6 +51,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
     HeaderAndFooterWrapper wrapper;
     int currentPage = 1;
     int pageSize = 10;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -57,6 +60,10 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setSwipe();
         initAdapter();
         addHeader();
@@ -119,7 +126,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams("type", "1").addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams("type", "1").addParams(AppConfig.USER_ID, userId)//
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c).setShowProgress(false)) {
@@ -143,7 +150,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .get()//
                 .tag(this)//
                 .url(Urls.MANG_SCAN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//

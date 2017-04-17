@@ -20,6 +20,8 @@ import com.yuwubao.zytexpress.adapter.ShowImgAdapter;
 import com.yuwubao.zytexpress.bean.CodeBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -65,6 +67,7 @@ public class SignActivity extends BaseActivity {
     ShowImgAdapter showImgAdapter;
     List<LocalMedia> localMediaList;
     Map<String, File> files;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -73,6 +76,10 @@ public class SignActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setHeader();
         initDatas();
         setRecAdapter();
@@ -125,8 +132,7 @@ public class SignActivity extends BaseActivity {
     /**
      * 图片回调方法
      */
-    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig
-            .OnSelectResultCallback() {
+    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
         public void onSelectSuccess(List<LocalMedia> resultList) {
             if (resultList == null) {
@@ -162,11 +168,10 @@ public class SignActivity extends BaseActivity {
             UIHelper.showMessage(c, "请输入正确的手机号");
             return;
         }
-        OkHttpUtils
-                .post()//
+        OkHttpUtils.post()//
                 .tag(this)//
                 .url(Urls.PHONE_VERIFICATION_CODE)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("mobile", mobileNumber)//
                 .build()//
                 .execute(new AppGsonCallback<CodeBean>(new RequestModel(c)) {
@@ -191,12 +196,11 @@ public class SignActivity extends BaseActivity {
         }
         Log.d("files", files.toString());
         if (files.isEmpty()) {
-            OkHttpUtils
-                    .post()//
+            OkHttpUtils.post()//
                     .tag(this)//
                     .url(Urls.ORDER_SIGN)//
                     .addParams("no", orderIntent)//
-                    .addParams(AppConfig.USER_ID,AppConfig.userId)//
+                    .addParams(AppConfig.USER_ID, userId)//
                     .addParams("pic", "")//
                     .build()//
                     .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -208,11 +212,10 @@ public class SignActivity extends BaseActivity {
                         }
                     });
         } else {
-            OkHttpUtils
-                    .post()//
+            OkHttpUtils.post()//
                     .tag(this)//
                     .url(Urls.ORDER_SIGN)//
-                    .addParams(AppConfig.USER_ID,AppConfig.userId)//
+                    .addParams(AppConfig.USER_ID, userId)//
                     .addParams("no", orderIntent)//
                     .files("pic", files)//
                     .build()//

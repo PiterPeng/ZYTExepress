@@ -30,6 +30,8 @@ import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.GsonSerializator;
@@ -51,6 +53,7 @@ import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SUB_No;
 
 /**
  * 这个activity打开相机，在后台线程做常规的扫描；它绘制了一个结果view来帮助正确地显示条形码，在扫描的时候显示反馈信息，
@@ -92,6 +95,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
     }
+
+    String userId;
 
     /**
      * OnCreate中初始化一些辅助类，如InactivityTimer（休眠）、Beep（声音）以及AmbientLight（闪光灯）
@@ -135,6 +140,10 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 finish();
             }
         });
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
     }
 
     @Override
@@ -328,8 +337,82 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     storageNo = rawResult.getText();
                     inStorage();
                     break;
+                case AppConfig.SCAN_TYPE_CODE_SUBNO:
+                    subNo = rawResult.getText();
+                    tieSubNo();
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_SUBNO2:
+                    subNo = rawResult.getText();
+                    checkSubNo();
+                    break;
             }
         }
+    }
+
+    /**
+     * 复核子单号
+     */
+    private void checkSubNo() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.STICK_CHECK)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("sn", codeSNIntent)//
+                .addParams("subNo", subNo)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(StatusBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
+                        finish();
+                    }
+                });
+
+    }
+
+
+    /**
+     * 贴子单号
+     */
+    private void tieSubNo() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.COMMODITY_LABELING)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("subNo", subNo)//
+                .addParams("sn", codeSNIntent)//
+                .build()//
+                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
+                             @Override
+                             public void onError(Call call, Exception e, int id) {
+                                 super.onError(call, e, id);
+                                 showVioce("服务器异常");
+                                 onPause();
+                                 onResume();
+                             }
+
+                             @Override
+                             public void onResponseOK(StatusBean response, int id) {
+                                 super.onResponseOK(response, id);
+                                 UIHelper.showMessage(c, response.getMessage());
+                                 showVioce(response.getMessage());
+                                 finish();
+                             }
+                         }
+
+                );
     }
 
     /**
@@ -345,7 +428,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     }
 
     /**
-     * 查件扫描
+     * 查询货物状态
      */
     private void scan() {
         OkHttpUtils//
@@ -353,15 +436,13 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
                 .addParams("sn", codeSN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
-                        showVioce("服务器异常");
-                        onPause();
-                        onResume();
+                        Log.d("onError", "onError--->" + e.getMessage());
                     }
 
                     @Override
@@ -398,7 +479,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .tag(this)//
                 .url(Urls.IN_STORAGE_THOERY)//
                 .addParams("sn", codeSN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -413,6 +494,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
                         UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -422,29 +504,11 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
      * 商品贴标复核
      */
     private void check() {
-        OkHttpUtils//
-                .get()//
-                .tag(this)//
-                .url(Urls.STICK_CHECK)//
-                .addParams("sn", codeSN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
-                .build()//
-                .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        super.onError(call, e, id);
-                        showVioce("服务器异常");
-                        onPause();
-                        onResume();
-                    }
-
-                    @Override
-                    public void onResponseOK(StatusBean response, int id) {
-                        super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, response.getMessage());
-                        finish();
-                    }
-                });
+        Intent intent = new Intent();
+        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SUBNO2);
+        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        JumpToActivity(CaptureActivity.class, intent);
+        finish();
     }
 
     /**
@@ -455,7 +519,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .get()//
                 .tag(this)//
                 .url(Urls.FREE_INQUIRY)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
@@ -473,11 +537,15 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         if (response != null) {
                             int status = response.getStatus();
                             String msg = response.getMessage();
-                            String subFaceOrderNo = response.getResult().getSubFaceOrderNo();
-                            if (TextUtils.isEmpty(subFaceOrderNo)) {
-                                showTitle = "状态不对";
-                                showVioce(showTitle);
-                                UIHelper.showMessage(c, showTitle);
+                            String subFaceOrderNo;
+                            if (response.getResult() != null && response.getResult().getSubFaceOrderNo() != null) {
+                                subFaceOrderNo = response.getResult().getSubFaceOrderNo();
+                            } else {
+//                                showTitle = "状态不对";
+                                showVioce(msg);
+                                UIHelper.showMessage(c, msg);
+                                onPause();
+                                onResume();
                                 return;
                             }
                             if (status != -1) {
@@ -497,37 +565,21 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                     }
                                     showVioce(showVoice);
 
-                                    UIHelper.showMyCustomDialog(c, showTitle, "我已经贴好了", new View.OnClickListener() {
+                                    UIHelper.showMyCustomDialog(c, showTitle, "点我去贴单", new View.OnClickListener() {
 
 
                                         @Override
                                         public void onClick(View v) {
-                                            OkHttpUtils//
-                                                    .get()//
-                                                    .tag(this)//
-                                                    .url(Urls.COMMODITY_LABELING)//
-                                                    .addParams(AppConfig.USER_ID, AppConfig.userId)//
-                                                    .addParams("sn", codeSN)//
-                                                    .build()//
-                                                    .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
-                                                                 @Override
-                                                                 public void onResponseOK(StatusBean response, int id) {
-                                                                     super.onResponseOK(response, id);
-                                                                     UIHelper.showMessage(c, "贴标成功");
-                                                                     finish();
-                                                                 }
-                                                             }
-
-                                                    );
+                                            Intent intent = new Intent();
+                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
+                                                    .SCAN_TYPE_CODE_SUBNO);
+                                            intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                            JumpToActivity(CaptureActivity.class, intent);
+                                            finish();
                                         }
                                     }, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-//                                            Intent intent = new Intent();
-//                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-//                                            intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
-//                                            JumpToActivity(CaptureActivity.class, intent);
-//                                            finish();
                                             onPause();
                                             onResume();
                                         }
@@ -561,7 +613,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSNIntent)//
                 .addParams("storageNo", storageNo)//
                 .build()//
@@ -577,7 +629,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "入库成功");
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -592,7 +645,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .tag(this)//
                 .url(Urls.OUT_STORAGE)//
                 .addParams("sn", codeSN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -606,7 +659,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "出库成功");
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -641,7 +695,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_ZHISAO)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("id", String.valueOf(orderId))//
                 .build()//
@@ -657,7 +711,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "装车成功！");
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -671,7 +726,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .get()//
                 .tag(this)//
                 .url(Urls.SCAN_CAR_MANGSAO)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("carNo", codeCar)//
                 .addParams("sn", codeSNIntent)//
                 .build()//
@@ -687,7 +742,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "装车成功！");
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -703,7 +759,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .url(Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams("id", String.valueOf(orderId))//
                 .addParams("sn", codeSN)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -717,7 +773,8 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onResponseOK(StatusBean response, int id) {
                         super.onResponseOK(response, id);
-                        UIHelper.showMessage(c, "配货成功！");
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
                         finish();
                     }
                 });
@@ -733,7 +790,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
                 .addParams("code", code69Intent)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSN)//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
@@ -779,7 +836,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .get()//
                 .tag(this)//
                 .url(Urls.SEARCH_69_CODE)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("code", code69)//
                 .build()//
                 .execute(new AppGsonCallback<NewStatusBean>(new RequestModel(c)) {
@@ -851,6 +908,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     String codeCar = "";//车号
     String codeOrder = "";//运单号
     String storageNo = "";//储位号
+    String subNo = "";//子单号
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
 
@@ -883,6 +941,9 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_STORAGE) {
             voice = SHOW_VOICE_STORAGE;
             text1 = SHOW_VOICE_STORAGE;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SUBNO || currentType == AppConfig.SCAN_TYPE_CODE_SUBNO2) {
+            voice = SHOW_VOICE_SUB_No;
+            text1 = SHOW_VOICE_SUB_No;
         }
         showVioce(voice);
         viewfinderView.setHintText1(text1);

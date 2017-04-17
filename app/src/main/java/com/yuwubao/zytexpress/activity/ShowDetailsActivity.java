@@ -70,22 +70,28 @@ public class ShowDetailsActivity extends BaseActivity {
         if (bean == null) {
             return;
         }
-        orderNo.setText(bean.getOrderNo());
-        subFaceOrderNo.setText(bean.getSubFaceOrderNo());
-        itemCode.setText(bean.getItemCode());
-        itemName.setText(bean.getItemName());
-        oneCode.setText(String.valueOf(bean.getOneCode()));
-        productCode.setText(bean.getProductCode());
-        carNo.setText(bean.getCarNo());
-        statusName.setText(bean.getStatusName());
-        groosWeight.setText(String.valueOf(bean.getGroosWeight()));
-        volume.setText(String.valueOf(bean.getVolume()));
-        length.setText(String.valueOf(bean.getLength()));
-        weight.setText(String.valueOf(bean.getWeight()));
-        height.setText(String.valueOf(bean.getHeight()));
-        color.setText(String.valueOf(bean.getColor()));
-        price.setText(String.valueOf(bean.getPrice()));
-        quantity.setText(String.valueOf(bean.getQuantity()));
+        try {
+            orderNo.setText(bean.getOrderNo());
+            subFaceOrderNo.setText(bean.getSubFaceOrderNo());
+            itemCode.setText(bean.getItemCode());
+            itemName.setText(bean.getItemName());
+            oneCode.setText(String.valueOf(bean.getOneCode()));
+            productCode.setText(bean.getProductCode());
+            carNo.setText(bean.getCarNo());
+            statusName.setText(bean.getStatusName());
+            groosWeight.setText(String.valueOf(bean.getGroosWeight()));
+            volume.setText(String.valueOf(bean.getVolume()));
+            length.setText(String.valueOf(bean.getLength()));
+            weight.setText(String.valueOf(bean.getWeight()));
+            height.setText(String.valueOf(bean.getHeight()));
+            color.setText(String.valueOf(bean.getColor()));
+            price.setText(String.valueOf(bean.getPrice()));
+            quantity.setText(String.valueOf(bean.getQuantity()));
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void setHeader() {

@@ -6,7 +6,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.User;
@@ -90,7 +89,6 @@ public class LoginActivity extends BaseActivity {
                         User user = response.getResult();
                         UserDao.getInstance().delete();
                         UserDao.getInstance().updateUser(user);
-                        AppConfig.userId = String.valueOf(UserDao.getInstance().getLastUser().getId());
                         JumpToActivity(MainActivity.class);
                         finish();
                     }

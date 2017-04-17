@@ -17,6 +17,8 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.adapter.ShowImgAdapter;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -51,6 +53,7 @@ public class IncludeActivity extends BaseActivity {
     Map<String, File> files;
     String code;
     int id;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -59,6 +62,10 @@ public class IncludeActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         initData();
         setHeader();
         setRecAdapter();
@@ -84,7 +91,7 @@ public class IncludeActivity extends BaseActivity {
                 .url(Urls.INCLUDE_69_CODE)//
                 .addParams("id", String.valueOf(id))//
                 .addParams("code", code)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .files("pics", files)
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {

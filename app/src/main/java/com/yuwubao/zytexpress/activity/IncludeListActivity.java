@@ -11,6 +11,8 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.IncludeListBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -44,6 +46,7 @@ public class IncludeListActivity extends BaseActivity {
     @BindView(R.id.et_name)
     EditText etName;
     String name = "";
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -52,6 +55,10 @@ public class IncludeListActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setHeader();
         initIntent();
         setRecyclerView();
@@ -67,7 +74,7 @@ public class IncludeListActivity extends BaseActivity {
                 .get()//
                 .tag(this)//
                 .url(Urls.INCLUDE_LIST)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams("name", name)//
                 .build()//
                 .execute(new AppGsonCallback<IncludeListBean>(new RequestModel(c)) {

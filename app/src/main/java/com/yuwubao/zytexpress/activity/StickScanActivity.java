@@ -39,14 +39,14 @@ public class StickScanActivity extends BaseActivity {
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
+            case R.id.scan:
+                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_SCAN);
+                break;
             case R.id.query:
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
                 break;
             case R.id.check:
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CHECK);
-                break;
-            case R.id.scan:
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_SCAN);
                 break;
         }
         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);

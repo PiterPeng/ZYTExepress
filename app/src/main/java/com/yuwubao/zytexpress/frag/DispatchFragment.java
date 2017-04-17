@@ -12,6 +12,8 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.DispatchBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.SwipeToLoadLayoutHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -39,6 +41,7 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
     List<DispatchBean.ResultBean.ContentBean> contentBeen;
     int currentPage = 1;
     int pageSize = 10;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -47,6 +50,10 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setSwipe();
         setComAdapter();
 //        initData();
@@ -81,7 +88,7 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
                 .get()//
                 .tag(this)//
                 .url(Urls.DISPATCH)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .build()//
                 .execute(new AppGsonCallback<DispatchBean>(new RequestModel(c)) {
                     @Override

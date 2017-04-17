@@ -17,6 +17,8 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.IntoCarListBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.SwipeToLoadLayoutHelper;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
@@ -51,6 +53,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
     int currentPage = 1;
     int pageSize = 10;
     String code_69;
+    private String userId;
 
     @Override
     protected int getContentResourseId() {
@@ -59,6 +62,10 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
 
     @Override
     protected void init() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
         setHeader();
         setSwipe();
         setmAdapter();
@@ -94,7 +101,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
                 .get()//
                 .tag(this)//
                 .url(Urls.INTO_CAR_LIST)//
-                .addParams(AppConfig.USER_ID, AppConfig.userId)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "").addParams(AppConfig.PAGE_SIZE, pageSize + "")
                 .build()//
                 .execute(new AppGsonCallback<IntoCarListBean>(new RequestModel(c)) {
