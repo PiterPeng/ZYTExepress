@@ -1,60 +1,76 @@
 package com.yuwubao.zytexpress.activity;
 
-import android.content.Intent;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
-import com.karics.library.zxing.android.CaptureActivity;
-import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
-import com.yuwubao.zytexpress.widget.HeaderBar;
+import com.yuwubao.zytexpress.frag.Count2Fragment;
+import com.yuwubao.zytexpress.frag.QueryFragment;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created by Peng on 2017/3/23
  * e-mail: phlxplus@163.com
- * description: 查询 复核
+ * description: 查询&统计
  */
 
 public class StickScanActivity extends BaseActivity {
-    @BindView(R.id.title)
-    HeaderBar title;
+    @BindView(R.id.rb_left)
+    RadioButton rbLeft;
+    @BindView(R.id.rb_right)
+    RadioButton rbRight;
+    @BindView(R.id.radio_group)
+    RadioGroup radioGroup;
+    QueryFragment queryFragment;
+    Count2Fragment count2Fragment;
+    int currentId;
 
     @Override
     protected int getContentResourseId() {
-        return R.layout.activity_stick_scan;
+        return R.layout.activity_pick_up;
     }
 
     @Override
     protected void init() {
-        setHeader();
+        setFrag();
+        setRadioGroup();
     }
 
-    private void setHeader() {
-        title.setTitle(getString(R.string.query));
+    private void setFrag() {
+        rbLeft.setText(getString(R.string.query));
+        rbRight.setText(getString(R.string.count));
+        queryFragment = new QueryFragment();
+        count2Fragment = new Count2Fragment();
+        replaceFragment(R.id.replace, queryFragment);
     }
 
-    @OnClick({R.id.query, R.id.check, R.id.scan})
-    public void onClick(View view) {
-        Intent intent = new Intent();
-        switch (view.getId()) {
-            case R.id.scan:
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_SCAN);
-                break;
-            case R.id.query:
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
-                break;
-            case R.id.check:
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CHECK);
-                break;
-        }
-        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-        if (AppConfig.isPDA) {
-            JumpToActivity(PDAScanActivity.class, intent);
-        } else {
-            JumpToActivity(CaptureActivity.class, intent);
-        }
+    public void onBackClick(View view) {
+        finish();
     }
 
+    private void setRadioGroup() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_left:
+                        if (currentId == 1) {
+                            return;
+                        }
+                        replaceFragment(R.id.replace, queryFragment);
+                        currentId = 1;
+                        break;
+                    case R.id.rb_right:
+                        if (currentId == -1) {
+                            return;
+                        }
+                        replaceFragment(R.id.replace, count2Fragment);
+                        currentId = -1;
+                        break;
+                }
+            }
+        });
+    }
 }

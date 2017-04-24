@@ -8,7 +8,7 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static final boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
+    public static final boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */
@@ -66,4 +66,10 @@ public class Urls {
     public static final String DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
     //统计汇总
     public static final String COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
+    //查询里面的统计
+    public static final String QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
+    //查询里面的列表
+    public static final String QUERY_LIST = HEAD_URL + "oms/orderItem/findLabelingList";
+    //中转扫描
+    public static final String TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
 }

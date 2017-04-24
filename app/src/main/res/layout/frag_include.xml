@@ -13,16 +13,24 @@
         >
 
         <ImageView
+            android:id="@+id/scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/received"/>
+
+        <ImageView
             android:id="@+id/sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
             android:src="@drawable/received"/>
 
         <ImageView
             android:id="@+id/rejection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/rejection"/>
     </LinearLayout>
 

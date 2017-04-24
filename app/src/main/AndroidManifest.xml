@@ -49,6 +49,7 @@
         <activity android:name=".activity.IncludeListActivity"/>
         <activity android:name=".activity.ShowDetailsActivity"/>
         <activity android:name=".activity.SelectOneToBindActivity"/>
+        <activity android:name=".activity.TransferScanActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
     </application>
 

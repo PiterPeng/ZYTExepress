@@ -44,6 +44,8 @@ public class AppConfig {
     public final static String IN_TYPE = "IN_TYPE";
     public final static String CODE_69 = "CODE_69";
     public final static String CODE_SN = "CODE_SN";
+    public final static String CODE_ID = "CODE_ID";
+    public final static String CODE_FACE = "CODE_FACE";
     public final static String STATUS_NO = "STATUS_NO";
     public final static int SCAN_TYPE_CODE_69 = 69;
     public final static int SCAN_TYPE_CODE_SN = 70;
@@ -63,6 +65,7 @@ public class AppConfig {
     public final static int ENTER_TYPE_CAR = 84;
     public final static int SCAN_TYPE_CODE_SUBNO = 85;
     public final static int SCAN_TYPE_CODE_SUBNO2 = 86;
+    public final static int SCAN_TYPE_CODE_TRANSFER = 87;
     public final static String SHOW_VOICE_69 = "请扫描六九码";
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
@@ -70,6 +73,7 @@ public class AppConfig {
     public final static String SHOW_VOICE_ORDER = "请扫描运单号或SN码";
     public final static String SHOW_VOICE_STORAGE = "请扫描储位号";
     public final static String SHOW_VOICE_SUB_No = "请扫描子单号";
+    public final static String SHOW_VOICE_FACE_No = "请扫描面单号";
     /***PDA扫描SCAN****/
     public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" + ".broadcast";
     public static final String SCN_CUST_EX_SCODE = "scannerdata";
@@ -91,21 +95,21 @@ public class AppConfig {
     public static final String PAGE_SIZE = "pageSize";// 每页显示条数
 
     //banner图临时图片url
-    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" + "" + "" +
+    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
             ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272451&di" +
-            "=603cf395b03e1f09a85eb9315d726ffd&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" +
-            ".com%2FuploadImages%2F2015%2F113%2F51%2FMTHK4XLG04NS_1000x500.jpg";
-    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" + "" + "" +
+            "=603cf395b03e1f09a85eb9315d726ffd&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" + ""
+            + ".com%2FuploadImages%2F2015%2F113%2F51%2FMTHK4XLG04NS_1000x500.jpg";
+    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
             ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272432&di" +
-            "=6f4f637d4a09e24bafa6d0893654211e&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" +
+            "=6f4f637d4a09e24bafa6d0893654211e&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" + "" + "" +
             ".cn%2Fcommunity%2F015105554265f00000019ae9c4f4ab.jpg";
-    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" + "" + "" +
+    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
             ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272426&di" +
-            "=55899c67c0b053c7800d8c4be49e5582&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" +
-            ".com%2FuploadImages%2F2015%2F113%2F13%2FBPH35431PH4U_1000x500.jpg";
-    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" + "" + "" + "" +
+            "=55899c67c0b053c7800d8c4be49e5582&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" + ""
+            + ".com%2FuploadImages%2F2015%2F113%2F13%2FBPH35431PH4U_1000x500.jpg";
+    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
             ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272433&di" +
-            "=e06465901364d94332fca092acdbb4f8&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" +
+            "=e06465901364d94332fca092acdbb4f8&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" + "" + "" +
             ".cn%2Fcommunity%2F017cf4554265f00000019ae976f081.jpg";
 
 }

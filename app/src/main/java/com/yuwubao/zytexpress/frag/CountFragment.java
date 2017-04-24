@@ -122,6 +122,7 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
                         super.onAfter(id);
                         swipeToLoadLayout.setRefreshing(false);
                     }
+
                     @Override
                     public void onResponseOK(Count3Bean response, int id) {
                         super.onResponseOK(response, id);

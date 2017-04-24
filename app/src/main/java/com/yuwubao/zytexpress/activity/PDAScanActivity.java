@@ -19,6 +19,7 @@ import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.StatusBean;
+import com.yuwubao.zytexpress.bean.TransferBackBean;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
@@ -38,6 +39,7 @@ import okhttp3.Call;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_FACE_No;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
@@ -70,10 +72,13 @@ public class PDAScanActivity extends BaseActivity {
     String code69Intent = "";//69码,接收
     String codeSN = "";//SN码
     String codeSNIntent = "";//SN码,接收
+    String codeIDIntent = "";//id,接收
+    String codeFaceIntent = "";//扫描类型（中转，分拨，揽件）
     String codeCar = "";//车号
     String codeOrder = "";//运单号
     String storageNo = "";//储位号
     String subNo = "";//子单号
+    String faceNumber = "";//面单号
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
     private String userId;
@@ -130,7 +135,9 @@ public class PDAScanActivity extends BaseActivity {
         enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
         codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
+        codeIDIntent = getIntent().getExtras().getString(AppConfig.CODE_ID);
         inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
+        codeFaceIntent = getIntent().getExtras().getString(AppConfig.CODE_FACE);
     }
 
     private void setHeader() {
@@ -266,6 +273,10 @@ public class PDAScanActivity extends BaseActivity {
                             subNo = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
                             checkSubNo();
                             break;
+                        case AppConfig.SCAN_TYPE_CODE_TRANSFER:
+                            faceNumber = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
+                            transferScan();
+                            break;
                     }
                 } else if (intent.getAction().equals(ScanManager.ACTION_DECODE)) {
                     switch (currentType) {
@@ -370,6 +381,10 @@ public class PDAScanActivity extends BaseActivity {
                             subNo = getScanResultCode(intent);
                             checkSubNo();
                             break;
+                        case AppConfig.SCAN_TYPE_CODE_TRANSFER:
+                            faceNumber = getScanResultCode(intent);
+                            transferScan();
+                            break;
                     }
                 }
             } catch (Exception e) {
@@ -377,6 +392,36 @@ public class PDAScanActivity extends BaseActivity {
             }
         }
     };
+
+    /**
+     * 中转扫描
+     */
+    private void transferScan() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.TRANSFER_SCAN)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("no", faceNumber)//
+                .addParams("type", codeFaceIntent)//
+                .build()//
+                .execute(new AppGsonCallback<TransferBackBean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(TransferBackBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        showVioce(response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("服务器异常");
+                    }
+                });
+
+    }
 
     /**
      * 扫描SN后 扫描车号 然后装车
@@ -533,7 +578,8 @@ public class PDAScanActivity extends BaseActivity {
                                 Intent intent = new Intent();
                                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                intent.putExtra(AppConfig.CODE_69, String.valueOf(mId));
+                                intent.putExtra(AppConfig.CODE_69, code69);
+                                intent.putExtra(AppConfig.CODE_ID, String.valueOf(mId));
                                 JumpToActivity(PDAScanActivity.class, intent);
                                 finish();
                             } else {
@@ -558,7 +604,7 @@ public class PDAScanActivity extends BaseActivity {
                 .post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
-                .addParams("code", code69Intent)//
+                .addParams("code", codeIDIntent)//
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSN)//
                 .build()//
@@ -867,6 +913,9 @@ public class PDAScanActivity extends BaseActivity {
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_SUBNO || currentType == AppConfig.SCAN_TYPE_CODE_SUBNO2) {
             voice = SHOW_VOICE_SUB_No;
             text1 = SHOW_VOICE_SUB_No;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_TRANSFER) {
+            voice = SHOW_VOICE_FACE_No;
+            text1 = SHOW_VOICE_FACE_No;
         }
         showVioce(voice);
         scanType.setText(text1);

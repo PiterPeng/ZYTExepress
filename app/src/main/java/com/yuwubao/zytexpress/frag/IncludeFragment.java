@@ -7,6 +7,7 @@ import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.PDAScanActivity;
+import com.yuwubao.zytexpress.activity.TransferScanActivity;
 
 import butterknife.OnClick;
 
@@ -27,21 +28,29 @@ public class IncludeFragment extends BaseFragement {
 
     }
 
-    @OnClick({R.id.sign, R.id.rejection})
+    @OnClick({R.id.sign, R.id.rejection, R.id.scan})
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
-            case R.id.sign:
+            case R.id.scan://中转扫描
+                JumpToActivity(TransferScanActivity.class);
+                break;
+            case R.id.sign://签收
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SIGN);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
                 break;
-            case R.id.rejection:
+            case R.id.rejection://拒收
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_REJECTION);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
                 break;
-        }
-        if (AppConfig.isPDA) {
-            JumpToActivity(PDAScanActivity.class, intent);
-        } else {
-            JumpToActivity(CaptureActivity.class, intent);
         }
     }
 }

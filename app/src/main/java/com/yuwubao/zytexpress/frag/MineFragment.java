@@ -1,5 +1,6 @@
 package com.yuwubao.zytexpress.frag;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -8,6 +9,7 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.LoginActivity;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
+import com.yuwubao.zytexpress.helper.UIHelper;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -51,8 +53,14 @@ public class MineFragment extends BaseFragement {
 
     @OnClick(R.id.switch_Account)
     public void onViewClicked() {
-        AppManager.getAppManager().finishAllActivity();
-        UserDao.getInstance().delete();
-        JumpToActivity(LoginActivity.class);
+        UIHelper.showMyCustomDialog(c, "确定切换账号？", "确定", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppManager.getAppManager().finishAllActivity();
+                UserDao.getInstance().delete();
+                JumpToActivity(LoginActivity.class);
+            }
+        }, null);
+
     }
 }
