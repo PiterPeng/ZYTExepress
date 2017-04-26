@@ -58,7 +58,6 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
     private TextView[] textViews;
     private View[] views;
     int currentPage = 1;
-    int pageSize = 10;
     private String userId;
 
     @Override

@@ -8,68 +8,108 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static final boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
+    public static boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */
-//    public static final String TEST_HEAD_URL = "http://192.168.100.123:8080/";//wl
-    public static final String TEST_HEAD_URL = "http://192.168.100.66:8080/";//xs
-    public static final String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
+    public static final String TEST_HEAD_URL_WL = "http://192.168.100.123:8080/";//wl
+    public static String TEST_HEAD_URL_XS = "http://192.168.100.66:8080/";//xs
+    public static String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
-    public static final String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
+    public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL_XS : ONLINE_HEAD_URL;
 
     //登录
-    public static final String LOGIN = HEAD_URL + "sys/login";
+    public static String LOGIN = HEAD_URL + "sys/login";
     //指定扫描列表
-    public static final String PICK_UP = HEAD_URL + "oms/order/designated";
+    public static String PICK_UP = HEAD_URL + "oms/order/designated";
     //盲扫列表
-    public static final String MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";
+    public static String MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";
     //调度列表
-    public static final String DISPATCH = HEAD_URL + "oms/orderItem/queryItemType";
+    public static String DISPATCH = HEAD_URL + "oms/orderItem/queryItemType";
     //统计 参数type=1 --->盲扫   参数type=2 --->指定扫描
-    public static final String COUNT = HEAD_URL + "oms/orderItem/findItemModeSum";
+    public static String COUNT = HEAD_URL + "oms/orderItem/findItemModeSum";
     //未备案列表
-    public static final String INCLUDE_LIST = HEAD_URL + "ssm/product/findProductList";
+    public static String INCLUDE_LIST = HEAD_URL + "ssm/product/findProductList";
     //查询69码是否备案
-    public static final String SEARCH_69_CODE = HEAD_URL + "oms/orderItem/searchCode";
+    public static String SEARCH_69_CODE = HEAD_URL + "oms/orderItem/searchCode";
     //盲扫69备案
-    public static final String INCLUDE_69_CODE = HEAD_URL + "oms/order/blindRecord";
+    public static String INCLUDE_69_CODE = HEAD_URL + "oms/order/blindRecord";
     //盲扫配货
-    public static final String BLIND_SN_CODE = HEAD_URL + "oms/order/blindSn";
+    public static String BLIND_SN_CODE = HEAD_URL + "oms/order/blindSn";
     //扫描指定SN
-    public static final String BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/designatedSn";
+    public static String BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/designatedSn";
     //待装车列表
-    public static final String INTO_CAR_LIST = HEAD_URL + "oms/orderItem/queryItemCar";
+    public static String INTO_CAR_LIST = HEAD_URL + "oms/orderItem/queryItemCar";
     //盲扫扫车
-    public static final String SCAN_CAR_MANGSAO = HEAD_URL + "oms/orderItem/itemScanInCar";
+    public static String SCAN_CAR_MANGSAO = HEAD_URL + "oms/orderItem/itemScanInCar";
     //指定扫描 扫车
-    public static final String SCAN_CAR_ZHISAO = HEAD_URL + "oms/orderItem/itemInCar";
+    public static String SCAN_CAR_ZHISAO = HEAD_URL + "oms/orderItem/itemInCar";
     //自由查询
-    public static final String FREE_INQUIRY = HEAD_URL + "oms/orderItem/itemStickScanning";
+    public static String FREE_INQUIRY = HEAD_URL + "oms/orderItem/itemStickScanning";
     //商品贴标
-    public static final String COMMODITY_LABELING = HEAD_URL + "oms/orderItem/itemStick";
+    public static String COMMODITY_LABELING = HEAD_URL + "oms/orderItem/itemStick";
     //商品复核
-    public static final String STICK_CHECK = HEAD_URL + "oms/orderItem/itemStickCheck";
+    public static String STICK_CHECK = HEAD_URL + "oms/orderItem/itemStickCheck";
     //实际入库
-    public static final String IN_STORAGE = HEAD_URL + "oms/order/inStorage";
+    public static String IN_STORAGE = HEAD_URL + "oms/order/inStorage";
     //理论入库
-    public static final String IN_STORAGE_THOERY = HEAD_URL + "oms/order/productFalseStorage";
+    public static String IN_STORAGE_THOERY = HEAD_URL + "oms/order/productFalseStorage";
     //出库
-    public static final String OUT_STORAGE = HEAD_URL + "oms/order/outStorage";
+    public static String OUT_STORAGE = HEAD_URL + "oms/order/outStorage";
     //订单签收验证码
-    public static final String PHONE_VERIFICATION_CODE = HEAD_URL + "oms/order/sms";
+    public static String PHONE_VERIFICATION_CODE = HEAD_URL + "oms/order/sms";
     //订单签收
-    public static final String ORDER_SIGN = HEAD_URL + "oms/order/sign";
+    public static String ORDER_SIGN = HEAD_URL + "oms/order/sign";
     //订单拒收
-    public static final String ORDER_REJECTION = HEAD_URL + "oms/order/deny";
+    public static String ORDER_REJECTION = HEAD_URL + "oms/order/deny";
     //调度汇总
-    public static final String DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
+    public static String DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
     //统计汇总
-    public static final String COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
+    public static String COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
     //查询里面的统计
-    public static final String QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
+    public static String QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
     //查询里面的列表
-    public static final String QUERY_LIST = HEAD_URL + "oms/orderItem/findLabelingList";
+    public static String QUERY_LIST = HEAD_URL + "oms/orderItem/findLabelingList";
     //中转扫描
-    public static final String TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
+    public static String TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
+    //历史提货列表
+    public static String HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
+    //历史提货统计
+    public static String HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
+
+
+    public static void change() {
+        TEST_HEAD_URL_XS = "http://192.168.100.66:8080/";//xs
+        ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
+        LOGIN = HEAD_URL + "sys/login";
+        PICK_UP = HEAD_URL + "oms/order/designated";
+        MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";
+        DISPATCH = HEAD_URL + "oms/orderItem/queryItemType";
+        COUNT = HEAD_URL + "oms/orderItem/findItemModeSum";
+        INCLUDE_LIST = HEAD_URL + "ssm/product/findProductList";
+        SEARCH_69_CODE = HEAD_URL + "oms/orderItem/searchCode";
+        INCLUDE_69_CODE = HEAD_URL + "oms/order/blindRecord";
+        BLIND_SN_CODE = HEAD_URL + "oms/order/blindSn";
+        BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/designatedSn";
+        INTO_CAR_LIST = HEAD_URL + "oms/orderItem/queryItemCar";
+        SCAN_CAR_MANGSAO = HEAD_URL + "oms/orderItem/itemScanInCar";
+        SCAN_CAR_ZHISAO = HEAD_URL + "oms/orderItem/itemInCar";
+        FREE_INQUIRY = HEAD_URL + "oms/orderItem/itemStickScanning";
+        COMMODITY_LABELING = HEAD_URL + "oms/orderItem/itemStick";
+        STICK_CHECK = HEAD_URL + "oms/orderItem/itemStickCheck";
+        IN_STORAGE = HEAD_URL + "oms/order/inStorage";
+        IN_STORAGE_THOERY = HEAD_URL + "oms/order/productFalseStorage";
+        OUT_STORAGE = HEAD_URL + "oms/order/outStorage";
+        PHONE_VERIFICATION_CODE = HEAD_URL + "oms/order/sms";
+        ORDER_SIGN = HEAD_URL + "oms/order/sign";
+        ORDER_REJECTION = HEAD_URL + "oms/order/deny";
+        DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
+        COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
+        QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
+        QUERY_LIST = HEAD_URL + "oms/orderItem/findLabelingList";
+        TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
+        HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
+        HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
+    }
+
 }

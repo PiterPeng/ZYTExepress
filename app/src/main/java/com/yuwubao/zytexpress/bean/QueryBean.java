@@ -87,6 +87,15 @@ public class QueryBean extends BaseBean implements Serializable {
         private String oldOrderNo;
         private String scanType;
         private String statusName;
+        private String itemNo;
+
+        public String getItemNo() {
+            return itemNo;
+        }
+
+        public void setItemNo(String itemNo) {
+            this.itemNo = itemNo;
+        }
 
         public int getId() {
             return id;

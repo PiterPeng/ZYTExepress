@@ -13,6 +13,7 @@ import com.yuwubao.zytexpress.AppManager;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.db.DataBase;
 import com.yuwubao.zytexpress.frag.BaseFragement;
+import com.yuwubao.zytexpress.frag.HistoryFragment;
 import com.yuwubao.zytexpress.frag.HomeFragment;
 import com.yuwubao.zytexpress.frag.IncludeFragment;
 import com.yuwubao.zytexpress.frag.MineFragment;
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_home, getString(R.string.tab_travel))).addItem
                 (createItem(R.drawable.bottom_icon_sign, getString(R.string.tab_interaction))).addItem(createItem(R
                 .drawable.bottom_icon_writein, getString(R.string.tab_news))).addItem(createItem(R.drawable
+                .bottom_icon_history, getString(R.string.tab_history))).addItem(createItem(R.drawable
                 .bottom_icon_user, getString(R.string.tab_services))).setFirstSelectedPosition(defaultPageIndex)
                 .initialise();
     }
@@ -89,10 +91,11 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         rootPages.add(new HomeFragment());
         rootPages.add(new SaveFragment());
         rootPages.add(new IncludeFragment());
+        rootPages.add(new HistoryFragment());
         rootPages.add(new MineFragment());
 
         pages.setNoScroll(true);
-        pages.setOffscreenPageLimit(4);
+        pages.setOffscreenPageLimit(5);
         pages.setAdapter(rootAdapter);
         pages.setCurrentItem(defaultPageIndex);
     }

@@ -57,6 +57,8 @@ public class SelectOneToBindActivity extends BaseActivity {
                 holder.setText(R.id.id, code69);
                 holder.setText(R.id.number, newStatusBean.getCode());
                 holder.setText(R.id.name, newStatusBean.getName());
+                holder.setText(R.id.today, "今日数量：" + String.valueOf(newStatusBean.getQuantity()));
+                holder.setText(R.id.history, "历史未提：" + String.valueOf(newStatusBean.getHistoryNum()));
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -66,7 +68,8 @@ public class SelectOneToBindActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                intent.putExtra(AppConfig.CODE_69, String.valueOf(mId));
+                intent.putExtra(AppConfig.CODE_69, code69);
+                intent.putExtra(AppConfig.CODE_ID, String.valueOf(mId));
                 if (AppConfig.isPDA) JumpToActivity(PDAScanActivity.class, intent);
                 else JumpToActivity(CaptureActivity.class, intent);
                 finish();

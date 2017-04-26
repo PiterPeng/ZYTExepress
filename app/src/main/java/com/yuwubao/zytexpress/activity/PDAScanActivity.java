@@ -761,6 +761,7 @@ public class PDAScanActivity extends BaseActivity {
                             int status = response.getStatus();
                             String msg = response.getMessage();
                             String subFaceOrderNo;
+                            String itemNo = response.getResult().getItemNo();
                             if (response.getResult() != null && response.getResult().getSubFaceOrderNo() != null) {
                                 subFaceOrderNo = response.getResult().getSubFaceOrderNo();
                             } else {
@@ -777,12 +778,14 @@ public class PDAScanActivity extends BaseActivity {
                                     finish();
                                 } else {
                                     if (status == 1) {
-                                        showTitle = "请贴面单和子单1【" + subFaceOrderNo + "】";
-                                        showVoice = "请贴面单和子单一" + subFaceOrderNo.replace("-", "杠");
+                                        showTitle = "请贴面单和子单1【" + subFaceOrderNo + "】,快捷单号：【" + itemNo + "】";
+                                        showVoice = "请贴面单和子单一，快捷单号" + itemNo.substring(itemNo.length() - 4, itemNo
+                                                .length());
                                     } else {
                                         showTitle = "请贴子单" + status + "【" + response.getResult().getSubFaceOrderNo()
                                                 + "】";
-                                        showVoice = "请贴子单" + status + subFaceOrderNo.replace("-", "杠");
+                                        showVoice = "请贴子单" + status + "，快捷单号" + itemNo.substring(itemNo.length() - 4,
+                                                itemNo.length());
                                     }
                                     showVioce(showVoice);
 

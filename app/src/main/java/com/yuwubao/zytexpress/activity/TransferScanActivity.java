@@ -99,8 +99,6 @@ public class TransferScanActivity extends BaseActivity implements OnRefreshListe
                 } else {
                     JumpToActivity(CaptureActivity.class, intent);
                 }
-                finish();
-
             }
 
             @Override

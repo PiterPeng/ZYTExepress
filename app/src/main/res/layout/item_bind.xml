@@ -80,4 +80,30 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/today"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="今日数量：5"
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/history"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="历史未提：3"
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_14"/>
+
+    </LinearLayout>
+
 </LinearLayout>

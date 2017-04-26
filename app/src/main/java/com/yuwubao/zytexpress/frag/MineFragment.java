@@ -10,10 +10,15 @@ import com.yuwubao.zytexpress.activity.LoginActivity;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
+import com.yuwubao.zytexpress.net.Urls;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.yuwubao.zytexpress.net.Urls.ONLINE_HEAD_URL;
+import static com.yuwubao.zytexpress.net.Urls.TEST_HEAD_URL_XS;
+import static com.yuwubao.zytexpress.net.Urls.TEST_MODE;
 
 /**
  * Created by Peng on 2017/3/8
@@ -32,6 +37,8 @@ public class MineFragment extends BaseFragement {
     TextView companyName;
     String name, account, company;
     Unbinder unbinder;
+    @BindView(R.id.switch_severs)
+    TextView switchSevers;
 
     @Override
     protected int getContentResourseId() {
@@ -49,18 +56,27 @@ public class MineFragment extends BaseFragement {
             companyName.setText(company);
             userName.setText(name);
         }
+        switchSevers.setText(TEST_MODE ? "当前环境：测试" : "当前环境：线上");
     }
 
-    @OnClick(R.id.switch_Account)
-    public void onViewClicked() {
-        UIHelper.showMyCustomDialog(c, "确定切换账号？", "确定", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppManager.getAppManager().finishAllActivity();
-                UserDao.getInstance().delete();
-                JumpToActivity(LoginActivity.class);
-            }
-        }, null);
-
+    @OnClick({R.id.switch_severs, R.id.switch_Account})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.switch_severs:
+                Urls.HEAD_URL = (TEST_MODE = !TEST_MODE) ? TEST_HEAD_URL_XS : ONLINE_HEAD_URL;
+                Urls.change();
+                switchSevers.setText(TEST_MODE ? "当前环境：测试" : "当前环境：线上");
+                break;
+            case R.id.switch_Account:
+                UIHelper.showMyCustomDialog(c, "确定切换账号？", "确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AppManager.getAppManager().finishAllActivity();
+                        UserDao.getInstance().delete();
+                        JumpToActivity(LoginActivity.class);
+                    }
+                }, null);
+                break;
+        }
     }
 }

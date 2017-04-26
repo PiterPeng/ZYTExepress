@@ -33,12 +33,32 @@ public class NewStatusBean extends BaseBean implements Serializable {
          * code : asdf
          * name : 测试数据1
          * oneCode : 6931338485044
+         * "quantity": 0,
+         * "historyNum": 0
          */
 
         private int id;
         private String code;
         private String name;
         private String oneCode;
+        private int quantity;
+        private int historyNum;
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+
+        public int getHistoryNum() {
+            return historyNum;
+        }
+
+        public void setHistoryNum(int historyNum) {
+            this.historyNum = historyNum;
+        }
 
         public int getId() {
             return id;
