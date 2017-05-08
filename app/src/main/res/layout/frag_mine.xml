@@ -112,7 +112,7 @@
                 android:padding="10dp"
                 android:text="当前环境：测试"
                 android:textColor="@color/white"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/switch_Account"

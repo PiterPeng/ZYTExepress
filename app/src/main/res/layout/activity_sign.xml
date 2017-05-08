@@ -43,6 +43,7 @@
             />
 
         <LinearLayout
+            android:id="@+id/ll_get_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -92,7 +93,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             />
 
         <TextView

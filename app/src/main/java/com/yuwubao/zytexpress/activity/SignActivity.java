@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.luck.picture.lib.model.FunctionConfig;
@@ -39,6 +40,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.yuwubao.zytexpress.R.id.phone_No;
+
 /**
  * Created by Peng on 2017/3/22
  * e-mail: phlxplus@163.com
@@ -50,7 +53,7 @@ public class SignActivity extends BaseActivity {
     HeaderBar title;
     @BindView(R.id.order)
     TextView order;
-    @BindView(R.id.phone_No)
+    @BindView(phone_No)
     EditText phoneNo;
     @BindView(R.id.code)
     EditText code;
@@ -67,7 +70,10 @@ public class SignActivity extends BaseActivity {
     ShowImgAdapter showImgAdapter;
     List<LocalMedia> localMediaList;
     Map<String, File> files;
+    @BindView(R.id.ll_get_code)
+    LinearLayout llGetCode;
     private String userId;
+    boolean isNeed = true;
 
     @Override
     protected int getContentResourseId() {
@@ -150,8 +156,10 @@ public class SignActivity extends BaseActivity {
 
     private void initDatas() {
         orderIntent = getIntent().getExtras().getString(AppConfig.ORDER_CODE);
+        isNeed = getIntent().getExtras().getBoolean("isNeed");
+        isShowMobileCode(isNeed);
         if (!TextUtils.isEmpty(orderIntent)) {
-            order.setText("运单号：" + orderIntent);
+            order.setText("子单号或SN码：" + orderIntent);
         }
         handler = new Handler();
         myRunnable = new MyRunnable(new WeakReference<>(this));
@@ -185,14 +193,20 @@ public class SignActivity extends BaseActivity {
     }
 
     private void signOk() {
-        codeNumber = code.getText().toString().trim();
-        mobileNumber = phoneNo.getText().toString().trim();
-        if (TextUtils.isEmpty(codeNumber) || TextUtils.isEmpty(mobileNumber)) {
-            return;
-        }
-        if (!TextUtils.equals(codeNumber, String.valueOf(mobileCode))) {
-            UIHelper.showMessage(c, "验证码错误");
-            return;
+        if (isNeed) {
+            codeNumber = code.getText().toString().trim();
+            mobileNumber = phoneNo.getText().toString().trim();
+            if (TextUtils.isEmpty(codeNumber) || TextUtils.isEmpty(mobileNumber)) {
+                return;
+            }
+            if (TextUtils.isEmpty(String.valueOf(mobileCode))) {
+                UIHelper.showMessage(c, "请先获取验证码");
+                return;
+            }
+            if (!TextUtils.equals(codeNumber, String.valueOf(mobileCode))) {
+                UIHelper.showMessage(c, "验证码错误");
+                return;
+            }
         }
         Log.d("files", files.toString());
         if (files.isEmpty()) {
@@ -276,6 +290,16 @@ public class SignActivity extends BaseActivity {
             case R.id.sign:
                 signOk();
                 break;
+        }
+    }
+
+    private void isShowMobileCode(boolean isShowMobileCode) {
+        if (!isShowMobileCode) {
+            phoneNo.setVisibility(View.GONE);
+            llGetCode.setVisibility(View.GONE);
+        } else {
+            phoneNo.setVisibility(View.VISIBLE);
+            llGetCode.setVisibility(View.VISIBLE);
         }
     }
 

@@ -8,7 +8,7 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
+    public static boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */
@@ -76,6 +76,8 @@ public class Urls {
     public static String HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
     //历史提货统计
     public static String HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
+    //检查是否需要填写手机号
+    public static String CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
 
 
     public static void change() {
@@ -110,6 +112,7 @@ public class Urls {
         TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
         HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
         HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
+        CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
     }
 
 }

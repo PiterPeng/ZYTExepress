@@ -18,6 +18,7 @@ import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.Status2Bean;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.bean.TransferBackBean;
 import com.yuwubao.zytexpress.bean.User;
@@ -761,7 +762,6 @@ public class PDAScanActivity extends BaseActivity {
                             int status = response.getStatus();
                             String msg = response.getMessage();
                             String subFaceOrderNo;
-                            String itemNo = response.getResult().getItemNo();
                             if (response.getResult() != null && response.getResult().getSubFaceOrderNo() != null) {
                                 subFaceOrderNo = response.getResult().getSubFaceOrderNo();
                             } else {
@@ -771,6 +771,7 @@ public class PDAScanActivity extends BaseActivity {
                                 return;
                             }
                             if (status != -1) {
+                                String itemNo = response.getResult().getItemNo();
                                 if (TextUtils.equals(msg, "提货不完整")) {
                                     showTitle = "提货不完整";
                                     showVioce(showTitle);
@@ -873,10 +874,26 @@ public class PDAScanActivity extends BaseActivity {
      * 拿到运单号，进入签收页面
      */
     private void enterSignActivity() {
-        Intent intent = new Intent();
-        intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
-        JumpToActivity(SignActivity.class, intent);
-        finish();
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.CHECK_PHONE_NUMBER)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("no", codeOrder)//
+                .build()//
+                .execute(new AppGsonCallback<Status2Bean>(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(Status2Bean response, int id) {
+                        super.onResponseOK(response, id);
+                        // code == 1 发送短信
+                        int code = response.getResult();
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
+                        intent.putExtra("isNeed", code == 1 ? true : false);
+                        JumpToActivity(SignActivity.class, intent);
+                        finish();
+                    }
+                });
     }
 
     /**

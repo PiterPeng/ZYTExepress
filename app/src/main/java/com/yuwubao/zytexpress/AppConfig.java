@@ -70,10 +70,10 @@ public class AppConfig {
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
     public final static String SHOW_VOICE_CAR = "请扫描车号";
-    public final static String SHOW_VOICE_ORDER = "请扫描运单号或SN码";
+    public final static String SHOW_VOICE_ORDER = "请扫描子单号或SN码";
     public final static String SHOW_VOICE_STORAGE = "请扫描储位号";
     public final static String SHOW_VOICE_SUB_No = "请扫描子单号";
-    public final static String SHOW_VOICE_FACE_No = "请扫描面单号";
+    public final static String SHOW_VOICE_FACE_No = "请扫描子单号或SN码";
     /***PDA扫描SCAN****/
     public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" + ".broadcast";
     public static final String SCN_CUST_EX_SCODE = "scannerdata";
