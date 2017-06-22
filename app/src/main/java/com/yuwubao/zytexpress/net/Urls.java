@@ -12,11 +12,11 @@ public class Urls {
     /**
      * 默认的API头地址
      */
-    public static final String TEST_HEAD_URL_WL = "http://192.168.100.123:8080/";//wl
-    public static String TEST_HEAD_URL_XS = "http://192.168.100.66:8080/";//xs
+    public static String TEST_HEAD_URL_WL = "http://192.168.100.123:8080/";
+    //    public static String TEST_HEAD_URL_XS = "http://192.168.100.99:8080/";
     public static String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
-    public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL_XS : ONLINE_HEAD_URL;
+    public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL_WL : ONLINE_HEAD_URL;
 
     //登录
     public static String LOGIN = HEAD_URL + "sys/login";
@@ -78,10 +78,12 @@ public class Urls {
     public static String HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
     //检查是否需要填写手机号
     public static String CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
-
+    //获取项目列表
+    public static String FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
 
     public static void change() {
-        TEST_HEAD_URL_XS = "http://192.168.100.66:8080/";//xs
+//        TEST_HEAD_URL_XS = "http://192.168.100.99:8080/";
+        TEST_HEAD_URL_WL = "http://192.168.100.123:8080/";
         ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
         LOGIN = HEAD_URL + "sys/login";
         PICK_UP = HEAD_URL + "oms/order/designated";
@@ -113,6 +115,8 @@ public class Urls {
         HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
         HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
         CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
+        FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
+
     }
 
 }

@@ -8,7 +8,7 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.DisPatchAndCountActivity;
 import com.yuwubao.zytexpress.activity.IntoCarListActivity;
-import com.yuwubao.zytexpress.activity.PickUpActivity;
+import com.yuwubao.zytexpress.activity.ProjectSelectActivity;
 import com.yuwubao.zytexpress.activity.StickScanActivity;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
 import com.yuwubao.zytexpress.widget.BGABanner;
@@ -25,8 +25,7 @@ import butterknife.OnClick;
  * description: 主页
  */
 
-public class HomeFragment extends BaseFragement implements BGABanner.OnItemClickListener,
-        BGABanner.Adapter {
+public class HomeFragment extends BaseFragement implements BGABanner.OnItemClickListener, BGABanner.Adapter {
     @BindView(R.id.banner)
     BGABanner banner;
     List<String> urls;
@@ -61,7 +60,7 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
      */
     @OnClick(R.id.rl_th)
     public void onTihuoClick() {
-        JumpToActivity(PickUpActivity.class);
+        JumpToActivity(ProjectSelectActivity.class);
     }
 
     /**
@@ -95,7 +94,6 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     @Override
     public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
-        ImageLoader.getInstance().displayImage((String) model, (ImageView) view, ImageLoaderKit
-                .normalLoadOption);
+        ImageLoader.getInstance().displayImage((String) model, (ImageView) view, ImageLoaderKit.normalLoadOption);
     }
 }

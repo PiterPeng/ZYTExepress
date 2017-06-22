@@ -571,7 +571,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                                 .length());
                                     } else {
                                         showTitle = "请贴子单" + status + "【" + response.getResult().getSubFaceOrderNo()
-                                                + "】";
+                                                + "】" + ",快捷单号：【" + itemNo + "】";
                                         showVoice = "请贴子单" + status + "，快捷单号" + itemNo.substring(itemNo.length() - 4,
                                                 itemNo.length());
                                     }

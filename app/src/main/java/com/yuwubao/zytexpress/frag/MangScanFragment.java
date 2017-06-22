@@ -16,6 +16,7 @@ import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.PDAScanActivity;
+import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.bean.CountBean;
 import com.yuwubao.zytexpress.bean.MangScanBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -52,6 +53,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
     private String userId;
     private CommonAdapter<MangScanBean.ResultBean.ContentBean> adapter;
     private List<MangScanBean.ResultBean.ContentBean> mangScanBeen;
+    private String id = "";
 
     @Override
     protected int getContentResourseId() {
@@ -64,6 +66,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        id = getArguments().getString(PickUpActivity.ARG);
         setSwipe();
         initAdapter();
         addHeader();
@@ -122,11 +125,14 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
 
     private boolean isLoadmoreColose = false;
 
-    private void initData() {
+    public void initData() {
+
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams("type", "1").addParams(AppConfig.USER_ID, userId)//
+                .addParams("type", "1")//
+                .addParams("id", id)//
+                .addParams(AppConfig.USER_ID, userId)//
                 .url(Urls.COUNT)//
                 .build()//
                 .execute(new AppGsonCallback<CountBean>(new RequestModel(c).setShowProgress(false)) {
@@ -157,6 +163,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .tag(this)//
                 .url(Urls.MANG_SCAN)//
                 .addParams(AppConfig.USER_ID, userId)//
+                .addParams("id", id)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//

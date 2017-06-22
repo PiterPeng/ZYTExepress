@@ -16,6 +16,7 @@ import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.PDAScanActivity;
+import com.yuwubao.zytexpress.activity.PickUpActivity;
 import com.yuwubao.zytexpress.bean.CountBean;
 import com.yuwubao.zytexpress.bean.GoodsDetailsBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -41,8 +42,7 @@ import butterknife.BindView;
  * description: 指定扫描
  */
 
-public class AppointScanFragment extends BaseFragement implements OnRefreshListener,
-        OnLoadMoreListener {
+public class AppointScanFragment extends BaseFragement implements OnRefreshListener, OnLoadMoreListener {
     @BindView(R.id.swipeToLoadLayout)
     SwipeToLoadLayout swipeToLoadLayout;
     @BindView(R.id.swipe_target)
@@ -55,6 +55,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
     int pageSize = 10;
     private boolean isLoadmoreColose = false;
     private String userId;
+    private String id = "";
 
     @Override
     protected int getContentResourseId() {
@@ -67,6 +68,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        id = getArguments().getString(PickUpActivity.ARG);
         setSwipe();
         setmAdapter();
         addHeader();
@@ -81,11 +83,13 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
 
     }
 
-    private void initData() {
+    public void initData() {
+
         OkHttpUtils//
                 .get()//
                 .tag(this)//
                 .addParams("type", "2")//
+                .addParams("id", id)//
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
@@ -112,11 +116,10 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams(AppConfig.USER_ID, userId)
-                .url(Urls.PICK_UP)//
+                .addParams("id", id)//
+                .addParams(AppConfig.USER_ID, userId).url(Urls.PICK_UP)//
                 .build()//
-                .execute(new AppGsonCallback<GoodsDetailsBean>(new
-                        RequestModel(c)) {
+                .execute(new AppGsonCallback<GoodsDetailsBean>(new RequestModel(c)) {
                     @Override
                     public void onResponseOK(GoodsDetailsBean response, int id) {
                         super.onResponseOK(response, id);
@@ -152,16 +155,14 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
 
     private void setmAdapter() {
         goodsDetailsBeen = new ArrayList<>();
-        adapter = new CommonAdapter<GoodsDetailsBean.ResultBean>(c, R.layout
-                .item_pick_up, goodsDetailsBeen) {
+        adapter = new CommonAdapter<GoodsDetailsBean.ResultBean>(c, R.layout.item_pick_up, goodsDetailsBeen) {
             @Override
-            protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean
-                    details, int position) {
+            protected void convert(ViewHolder holder, GoodsDetailsBean.ResultBean details, int position) {
                 holder.setText(R.id.order_No, details.getOldOrderNo());
                 holder.setText(R.id.name, details.getItemName());
                 holder.setText(R.id.volume, String.valueOf(details.getVolume()) + "m³");
-                holder.setText(R.id.grossWeight, details.getGroosWeight() == null ? "0kg" : details
-                        .getGroosWeight() + "kg");
+                holder.setText(R.id.grossWeight, details.getGroosWeight() == null ? "0kg" : details.getGroosWeight()
+                        + "kg");
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -180,8 +181,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
             }
 
             @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 return false;
             }
         });

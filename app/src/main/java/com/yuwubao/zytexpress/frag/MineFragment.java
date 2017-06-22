@@ -17,7 +17,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.yuwubao.zytexpress.net.Urls.ONLINE_HEAD_URL;
-import static com.yuwubao.zytexpress.net.Urls.TEST_HEAD_URL_XS;
+import static com.yuwubao.zytexpress.net.Urls.TEST_HEAD_URL_WL;
 import static com.yuwubao.zytexpress.net.Urls.TEST_MODE;
 
 /**
@@ -63,7 +63,7 @@ public class MineFragment extends BaseFragement {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.switch_severs:
-                Urls.HEAD_URL = (TEST_MODE = !TEST_MODE) ? TEST_HEAD_URL_XS : ONLINE_HEAD_URL;
+                Urls.HEAD_URL = (TEST_MODE = !TEST_MODE) ? TEST_HEAD_URL_WL : ONLINE_HEAD_URL;
                 Urls.change();
                 switchSevers.setText(TEST_MODE ? "当前环境：测试" : "当前环境：线上");
                 break;

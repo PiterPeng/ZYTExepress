@@ -388,6 +388,7 @@ public class PDAScanActivity extends BaseActivity {
                             break;
                     }
                 }
+
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "PDA出错,请重试\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -784,12 +785,11 @@ public class PDAScanActivity extends BaseActivity {
                                                 .length());
                                     } else {
                                         showTitle = "请贴子单" + status + "【" + response.getResult().getSubFaceOrderNo()
-                                                + "】";
+                                                + "】" + ",快捷单号：【" + itemNo + "】";
                                         showVoice = "请贴子单" + status + "，快捷单号" + itemNo.substring(itemNo.length() - 4,
                                                 itemNo.length());
                                     }
                                     showVioce(showVoice);
-
                                     UIHelper.showMyCustomDialog(c, showTitle, "点我去贴单", new View.OnClickListener() {
 
 

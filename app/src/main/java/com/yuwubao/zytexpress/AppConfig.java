@@ -95,21 +95,17 @@ public class AppConfig {
     public static final String PAGE_SIZE = "pageSize";// 每页显示条数
 
     //banner图临时图片url
-    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272451&di" +
-            "=603cf395b03e1f09a85eb9315d726ffd&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" + ""
-            + ".com%2FuploadImages%2F2015%2F113%2F51%2FMTHK4XLG04NS_1000x500.jpg";
-    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272432&di" +
-            "=6f4f637d4a09e24bafa6d0893654211e&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" + "" + "" +
-            ".cn%2Fcommunity%2F015105554265f00000019ae9c4f4ab.jpg";
-    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272426&di" +
-            "=55899c67c0b053c7800d8c4be49e5582&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia" + "" + "" + "" + "" + ""
-            + ".com%2FuploadImages%2F2015%2F113%2F13%2FBPH35431PH4U_1000x500.jpg";
-    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" + "" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1488794272433&di" +
-            "=e06465901364d94332fca092acdbb4f8&imgtype=0&src=http%3A%2F%2Fimg.zcool" + "" + "" + "" + "" + "" + "" +
-            ".cn%2Fcommunity%2F017cf4554265f00000019ae976f081.jpg";
+    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112530343&di=75a6c85b996763135fd2f4c8912f9ac5" +
+            "&imgtype=0&src=http%3A%2F%2Fs2.sinaimg.cn%2Fmiddle%2F46e725a4gb923374cc2e1%26690";
+    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565619&di=c17e1eaefd9856758b1f9ebfb93a5631" +
+            "&imgtype=0&src=http%3A%2F%2Ffdfs.xmcdn.com%2Fgroup3%2FM0A%2F4D%2F29%2FwKgDslNH-Duyq6qeAAN26chjMPo905.png";
+    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565608&di=fbc29ca41cc90fc9b98384a949c8137a" +
+            "&imgtype=0&src=http%3A%2F%2Fs10.sinaimg.cn%2Fmiddle%2F46e725a4gb9233aee3199%26690";
+    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112699467&di=dca8792ca998e36499533a7d7c6ba715" +
+            "&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D758347139%2C3687152%26fm%3D214%26gp%3D0.jpg";
 
 }
