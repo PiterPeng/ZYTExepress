@@ -374,7 +374,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -407,7 +407,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                              @Override
                              public void onError(Call call, Exception e, int id) {
                                  super.onError(call, e, id);
-                                 showVioce("服务器异常");
+                                 showVioce("请求超时");
                                  onPause();
                                  onResume();
                              }
@@ -494,7 +494,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -535,7 +535,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -547,9 +547,10 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                             int status = response.getStatus();
                             String msg = response.getMessage();
                             String subFaceOrderNo;
-                            String itemNo = response.getResult().getItemNo();
+                            String itemNo;
                             if (response.getResult() != null && response.getResult().getSubFaceOrderNo() != null) {
                                 subFaceOrderNo = response.getResult().getSubFaceOrderNo();
+                                itemNo = response.getResult().getItemNo();
                             } else {
 //                                showTitle = "状态不对";
                                 showVioce(msg);
@@ -633,7 +634,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -663,7 +664,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -730,7 +731,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -761,7 +762,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -792,7 +793,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -824,7 +825,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -870,7 +871,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }
@@ -950,7 +951,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                         onPause();
                         onResume();
                     }

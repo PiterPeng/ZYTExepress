@@ -1,5 +1,6 @@
 package com.yuwubao.zytexpress.frag;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -7,7 +8,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.DisPatchAndCountActivity;
-import com.yuwubao.zytexpress.activity.IntoCarListActivity;
 import com.yuwubao.zytexpress.activity.ProjectSelectActivity;
 import com.yuwubao.zytexpress.activity.StickScanActivity;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
@@ -29,6 +29,8 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
     @BindView(R.id.banner)
     BGABanner banner;
     List<String> urls;
+    public static final int JUMP_TYPE_PICK_UP = 0x01;//提货
+    public static final int JUMP_TYPE_CAR_LIST = 0x02;//装车
 
     @Override
     protected int getContentResourseId() {
@@ -60,7 +62,7 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
      */
     @OnClick(R.id.rl_th)
     public void onTihuoClick() {
-        JumpToActivity(ProjectSelectActivity.class);
+        jump(JUMP_TYPE_PICK_UP);
     }
 
     /**
@@ -76,7 +78,8 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
      */
     @OnClick(R.id.rl_zc)
     public void onZhuangCheClick() {
-        JumpToActivity(IntoCarListActivity.class);
+//        JumpToActivity(IntoCarListActivity.class);
+        jump(JUMP_TYPE_CAR_LIST);
     }
 
     /**
@@ -95,5 +98,11 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
     @Override
     public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
         ImageLoader.getInstance().displayImage((String) model, (ImageView) view, ImageLoaderKit.normalLoadOption);
+    }
+
+    private void jump(int type) {
+        Intent intent = new Intent(c, ProjectSelectActivity.class);
+        intent.putExtra("jumpType", type);
+        c.startActivity(intent);
     }
 }

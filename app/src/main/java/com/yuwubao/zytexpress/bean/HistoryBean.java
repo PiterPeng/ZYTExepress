@@ -157,7 +157,7 @@ public class HistoryBean extends BaseBean {
             private int acceptNum;
             private int stopDay;
             private double volume;
-            private int groosWeight;
+            private double groosWeight;
             @SerializedName("status")
             private String statusX;
 
@@ -289,11 +289,11 @@ public class HistoryBean extends BaseBean {
                 this.volume = volume;
             }
 
-            public int getGroosWeight() {
+            public double getGroosWeight() {
                 return groosWeight;
             }
 
-            public void setGroosWeight(int groosWeight) {
+            public void setGroosWeight(double groosWeight) {
                 this.groosWeight = groosWeight;
             }
 

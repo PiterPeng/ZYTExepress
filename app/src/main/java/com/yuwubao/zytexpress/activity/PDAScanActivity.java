@@ -419,7 +419,7 @@ public class PDAScanActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                     }
                 });
 
@@ -453,7 +453,7 @@ public class PDAScanActivity extends BaseActivity {
                              @Override
                              public void onError(Call call, Exception e, int id) {
                                  super.onError(call, e, id);
-                                 showVioce("服务器异常");
+                                 showVioce("请求超时");
                              }
 
                              @Override
@@ -484,7 +484,7 @@ public class PDAScanActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         super.onError(call, e, id);
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                     }
 
                     @Override
@@ -753,7 +753,7 @@ public class PDAScanActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         UIHelper.showMessage(c, "服务器异常--->" + e.getMessage());
-                        showVioce("服务器异常");
+                        showVioce("请求超时");
                     }
 
                     @Override
@@ -763,8 +763,10 @@ public class PDAScanActivity extends BaseActivity {
                             int status = response.getStatus();
                             String msg = response.getMessage();
                             String subFaceOrderNo;
+                            String itemNo;
                             if (response.getResult() != null && response.getResult().getSubFaceOrderNo() != null) {
                                 subFaceOrderNo = response.getResult().getSubFaceOrderNo();
+                                itemNo = response.getResult().getItemNo();
                             } else {
 //                                showTitle = "状态不对";
                                 showVioce(msg);
@@ -772,7 +774,6 @@ public class PDAScanActivity extends BaseActivity {
                                 return;
                             }
                             if (status != -1) {
-                                String itemNo = response.getResult().getItemNo();
                                 if (TextUtils.equals(msg, "提货不完整")) {
                                     showTitle = "提货不完整";
                                     showVioce(showTitle);

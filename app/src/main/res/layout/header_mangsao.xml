@@ -237,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="(未提货/已提货)"
+                android:text="(未提/已提)"
                 android:textColor="@color/base_black"
                 android:textSize="10sp"/>
         </LinearLayout>

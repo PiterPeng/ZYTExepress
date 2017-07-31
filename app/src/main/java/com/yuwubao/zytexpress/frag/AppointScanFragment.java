@@ -116,7 +116,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
         OkHttpUtils//
                 .get()//
                 .tag(this)//
-                .addParams("id", id)//
+                .addParams("customerId", id)//
                 .addParams(AppConfig.USER_ID, userId).url(Urls.PICK_UP)//
                 .build()//
                 .execute(new AppGsonCallback<GoodsDetailsBean>(new RequestModel(c)) {

@@ -163,7 +163,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 .tag(this)//
                 .url(Urls.MANG_SCAN)//
                 .addParams(AppConfig.USER_ID, userId)//
-                .addParams("id", id)//
+                .addParams("customerId", id)//
                 .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
                 .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//

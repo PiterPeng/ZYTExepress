@@ -12,7 +12,7 @@
     <string name="sdexit">内存卡不见了！</string>
 
     <!--net-->
-    <string name="requestfailed">服务器异常</string>
+    <string name="requestfailed">请求超时</string>
     <string name="success_dataempty">服务器返回数据异常</string>
 
     <!--Auth-->

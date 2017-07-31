@@ -11,6 +11,7 @@ import com.yuwubao.zytexpress.bean.ProjectListBack;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
+import com.yuwubao.zytexpress.frag.HomeFragment;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.widget.HeaderBar;
@@ -40,6 +41,8 @@ public class ProjectSelectActivity extends BaseActivity {
     CommonAdapter adapter;
     List<ProjectListBack.ResultBean> resultBeanList;
 
+    int jumpType;
+
     @Override
     protected int getContentResourseId() {
         return R.layout.activity_select_pm;
@@ -47,9 +50,14 @@ public class ProjectSelectActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        resolveIntent();
         setTitle();
         initData();
         setRecycler();
+    }
+
+    private void resolveIntent() {
+        jumpType = getIntent().getExtras().getInt("jumpType");
     }
 
     private void initData() {
@@ -91,10 +99,16 @@ public class ProjectSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (!resultBeanList.isEmpty()) {
-                    Intent intent = new Intent(c, PickUpActivity.class);
-                    intent.putExtra("scanMode", resultBeanList.get(position).getScanMode());
-                    intent.putExtra("id", resultBeanList.get(position).getId());
-                    startActivity(intent);
+                    if (jumpType == HomeFragment.JUMP_TYPE_PICK_UP) {
+                        Intent intent = new Intent(c, PickUpActivity.class);
+                        intent.putExtra("scanMode", resultBeanList.get(position).getScanMode());
+                        intent.putExtra("id", resultBeanList.get(position).getId());
+                        startActivity(intent);
+                    } else if (jumpType == HomeFragment.JUMP_TYPE_CAR_LIST) {
+                        Intent intent = new Intent(c, IntoCarListActivity.class);
+                        intent.putExtra("id", resultBeanList.get(position).getId());
+                        startActivity(intent);
+                    }
                 }
             }
 
