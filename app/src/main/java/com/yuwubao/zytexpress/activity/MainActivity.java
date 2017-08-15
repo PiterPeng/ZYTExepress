@@ -11,7 +11,9 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.AppManager;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.DataBase;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.frag.BaseFragement;
 import com.yuwubao.zytexpress.frag.HistoryFragment;
 import com.yuwubao.zytexpress.frag.HomeFragment;
@@ -37,6 +39,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     HeaderBar headerBar;
     List<BaseFragement> rootPages;
     int defaultPageIndex = 0;
+    int level;
 
     @Override
     protected int getContentResourseId() {
@@ -47,7 +50,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     protected void init() {
         initDatas();
         setUpTop();
-        setUpBottoum();
+        setUpBottom();
         setUpPage();
     }
 
@@ -56,6 +59,10 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         AudioManager audioMgr = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         int maxVolume = audioMgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         audioMgr.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            level = user.getCompanyLevel();
+        }
     }
 
     private void setUpTop() {
@@ -66,18 +73,24 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         headerBar.hiddenLeft(true);
     }
 
-    void setUpBottoum() {
+    void setUpBottom() {
         bottomNavigationBar.clearAll();
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setTabSelectedListener(this);
         bottomNavigationBar.setBackgroundResource(R.color.white);
-        bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_home, getString(R.string.tab_travel))).addItem
-                (createItem(R.drawable.bottom_icon_sign, getString(R.string.tab_interaction))).addItem(createItem(R
-                .drawable.bottom_icon_writein, getString(R.string.tab_news))).addItem(createItem(R.drawable
-                .bottom_icon_history, getString(R.string.tab_history))).addItem(createItem(R.drawable
-                .bottom_icon_user, getString(R.string.tab_services))).setFirstSelectedPosition(defaultPageIndex)
-                .initialise();
+        if (level > 1) {//网点登录
+            bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_writein, getString(R.string.tab_news)))
+                    .addItem(createItem(R.drawable.bottom_icon_user, getString(R.string.tab_services)))
+                    .setFirstSelectedPosition(defaultPageIndex).initialise();
+        } else {
+            bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_home, getString(R.string.tab_travel)))
+                    .addItem(createItem(R.drawable.bottom_icon_sign, getString(R.string.tab_interaction))).addItem
+                    (createItem(R.drawable.bottom_icon_writein, getString(R.string.tab_news))).addItem(createItem(R
+                    .drawable.bottom_icon_history, getString(R.string.tab_history))).addItem(createItem(R.drawable
+                    .bottom_icon_user, getString(R.string.tab_services))).setFirstSelectedPosition(defaultPageIndex)
+                    .initialise();
+        }
     }
 
 
@@ -88,14 +101,18 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     void setUpPage() {
         rootPages = new ArrayList<>();
-        rootPages.add(new HomeFragment());
-        rootPages.add(new SaveFragment());
-        rootPages.add(new IncludeFragment());
-        rootPages.add(new HistoryFragment());
-        rootPages.add(new MineFragment());
-
+        if (level > 1) {//网点登录
+            rootPages.add(new IncludeFragment());
+            rootPages.add(new MineFragment());
+        } else {
+            rootPages.add(new HomeFragment());
+            rootPages.add(new SaveFragment());
+            rootPages.add(new IncludeFragment());
+            rootPages.add(new HistoryFragment());
+            rootPages.add(new MineFragment());
+        }
         pages.setNoScroll(true);
-        pages.setOffscreenPageLimit(5);
+        pages.setOffscreenPageLimit(rootPages.size());
         pages.setAdapter(rootAdapter);
         pages.setCurrentItem(defaultPageIndex);
     }

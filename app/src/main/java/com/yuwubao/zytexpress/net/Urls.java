@@ -8,12 +8,12 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
+    public static boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */
     public static String TEST_HEAD_URL = "http://192.168.100.135:8080/";
-    public static String ONLINE_HEAD_URL = "http://139.224.10.42:8082/";
+    public static String ONLINE_HEAD_URL = "http://139.224.10.42:8084/";
 
     public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
 
@@ -82,7 +82,7 @@ public class Urls {
 
     public static void change() {
         TEST_HEAD_URL = "http://192.168.100.135:8080/";
-        ONLINE_HEAD_URL = "http://139.224.10.42:8082/";
+        ONLINE_HEAD_URL = "http://139.224.10.42:8084/";
         LOGIN = HEAD_URL + "sys/login";
         PICK_UP = HEAD_URL + "oms/order/designated";
         MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";

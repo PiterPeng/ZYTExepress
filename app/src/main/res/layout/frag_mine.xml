@@ -67,7 +67,6 @@
                 android:id="@+id/account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="轻舞飞扬"
                 android:textColor="@color/userInfo_font_small"
                 android:textSize="16sp"/>
         </LinearLayout>
@@ -91,7 +90,6 @@
                 android:id="@+id/companyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="湖北武汉宅易通快递有限公司"
                 android:textColor="@color/userInfo_font_small"
                 android:textSize="16sp"/>
         </LinearLayout>

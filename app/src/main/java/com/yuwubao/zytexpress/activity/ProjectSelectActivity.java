@@ -67,7 +67,7 @@ public class ProjectSelectActivity extends BaseActivity {
             OkHttpUtils.get()//
                     .url(Urls.FINDAUTHEDCUSTOMERLIST)//
                     .tag(this)//
-                    .addParams("userId", user.getId() + "")//
+                    .addParams("currentUserId", user.getId() + "")//
                     .build()//
                     .execute(new AppGsonCallback<ProjectListBack>(new RequestModel(c)) {
                         @Override

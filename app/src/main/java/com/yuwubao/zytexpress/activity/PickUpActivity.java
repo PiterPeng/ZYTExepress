@@ -27,7 +27,7 @@ public class PickUpActivity extends BaseActivity {
     RadioGroup radioGroup;
     MangScanFragment mangScanFragment;
     AppointScanFragment appointScanFragment;
-    int currentId, scanMode, id;
+    int scanMode, id;
 
     @Override
     protected int getContentResourseId() {
@@ -38,7 +38,6 @@ public class PickUpActivity extends BaseActivity {
     protected void init() {
         resolveIntent();
         setFrag();
-        setRadioGroup();
     }
 
     private void resolveIntent() {
@@ -68,30 +67,5 @@ public class PickUpActivity extends BaseActivity {
 
     public void onBackClick(View view) {
         finish();
-    }
-
-    private void setRadioGroup() {
-
-//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                switch (checkedId) {
-//                    case R.id.rb_left:
-//                        if (currentId == 1) {
-//                            return;
-//                        }
-//                        replaceFragment(R.id.replace, mangScanFragment);
-//                        currentId = 1;
-//                        break;
-//                    case R.id.rb_right:
-//                        if (currentId == -1) {
-//                            return;
-//                        }
-//                        replaceFragment(R.id.replace, appointScanFragment);
-//                        currentId = -1;
-//                        break;
-//                }
-//            }
-//        });
     }
 }

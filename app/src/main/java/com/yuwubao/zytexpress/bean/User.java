@@ -41,6 +41,16 @@ public class User {
     private String createTime;
     @SimpleColumn(name = "companyName")
     private String companyName;
+    @SimpleColumn(name = "companyLevel")
+    private int companyLevel;
+
+    public int getCompanyLevel() {
+        return companyLevel;
+    }
+
+    public void setCompanyLevel(int companyLevel) {
+        this.companyLevel = companyLevel;
+    }
 
     public int getId() {
         return id;
