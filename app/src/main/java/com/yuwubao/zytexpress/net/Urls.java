@@ -12,8 +12,8 @@ public class Urls {
     /**
      * 默认的API头地址
      */
-    public static String TEST_HEAD_URL = "http://192.168.100.135:8080/";
-    public static String ONLINE_HEAD_URL = "http://139.224.10.42:8084/";
+    public static String TEST_HEAD_URL = "http://192.168.100.123:8080/";
+    public static String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
     public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
 
@@ -37,6 +37,8 @@ public class Urls {
     public static String BLIND_SN_CODE = HEAD_URL + "oms/order/blindSn";
     //扫描指定SN
     public static String BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/designatedSn";
+    //逆向扫描指定SN
+    public static String RE_BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/reverseTake";
     //待装车列表
     public static String INTO_CAR_LIST = HEAD_URL + "oms/orderItem/queryItemCar";
     //盲扫扫车
@@ -57,8 +59,12 @@ public class Urls {
     public static String OUT_STORAGE = HEAD_URL + "oms/order/outStorage";
     //订单签收验证码
     public static String PHONE_VERIFICATION_CODE = HEAD_URL + "oms/order/sms";
-    //订单签收
+    //正向订单签收
     public static String ORDER_SIGN = HEAD_URL + "oms/order/sign";
+    //逆向订单签收
+    public static String RE_VERSE_SIGN = HEAD_URL + "oms/order/reverseSign";
+    //逆向订单签收列表
+    public static String RE_ORDER_SIGN = HEAD_URL + "oms/order/reverseOrderList";
     //订单拒收
     public static String ORDER_REJECTION = HEAD_URL + "oms/order/deny";
     //调度汇总
@@ -79,41 +85,81 @@ public class Urls {
     public static String CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
     //获取项目列表
     public static String FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
+    //轮播图地址
+    public static String BANNER_URLS = HEAD_URL + "sys/news/pda";
 
     public static void change() {
-        TEST_HEAD_URL = "http://192.168.100.135:8080/";
-        ONLINE_HEAD_URL = "http://139.224.10.42:8084/";
+        TEST_HEAD_URL = "http://192.168.100.123:8080/";
+        ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
+
+        //登录
         LOGIN = HEAD_URL + "sys/login";
         PICK_UP = HEAD_URL + "oms/order/designated";
+
         MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";
+
         DISPATCH = HEAD_URL + "oms/orderItem/queryItemType";
         COUNT = HEAD_URL + "oms/orderItem/findItemModeSum";
+
         INCLUDE_LIST = HEAD_URL + "ssm/product/findProductList";
+
         SEARCH_69_CODE = HEAD_URL + "oms/orderItem/searchCode";
+
         INCLUDE_69_CODE = HEAD_URL + "oms/order/blindRecord";
+
         BLIND_SN_CODE = HEAD_URL + "oms/order/blindSn";
+
         BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/designatedSn";
+
+        RE_BLIND_SN_CODE_ZHISAO = HEAD_URL + "oms/order/reverseTake";
+
         INTO_CAR_LIST = HEAD_URL + "oms/orderItem/queryItemCar";
+
         SCAN_CAR_MANGSAO = HEAD_URL + "oms/orderItem/itemScanInCar";
+
         SCAN_CAR_ZHISAO = HEAD_URL + "oms/orderItem/itemInCar";
+
         FREE_INQUIRY = HEAD_URL + "oms/orderItem/itemStickScanning";
+
         COMMODITY_LABELING = HEAD_URL + "oms/orderItem/itemStick";
+
         STICK_CHECK = HEAD_URL + "oms/orderItem/itemStickCheck";
+
         IN_STORAGE = HEAD_URL + "oms/order/inStorage";
+
         IN_STORAGE_THOERY = HEAD_URL + "oms/order/productFalseStorage";
+
         OUT_STORAGE = HEAD_URL + "oms/order/outStorage";
+
         PHONE_VERIFICATION_CODE = HEAD_URL + "oms/order/sms";
+
         ORDER_SIGN = HEAD_URL + "oms/order/sign";
+
+        RE_VERSE_SIGN = HEAD_URL + "oms/order/reverseSign";
+
+        RE_ORDER_SIGN = HEAD_URL + "oms/order/reverseOrderList";
+
         ORDER_REJECTION = HEAD_URL + "oms/order/deny";
+
         DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
+
         COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
+
         QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
+
         QUERY_LIST = HEAD_URL + "oms/orderItem/findLabelingList";
+
         TRANSFER_SCAN = HEAD_URL + "oms/orderItem/orderTransfer";
+
         HISTORY_LIST = HEAD_URL + "oms/orderItem/queryItemLabelDay";
+
         HISTORY_COUNT = HEAD_URL + "oms/orderItem/findHistorySum";
+
         CHECK_PHONE_NUMBER = HEAD_URL + "oms/order/send_no";
+
         FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
+
+        BANNER_URLS = HEAD_URL + "sys/news/pda";
 
     }
 

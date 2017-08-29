@@ -24,7 +24,7 @@ import com.yuwubao.zytexpress.R;
 public class HeaderBar extends RelativeLayout {
     private Context context;
 
-    private ImageButton back;
+    private ImageView back;
     private TextView top_title;
     private TextView top_leftTitle;
     private ImageButton top_right_btn;
@@ -51,7 +51,7 @@ public class HeaderBar extends RelativeLayout {
     public void initView(Context context) {
         this.context = context;
         View v = LayoutInflater.from(context).inflate(R.layout.headerbar, null);
-        back = (ImageButton) v.findViewById(R.id.btn_top_back);
+        back = (ImageView) v.findViewById(R.id.btn_top_back);
         top_title = (TextView) v.findViewById(R.id.btn_top_title);
         top_right_btn = (ImageButton) v.findViewById(R.id.img_top_right);
         rightTitle = (TextView) v.findViewById(R.id.right_title);
@@ -97,8 +97,7 @@ public class HeaderBar extends RelativeLayout {
         }
     };
 
-    private OnCustonClickListener onLeftBtnClickListener, onRightBtnClickListener,
-            onRightTextClickListsner;
+    private OnCustonClickListener onLeftBtnClickListener, onRightBtnClickListener, onRightTextClickListsner;
 
     public interface OnCustonClickListener {
         public void customClick(View v);

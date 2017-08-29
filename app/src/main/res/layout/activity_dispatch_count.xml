@@ -12,9 +12,12 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
             android:onClick="onBackClick"
-            android:src="@drawable/selector_capture_back"/>
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:src="@drawable/back"/>
 
         <RadioGroup
             android:id="@+id/radio_group"
@@ -38,7 +41,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="5dp"
-                android:text="调度清单"
+                android:text="明细清单"
                 android:textColor="@color/red"
                 android:textSize="14sp"/>
 

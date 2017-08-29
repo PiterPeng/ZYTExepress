@@ -41,11 +41,11 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_th"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/icon_th"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/order"/>
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -69,11 +69,11 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_td"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/icon_td"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/goods"/>
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -102,11 +102,11 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_zc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/icon_zc"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/orderreceipt"/>
 
 
             </RelativeLayout>
@@ -125,11 +125,11 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_qt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/icon_qt"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/warehouse"/>
 
             </RelativeLayout>
 

@@ -17,6 +17,7 @@
         android:layout_height="fill_parent"/>
 
     <RelativeLayout
+        android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_gravity="top"
@@ -37,5 +38,21 @@
             android:textColor="#ffffffff"
             android:textSize="20sp"/>
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/selector_black_kuang"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="8dp"
+        android:text="无法扫描？点我手动录入"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_14"/>
 
 </merge>

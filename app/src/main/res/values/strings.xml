@@ -34,8 +34,8 @@
 
     <!--main-->
     <string name="tab_travel">首页</string>
-    <string name="tab_interaction">仓库</string>
-    <string name="tab_news">签收</string>
+    <string name="tab_interaction">查询</string>
+    <string name="tab_news">商城</string>
     <string name="tab_history">历史</string>
     <string name="tab_services">我的</string>
     <string name="start_outof">秒跳过</string>

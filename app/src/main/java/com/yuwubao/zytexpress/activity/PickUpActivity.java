@@ -1,7 +1,6 @@
 package com.yuwubao.zytexpress.activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -10,6 +9,7 @@ import com.yuwubao.zytexpress.frag.AppointScanFragment;
 import com.yuwubao.zytexpress.frag.MangScanFragment;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by Peng on 2017/3/16
@@ -65,7 +65,8 @@ public class PickUpActivity extends BaseActivity {
         }
     }
 
-    public void onBackClick(View view) {
+    @OnClick(R.id.back)
+    public void onViewClicked() {
         finish();
     }
 }

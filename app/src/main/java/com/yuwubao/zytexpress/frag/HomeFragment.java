@@ -1,17 +1,21 @@
 package com.yuwubao.zytexpress.frag;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
-import com.yuwubao.zytexpress.activity.DisPatchAndCountActivity;
-import com.yuwubao.zytexpress.activity.ProjectSelectActivity;
-import com.yuwubao.zytexpress.activity.StickScanActivity;
+import com.yuwubao.zytexpress.activity.OMSActivity;
+import com.yuwubao.zytexpress.activity.QianShouActivity;
+import com.yuwubao.zytexpress.activity.TMSActivity;
+import com.yuwubao.zytexpress.activity.WarehouseActivity;
+import com.yuwubao.zytexpress.bean.BannerBean;
+import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.net.AppGsonCallback;
+import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.utils.ImageLoaderKit;
 import com.yuwubao.zytexpress.widget.BGABanner;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,6 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
     @Override
     protected void init() {
         initData();
-        setBanner();
     }
 
     private void setBanner() {
@@ -51,43 +54,53 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     private void initData() {
         urls = new ArrayList<>();
-        urls.add(AppConfig.BANNER_IAMGE_URL_01);
-        urls.add(AppConfig.BANNER_IAMGE_URL_02);
-        urls.add(AppConfig.BANNER_IAMGE_URL_03);
-        urls.add(AppConfig.BANNER_IAMGE_URL_04);
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.BANNER_URLS)//
+                .build()//
+                .execute(new AppGsonCallback<BannerBean>(new RequestModel(c).setShowProgress(false)) {
+                    @Override
+                    public void onResponseOK(BannerBean response, int id) {
+                        super.onResponseOK(response, id);
+                        List<String> resultUrls = response.getResult();
+                        urls.clear();
+                        urls.addAll(resultUrls);
+                        setBanner();
+                    }
+                });
     }
 
     /**
-     * 待提货列表
+     * 订单信息管理（OMS)
      */
     @OnClick(R.id.rl_th)
     public void onTihuoClick() {
-        jump(JUMP_TYPE_PICK_UP);
+        JumpToActivity(OMSActivity.class);
     }
 
     /**
-     * 调度列表
+     * 货物流转管理（TMS）
      */
     @OnClick(R.id.rl_td)
     public void onTiedanClick() {
-        JumpToActivity(DisPatchAndCountActivity.class);
+        JumpToActivity(TMSActivity.class);
     }
 
     /**
-     * 待装车列表
+     * 订单签收管理（SMS）
      */
     @OnClick(R.id.rl_zc)
     public void onZhuangCheClick() {
-//        JumpToActivity(IntoCarListActivity.class);
-        jump(JUMP_TYPE_CAR_LIST);
+        JumpToActivity(QianShouActivity.class);
     }
 
     /**
-     * 查询 复核
+     * 仓库吞吐管理（WMS）
      */
     @OnClick(R.id.rl_qt)
     public void onCkeckClick() {
-        JumpToActivity(StickScanActivity.class);
+        JumpToActivity(WarehouseActivity.class);
     }
 
     @Override
@@ -97,12 +110,12 @@ public class HomeFragment extends BaseFragement implements BGABanner.OnItemClick
 
     @Override
     public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
-        ImageLoader.getInstance().displayImage((String) model, (ImageView) view, ImageLoaderKit.normalLoadOption);
+        ImageLoader.getInstance().displayImage(urls.get(position), (ImageView) view, ImageLoaderKit.normalLoadOption);
     }
 
-    private void jump(int type) {
-        Intent intent = new Intent(c, ProjectSelectActivity.class);
-        intent.putExtra("jumpType", type);
-        c.startActivity(intent);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 }

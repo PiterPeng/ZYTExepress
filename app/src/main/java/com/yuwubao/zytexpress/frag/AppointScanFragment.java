@@ -173,6 +173,7 @@ public class AppointScanFragment extends BaseFragement implements OnRefreshListe
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_ZHISAO);
                 intent.putExtra(AppConfig.ORDER_ID, goodsDetailsBeen.get(position - 1).getId());
                 intent.putExtra(AppConfig.SCAN_MODE, goodsDetailsBeen.get(position - 1).getScanMode());
+                intent.putExtra(AppConfig.IS_NIXIANG, false);
                 if (AppConfig.isPDA) {
                     JumpToActivity(PDAScanActivity.class, intent);
                 } else {

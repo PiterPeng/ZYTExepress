@@ -1,17 +1,21 @@
 package com.karics.library.zxing.android;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -100,6 +104,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     }
 
     String userId;
+    private TextView input;
 
     /**
      * OnCreate中初始化一些辅助类，如InactivityTimer（休眠）、Beep（声音）以及AmbientLight（闪光灯）
@@ -120,6 +125,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
 
         orderId = getIntent().getExtras().getInt(AppConfig.ORDER_ID);
         scanMode = getIntent().getExtras().getInt(AppConfig.SCAN_MODE);
+        isNiXiang = getIntent().getExtras().getBoolean(AppConfig.IS_NIXIANG);
         currentType = getIntent().getExtras().getInt(AppConfig.CURRENT_SCAN_TYPE);
         enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
@@ -137,7 +143,18 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
 
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            userId = String.valueOf(user.getId());
+        }
+        //点击事件
+        setOnClick();
+
+    }
+
+    private void setOnClick() {
         imageButton_back = (ImageButton) findViewById(R.id.capture_imageview_back);
+        input = (TextView) findViewById(R.id.input);
         imageButton_back.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -145,10 +162,116 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 finish();
             }
         });
-        User user = UserDao.getInstance().getLastUser();
-        if (user != null) {
-            userId = String.valueOf(user.getId());
-        }
+        input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View view = LayoutInflater.from(c).inflate(R.layout.dialog_shoudong, null);
+                final EditText input_no = (EditText) view.findViewById(R.id.input_no);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(c).setTitle("手动录入二维码").setView(view)
+                        .setPositiveButton("确定", null).setNegativeButton("取消", null).create();
+                alertDialog.show();
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (TextUtils.isEmpty(input_no.getText().toString().trim())) {
+                            UIHelper.showMessage(c, "输入不能为空");
+                            return;
+                        }
+                        switch (currentType) {
+                            case AppConfig.SCAN_TYPE_CODE_69:
+                                code69 = input_no.getText().toString().trim();
+                                if (!code69.toUpperCase().startsWith("69")) {
+                                    UIHelper.showMessage(c, "六九码错误请重新扫描");
+                                    onPause();
+                                    onResume();
+                                    return;
+                                }
+                                check69IsInclude();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_SN:
+                                codeSN = input_no.getText().toString().trim();
+                                if (codeSN.toUpperCase().startsWith("69")) {
+                                    UIHelper.showMessage(c, "SN码错误请重新扫描");
+                                    onPause();
+                                    onResume();
+                                    return;
+                                }
+                                switch (enterType) {
+                                    case AppConfig.ENTER_TYPE_MANGSAO:
+                                        blindSnForMangSao();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_ZHISAO:
+                                        blindSnForZhiSao();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN:
+                                        switch (inType) {
+                                            case AppConfig.IN_TYPE_THOERY:
+                                                inStorageForThoery();
+                                                break;
+                                            case AppConfig.IN_TYPE_FACT:
+                                                toScanStorageNo();
+                                                break;
+                                        }
+                                        break;
+                                    case AppConfig.ENTER_TYPE_OUT:
+                                        outStorage();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_QUERY:
+                                        query();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_CHECK:
+                                        check();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_SCAN:
+                                        scan();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_CAR:
+                                        inToCar();
+                                        break;
+                                }
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_CAR:
+                                codeCar = input_no.getText().toString().trim();
+                                switch (enterType) {
+                                    case AppConfig.ENTER_TYPE_MANGSAO:
+                                        intoCarForMangsao();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_ZHISAO:
+                                        intoCarForZhiSao();
+                                        break;
+                                }
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_SIGN:
+                                codeOrder = input_no.getText().toString().trim();
+                                enterSignActivity();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_REJECTION:
+                                codeOrder = input_no.getText().toString().trim();
+                                enterRejectionActivity();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_STORAGE:
+                                storageNo = input_no.getText().toString().trim();
+                                inStorage();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_SUBNO:
+                                subNo = input_no.getText().toString().trim();
+                                tieSubNo();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_SUBNO2:
+                                subNo = input_no.getText().toString().trim();
+                                checkSubNo();
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_TRANSFER:
+                                faceNumber = input_no.getText().toString().trim();
+                                transferScan();
+                                break;
+
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -693,26 +816,37 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
      * 拿到运单号，进入签收页面
      */
     private void enterSignActivity() {
-        OkHttpUtils//
-                .get()//
-                .tag(this)//
-                .url(Urls.CHECK_PHONE_NUMBER)//
-                .addParams(AppConfig.USER_ID, userId)//
-                .addParams("no", codeOrder)//
-                .build()//
-                .execute(new AppGsonCallback<Status2Bean>(new RequestModel(c)) {
-                    @Override
-                    public void onResponseOK(Status2Bean response, int id) {
-                        super.onResponseOK(response, id);
-                        // code == 1 发送短信
-                        int code = response.getResult();
-                        Intent intent = new Intent();
-                        intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
-                        intent.putExtra("isNeed", code == 1 ? true : false);
-                        JumpToActivity(SignActivity.class, intent);
-                        finish();
-                    }
-                });
+        if (isNiXiang) {
+            Intent intent = new Intent();
+            intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
+            intent.putExtra(AppConfig.IS_NIXIANG, true);
+            intent.putExtra("isNeed", false);
+            JumpToActivity(SignActivity.class, intent);
+            finish();
+        } else {
+
+            OkHttpUtils//
+                    .get()//
+                    .tag(this)//
+                    .url(Urls.CHECK_PHONE_NUMBER)//
+                    .addParams(AppConfig.USER_ID, userId)//
+                    .addParams("no", codeOrder)//
+                    .build()//
+                    .execute(new AppGsonCallback<Status2Bean>(new RequestModel(c)) {
+                        @Override
+                        public void onResponseOK(Status2Bean response, int id) {
+                            super.onResponseOK(response, id);
+                            // code == 1 发送短信
+                            int code = response.getResult();
+                            Intent intent = new Intent();
+                            intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
+                            intent.putExtra(AppConfig.IS_NIXIANG, false);
+                            intent.putExtra("isNeed", code == 1 ? true : false);
+                            JumpToActivity(SignActivity.class, intent);
+                            finish();
+                        }
+                    });
+        }
     }
 
     /**
@@ -784,7 +918,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         OkHttpUtils //
                 .post()//
                 .tag(this)//
-                .url(Urls.BLIND_SN_CODE_ZHISAO)//
+                .url(isNiXiang ? Urls.RE_BLIND_SN_CODE_ZHISAO : Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams("id", String.valueOf(orderId))//
                 .addParams("sn", codeSN)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -974,6 +1108,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     String faceNumber = "";//面单号
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
+    boolean isNiXiang = false;//是否是逆向
 
 
     @Override
@@ -1015,6 +1150,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         viewfinderView.setHintText1(text1);
         viewfinderView.setHintText2("");
     }
+
 
     /**
      * 显示底层错误信息并退出应用

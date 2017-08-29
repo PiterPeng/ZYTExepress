@@ -44,14 +44,19 @@
         <activity android:name=".activity.IntoCarListActivity"/>
         <activity android:name=".activity.SignActivity"/>
         <activity android:name=".activity.RejectionActivity"/>
-        <activity android:name=".activity.StickScanActivity"/>
         <activity android:name=".activity.PDAScanActivity"/>
         <activity android:name=".activity.IncludeListActivity"/>
         <activity android:name=".activity.ShowDetailsActivity"/>
         <activity android:name=".activity.SelectOneToBindActivity"/>
         <activity android:name=".activity.TransferScanActivity"/>
         <activity android:name=".activity.ProjectSelectActivity"/>
+        <activity android:name=".activity.OMSActivity"/>
+        <activity android:name=".activity.WarehouseActivity"/>
         <activity android:name="com.karics.library.zxing.android.CaptureActivity"/>
+        <activity android:name=".activity.QianShouActivity"/>
+        <activity android:name=".activity.InputActivity"/>
+        <activity android:name=".activity.TMSActivity"/>
+        <activity android:name=".activity.NiXActivity"/>
     </application>
 
 </manifest>

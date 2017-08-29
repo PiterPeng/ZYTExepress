@@ -41,6 +41,10 @@ public class MineFragment extends BaseFragement {
     Unbinder unbinder;
     @BindView(R.id.switch_severs)
     TextView switchSevers;
+    @BindView(R.id.belong)
+    TextView belong;
+    @BindView(R.id.intoDate)
+    TextView intoDate;
 
     @Override
     protected int getContentResourseId() {

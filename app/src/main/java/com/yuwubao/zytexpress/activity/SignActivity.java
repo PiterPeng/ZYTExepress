@@ -74,6 +74,7 @@ public class SignActivity extends BaseActivity {
     LinearLayout llGetCode;
     private String userId;
     boolean isNeed = true;
+    private boolean isNiXiang = false;
 
     @Override
     protected int getContentResourseId() {
@@ -157,6 +158,7 @@ public class SignActivity extends BaseActivity {
     private void initDatas() {
         orderIntent = getIntent().getExtras().getString(AppConfig.ORDER_CODE);
         isNeed = getIntent().getExtras().getBoolean("isNeed");
+        isNiXiang = getIntent().getExtras().getBoolean(AppConfig.IS_NIXIANG);
         isShowMobileCode(isNeed);
         if (!TextUtils.isEmpty(orderIntent)) {
             order.setText("子单号或SN码：" + orderIntent);
@@ -212,7 +214,7 @@ public class SignActivity extends BaseActivity {
         if (files.isEmpty()) {
             OkHttpUtils.post()//
                     .tag(this)//
-                    .url(Urls.ORDER_SIGN)//
+                    .url(isNiXiang ? Urls.RE_VERSE_SIGN : Urls.ORDER_SIGN)//
                     .addParams("no", orderIntent)//
                     .addParams(AppConfig.USER_ID, userId)//
                     .addParams("pic", "")//
@@ -228,7 +230,7 @@ public class SignActivity extends BaseActivity {
         } else {
             OkHttpUtils.post()//
                     .tag(this)//
-                    .url(Urls.ORDER_SIGN)//
+                    .url(isNiXiang ? Urls.RE_VERSE_SIGN : Urls.ORDER_SIGN)//
                     .addParams(AppConfig.USER_ID, userId)//
                     .addParams("no", orderIntent)//
                     .files("pic", files)//

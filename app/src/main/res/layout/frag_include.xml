@@ -4,34 +4,10 @@
                 android:layout_height="match_parent"
                 android:background="@color/activity_bg">
 
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        >
-
-        <ImageView
-            android:id="@+id/scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/scanning"/>
-
-        <ImageView
-            android:id="@+id/sign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@drawable/received"/>
-
-        <ImageView
-            android:id="@+id/rejection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@drawable/rejection"/>
-    </LinearLayout>
-
+        android:text="敬请期待"/>
 
 </RelativeLayout>

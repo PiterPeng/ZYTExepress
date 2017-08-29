@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_login"
-        />
+        android:src="@drawable/bg_login"/>
 
     <ImageView
         android:id="@+id/login_text"
@@ -38,7 +37,6 @@
             android:background="@drawable/shape_white_corner"
             android:hint="用户名"
             android:maxLength="11"
-            android:text="ZYT42"
             android:maxLines="1"
             android:padding="10dp"
             android:textColor="@color/grayslate"
@@ -55,7 +53,6 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/shape_white_corner"
             android:hint="密码"
-            android:text="0730918990"
             android:inputType="textPassword"
             android:maxLength="11"
             android:maxLines="1"
@@ -89,6 +86,5 @@
         android:background="@drawable/selector_login"
         android:text="测试"
         android:textColor="@color/white"
-        android:visibility="gone"
         />
 </RelativeLayout>

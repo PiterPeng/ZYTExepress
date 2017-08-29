@@ -4,6 +4,7 @@ import android.app.Service;
 import android.media.AudioManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -17,9 +18,9 @@ import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.frag.BaseFragement;
 import com.yuwubao.zytexpress.frag.HistoryFragment;
 import com.yuwubao.zytexpress.frag.HomeFragment;
-import com.yuwubao.zytexpress.frag.IncludeFragment;
 import com.yuwubao.zytexpress.frag.MineFragment;
-import com.yuwubao.zytexpress.frag.SaveFragment;
+import com.yuwubao.zytexpress.frag.ShopStoreFragment;
+import com.yuwubao.zytexpress.frag.StickScanFragment;
 import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.widget.CustomViewPager;
 import com.yuwubao.zytexpress.widget.HeaderBar;
@@ -102,12 +103,12 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     void setUpPage() {
         rootPages = new ArrayList<>();
         if (level > 1) {//网点登录
-            rootPages.add(new IncludeFragment());
+            rootPages.add(new ShopStoreFragment());
             rootPages.add(new MineFragment());
         } else {
             rootPages.add(new HomeFragment());
-            rootPages.add(new SaveFragment());
-            rootPages.add(new IncludeFragment());
+            rootPages.add(new StickScanFragment());
+            rootPages.add(new ShopStoreFragment());
             rootPages.add(new HistoryFragment());
             rootPages.add(new MineFragment());
         }
@@ -133,6 +134,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabSelected(int position) {
         pages.setCurrentItem(position);
+        headerBar.setVisibility(position == 1 ? View.GONE : View.VISIBLE);
     }
 
     @Override
