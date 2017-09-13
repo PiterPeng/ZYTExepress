@@ -30,20 +30,20 @@
                 android:src="@drawable/tihuoyuzhi"/>
 
             <ImageView
-                android:id="@+id/paijian"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/paijian"/>
-
-            <ImageView
                 android:id="@+id/daohuo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/daohuo"/>
+
+            <ImageView
+                android:id="@+id/paijian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/paijian"/>
 
         </LinearLayout>
     </ScrollView>

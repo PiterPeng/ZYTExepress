@@ -8,11 +8,17 @@ import android.view.View;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.User;
+import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.helper.UIHelper;
+import com.yuwubao.zytexpress.net.AppGsonCallback;
+import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,6 +105,7 @@ public class QianShouActivity extends BaseActivity {
                         }
                         break;
                     case 3:
+//                        reSendSMS();
                         UIHelper.showMessage(c, "待开发");
                         break;
                     case 4:
@@ -116,7 +123,32 @@ public class QianShouActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void reSendSMS() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            OkHttpUtils//
+                    .post()//
+                    .url(Urls.RESENDSMS)//
+                    .addParams("userId", user.getId() + "")//
+                    .addParams("sn", "")//
+                    .tag(this)//
+                    .build().execute(new AppGsonCallback(new RequestModel(c)) {
+                @Override
+                public void onResponseOK(Object response, int id) {
+                    super.onResponseOK(response, id);
+
+                }
+            });
+        }
+    }
+
     private void setTitle() {
         title.setTitle("订单签收管理（SMS）");
+    }
+
+    @Override
+    protected void onDestroy() {
+        OkHttpUtils.getInstance().cancelTag(this);
+        super.onDestroy();
     }
 }

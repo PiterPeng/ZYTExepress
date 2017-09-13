@@ -22,23 +22,23 @@ public class Count3Bean extends BaseBean {
 
     public static class ResultBean {
         /**
-         * customerName : 武汉电商RDC
+         * shipperName : 武汉电商RDC
          * quantity : 2
          * volume : 0.2503
          * weight : 44.5
          */
 
-        private String customerName;
+        private String shipperName;
         private int quantity;
         private double volume;
         private double weight;
 
         public String getCustomerName() {
-            return customerName;
+            return shipperName;
         }
 
         public void setCustomerName(String customerName) {
-            this.customerName = customerName;
+            this.shipperName = customerName;
         }
 
         public int getQuantity() {

@@ -12,7 +12,7 @@ public class Urls {
     /**
      * 默认的API头地址
      */
-    public static String TEST_HEAD_URL = "http://192.168.100.123:8080/";
+    public static String TEST_HEAD_URL = "http://192.168.100.135:8080/";
     public static String ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
     public static String HEAD_URL = TEST_MODE ? TEST_HEAD_URL : ONLINE_HEAD_URL;
@@ -24,7 +24,7 @@ public class Urls {
     //盲扫列表
     public static String MANG_SCAN = HEAD_URL + "oms/orderItem/queryItemTaked";
     //调度列表
-    public static String DISPATCH = HEAD_URL + "oms/orderItem/queryItemType";
+    public static String DISPATCH = HEAD_URL + "oms/orderItem/orderPredictList";
     //统计 参数type=1 --->盲扫   参数type=2 --->指定扫描
     public static String COUNT = HEAD_URL + "oms/orderItem/findItemModeSum";
     //未备案列表
@@ -70,7 +70,7 @@ public class Urls {
     //调度汇总
     public static String DISPATCH_COUNT = HEAD_URL + "oms/orderItem/findItemTypeSum";
     //统计汇总
-    public static String COUNT_COUNT = HEAD_URL + "oms/orderItem/findItemTypeTotle";
+    public static String COUNT_COUNT = HEAD_URL + "oms/orderItem/orderPredictStatistics";
     //查询里面的统计
     public static String QUERY_COUNT = HEAD_URL + "oms/orderItem/findLabelingSum";
     //查询里面的列表
@@ -87,9 +87,11 @@ public class Urls {
     public static String FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
     //轮播图地址
     public static String BANNER_URLS = HEAD_URL + "sys/news/pda";
+    //短信重发
+    public static String RESENDSMS = HEAD_URL + "oms/order/resendSms";
 
     public static void change() {
-        TEST_HEAD_URL = "http://192.168.100.123:8080/";
+        TEST_HEAD_URL = "http://192.168.100.135:8080/";
         ONLINE_HEAD_URL = "http://139.224.10.42:8080/";
 
         //登录

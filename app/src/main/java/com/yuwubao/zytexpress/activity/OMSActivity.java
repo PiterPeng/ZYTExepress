@@ -31,27 +31,24 @@ public class OMSActivity extends BaseActivity {
         setTitle();
     }
 
-    void jump(int type) {
-        Intent i = new Intent(c, ProjectSelectActivity.class);
-        i.putExtra("jumpType", type);
-        startActivity(i);
-    }
-
     private void setTitle() {
         title.setTitle("订单信息管理（OMS)");
     }
 
     @OnClick({R.id.tihuo, R.id.paijian, R.id.daohuo})
     public void onViewClicked(View view) {
+        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.tihuo:
-                JumpToActivity(DisPatchAndCountActivity.class);
-                break;
-            case R.id.paijian:
-                JumpToActivity(DisPatchAndCountActivity.class);
+                intent.putExtra("jump_type", 0);
+                JumpToActivity(DisPatchAndCountActivity.class, intent);
                 break;
             case R.id.daohuo:
-                UIHelper.showMessage(c,"敬请期待！");
+                intent.putExtra("jump_type", 2);
+                JumpToActivity(DisPatchAndCountActivity.class, intent);
+                break;
+            case R.id.paijian:
+                UIHelper.showMessage(c, "敬请期待！");
                 break;
         }
     }

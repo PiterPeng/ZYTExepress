@@ -43,6 +43,8 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
     int pageSize = 10;
     private String userId;
 
+    int type = -1;//0: 提货预知；1：派件预知；2：到货预知
+
     @Override
     protected int getContentResourseId() {
         return R.layout.activity_dispatch;
@@ -54,9 +56,14 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        getBundle();
         setSwipe();
         setComAdapter();
 //        initData();
+    }
+
+    private void getBundle() {
+        type = getArguments().getInt("jumpType");
     }
 
     private void setSwipe() {
@@ -83,27 +90,47 @@ public class DispatchFragment extends BaseFragement implements OnRefreshListener
         });
     }
 
+    private boolean isLoadMoreClose = false;
+
     private void initData() {
         OkHttpUtils//
                 .get()//
                 .tag(this)//
                 .url(Urls.DISPATCH)//
                 .addParams(AppConfig.USER_ID, userId)//
+                .addParams("predictType", type + "")//
+                .addParams(AppConfig.CURRENT_PAGE, currentPage + "")//
+                .addParams(AppConfig.PAGE_SIZE, pageSize + "")//
                 .build()//
                 .execute(new AppGsonCallback<DispatchBean>(new RequestModel(c)) {
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        swipeToLoadLayout.setRefreshing(false);
+                        if (swipeToLoadLayout.isRefreshing()) {
+                            swipeToLoadLayout.setRefreshing(false);
+                        } else if (swipeToLoadLayout.isLoadingMore()) {
+                            swipeToLoadLayout.setLoadingMore(false);
+                            if (isLoadMoreClose) {
+                                swipeToLoadLayout.setLoadMoreEnabled(false);
+                            }
+                        }
                     }
 
                     @Override
                     public void onResponseOK(DispatchBean response, int id) {
                         super.onResponseOK(response, id);
+                        if (currentPage == 1) {
+                            contentBeen.clear();
+                        }
                         List<DispatchBean.ResultBean.ContentBean> temp = response.getResult().getContent();
-                        contentBeen.clear();
+                        if (pageSize > temp.size()) {
+                            isLoadMoreClose = true;
+                        } else {
+                            swipeToLoadLayout.setLoadMoreEnabled(true);
+                        }
                         contentBeen.addAll(temp);
                         adapter.notifyDataSetChanged();
+                        currentPage++;
                     }
                 });
     }

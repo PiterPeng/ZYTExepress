@@ -52,13 +52,17 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
     SwipeToLoadLayout swipeToLoadLayout;
     @BindView(R.id.swipe_target)
     RecyclerView swipeTarget;
-    private String type;
+    private String type;//0：按仓库统计；1：按客户统计；2：按项目统计
     List<Count3Bean.ResultBean> resultBeen;
     CommonAdapter adapter;
     private TextView[] textViews;
     private View[] views;
+
     int currentPage = 1;
+    int pageSize = 10;
+
     private String userId;
+    int jumpType = -1;//0: 提货预知；1：派件预知；2：到货预知
 
     @Override
     protected int getContentResourseId() {
@@ -71,10 +75,15 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        getBundle();
         setSwipe();
         initView();
         setComAdapter();
 //        initData();
+    }
+
+    private void getBundle() {
+        jumpType = getArguments().getInt("jumpType");
     }
 
     private void setSwipe() {
@@ -102,10 +111,12 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
     }
 
     private void initView() {
-        type = "1";
+        type = "0";
         textViews = new TextView[]{tv_RoadCase, tv_News, tv_Wq};
         views = new View[]{v_RoadCase, v_News, v_Wq};
     }
+
+    private boolean isLoadMoreClose = false;
 
     private void initData() {
         OkHttpUtils//
@@ -113,22 +124,38 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
                 .tag(this)//
                 .url(Urls.COUNT_COUNT)//
                 .addParams(AppConfig.USER_ID, userId)//
-                .addParams("type", type)//
+                .addParams("countType", type)//
+                .addParams("predictType", jumpType + "")//
                 .build()//
                 .execute(new AppGsonCallback<Count3Bean>(new RequestModel(c)) {
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        swipeToLoadLayout.setRefreshing(false);
+                        if (swipeToLoadLayout.isRefreshing()) {
+                            swipeToLoadLayout.setRefreshing(false);
+                        } else if (swipeToLoadLayout.isLoadingMore()) {
+                            swipeToLoadLayout.setLoadingMore(false);
+                            if (isLoadMoreClose) {
+                                swipeToLoadLayout.setLoadMoreEnabled(false);
+                            }
+                        }
                     }
 
                     @Override
                     public void onResponseOK(Count3Bean response, int id) {
                         super.onResponseOK(response, id);
+                        if (currentPage == 1) {
+                            resultBeen.clear();
+                        }
                         List<Count3Bean.ResultBean> temp = response.getResult();
-                        resultBeen.clear();
+                        if (pageSize > temp.size()) {
+                            isLoadMoreClose = true;
+                        } else {
+                            swipeToLoadLayout.setLoadMoreEnabled(true);
+                        }
                         resultBeen.addAll(temp);
                         adapter.notifyDataSetChanged();
+                        currentPage++;
                     }
                 });
     }
@@ -160,7 +187,7 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         if (currentIndex == 1) {
             return;
         }
-        type = "1";
+        type = "0";
         clearAndShowIndex(0);
         initData();
         currentIndex = 1;
@@ -174,7 +201,7 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         if (currentIndex == 2) {
             return;
         }
-        type = "2";
+        type = "1";
         clearAndShowIndex(1);
         initData();
         currentIndex = 2;
@@ -188,7 +215,7 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         if (currentIndex == 3) {
             return;
         }
-        type = "3";
+        type = "2";
         clearAndShowIndex(2);
         initData();
         currentIndex = 3;

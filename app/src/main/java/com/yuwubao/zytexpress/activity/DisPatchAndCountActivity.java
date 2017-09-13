@@ -1,5 +1,6 @@
 package com.yuwubao.zytexpress.activity;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -9,8 +10,6 @@ import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.Count2Bean;
 import com.yuwubao.zytexpress.bean.RequestModel;
-import com.yuwubao.zytexpress.bean.User;
-import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.frag.CountFragment;
 import com.yuwubao.zytexpress.frag.DispatchFragment;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
@@ -25,7 +24,7 @@ import butterknife.BindView;
 /**
  * Created by Peng on 2017/3/31
  * e-mail: phlxplus@163.com
- * description: 调度 & 统计
+ * description: 调度 & 统计(提货预知)
  */
 
 public class DisPatchAndCountActivity extends BaseActivity {
@@ -48,6 +47,8 @@ public class DisPatchAndCountActivity extends BaseActivity {
     List<Count2Bean.ResultBean> countBeen;
     String userId;
 
+    int jumpType;//0: 提货预知；1：派件预知；2：到货预知
+
     @Override
     protected int getContentResourseId() {
         return R.layout.activity_dispatch_count;
@@ -55,15 +56,18 @@ public class DisPatchAndCountActivity extends BaseActivity {
 
     @Override
     protected void init() {
-        User user = UserDao.getInstance().getLastUser();
-        if (user != null) {
-            userId = String.valueOf(user.getId());
-        }
-        setCount();
+        resolveIntent();
         setFrag();
         setRadioGroup();
     }
 
+    private void resolveIntent() {
+        jumpType = getIntent().getExtras().getInt("jump_type");
+    }
+
+    /**
+     * 底部汇总
+     */
     private void setCount() {
         countBeen = new ArrayList<>();
         OkHttpUtils.get()//
@@ -89,8 +93,12 @@ public class DisPatchAndCountActivity extends BaseActivity {
     }
 
     private void setFrag() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("jumpType", jumpType);
         dispatchFragment = new DispatchFragment();
         countFragment = new CountFragment();
+        dispatchFragment.setArguments(bundle);
+        countFragment.setArguments(bundle);
         replaceFragment(R.id.replace, dispatchFragment);
     }
 

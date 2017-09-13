@@ -1164,5 +1164,4 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         builder.show();
     }
 
-
 }
