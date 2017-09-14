@@ -2,6 +2,7 @@ package com.yuwubao.zytexpress.activity;
 
 import android.content.Intent;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,6 +55,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
     int pageSize = 10;
     String id;
     private String userId;
+    String customerName, projectName;
 
     @Override
     protected int getContentResourseId() {
@@ -63,6 +65,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
     @Override
     protected void init() {
         resolveIntent();
+        showDialog();
         setHeader();
         setSwipe();
         setmAdapter();
@@ -74,7 +77,14 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        customerName = getIntent().getExtras().getString("customerName");
+        projectName = getIntent().getExtras().getString("projectName");
         id = String.valueOf(getIntent().getExtras().getInt("id"));
+    }
+
+    private void showDialog() {
+        new AlertDialog.Builder(c).setTitle("提示").setMessage("当前客户名称：" + customerName + "\n" + "当前项目名称:" +
+                projectName).setPositiveButton("我知道了", null).show();
     }
 
     private void addHeader() {
@@ -147,6 +157,7 @@ public class IntoCarListActivity extends BaseActivity implements OnRefreshListen
 
     private void setHeader() {
         title.setTitle(getString(R.string.into_car));
+        title.setAndShowTopTitle(customerName + projectName);
     }
 
     private void setSwipe() {

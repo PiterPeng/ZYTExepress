@@ -18,49 +18,67 @@
             android:paddingRight="15dp"
             android:src="@drawable/back"/>
 
-        <RadioGroup
-            android:id="@+id/radio_group"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/shape_radio_bg"
-            android:orientation="horizontal"
-            >
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-
-            <RadioButton
-                android:id="@+id/rb_left"
+            <RadioGroup
+                android:id="@+id/radio_group"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_radio_btn_leftt"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="5dp"
-                android:text="盲扫"
-                android:textColor="@color/red"
-                android:textSize="14sp"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/shape_radio_bg"
+                android:orientation="horizontal"
+                >
 
-            <RadioButton
-                android:id="@+id/rb_right"
+                <RadioButton
+                    android:id="@+id/rb_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_radio_btn_leftt"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="5dp"
+                    android:text="盲扫"
+                    android:textColor="@color/red"
+                    android:textSize="14sp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_radio_btn_right"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="3dp"
+                    android:text="指扫"
+                    android:textColor="@color/red"
+                    android:textSize="14sp"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/showPM"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_radio_btn_right"
-                android:button="@null"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/radio_group"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
                 android:gravity="center"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="5dp"
-                android:text="指扫"
-                android:textColor="@color/red"
-                android:textSize="14sp"/>
-        </RadioGroup>
-
+                android:visibility="gone"
+                android:text="速必达成陪项目"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_12"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <FrameLayout

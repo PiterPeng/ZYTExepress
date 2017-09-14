@@ -18,7 +18,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -483,7 +482,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri;
-            String authority = getPackageName() + ".provider";
+            String authority = getPackageName() + ".fileprovider";
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 imageUri = FileProvider.getUriForFile(mContext, authority, cameraFile);//通过FileProvider创建一个content类型的Uri
             } else {

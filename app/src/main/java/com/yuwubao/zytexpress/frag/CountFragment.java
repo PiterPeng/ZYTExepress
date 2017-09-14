@@ -189,7 +189,6 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         }
         type = "0";
         clearAndShowIndex(0);
-        initData();
         currentIndex = 1;
     }
 
@@ -203,7 +202,6 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         }
         type = "1";
         clearAndShowIndex(1);
-        initData();
         currentIndex = 2;
     }
 
@@ -217,7 +215,6 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         }
         type = "2";
         clearAndShowIndex(2);
-        initData();
         currentIndex = 3;
     }
 
@@ -231,6 +228,8 @@ public class CountFragment extends BaseFragement implements OnRefreshListener, O
         }
         textViews[index].setTextColor(getResources().getColor(R.color.white));
         views[index].setVisibility(View.VISIBLE);
+        currentPage = 1;
+        initData();
     }
 
     @Override

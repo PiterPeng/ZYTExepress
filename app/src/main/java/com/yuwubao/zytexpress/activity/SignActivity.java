@@ -1,5 +1,6 @@
 package com.yuwubao.zytexpress.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.karics.library.zxing.android.CaptureActivity;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
@@ -228,7 +230,8 @@ public class SignActivity extends BaseActivity {
                         }
                     });
         } else {
-            OkHttpUtils.post()//
+            OkHttpUtils//
+                    .post()//
                     .tag(this)//
                     .url(isNiXiang ? Urls.RE_VERSE_SIGN : Urls.ORDER_SIGN)//
                     .addParams(AppConfig.USER_ID, userId)//
@@ -239,7 +242,17 @@ public class SignActivity extends BaseActivity {
                         @Override
                         public void onResponseOK(StatusBean response, int id) {
                             super.onResponseOK(response, id);
-                            UIHelper.showMessage(c, "签收成功");
+                            if (!response.isResult()) {
+                                //返回false表示还有订单号要处理,跳到扫描页面
+                                Intent intent = new Intent();
+                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SIGN);
+                                if (AppConfig.isPDA) {
+                                    JumpToActivity(PDAScanActivity.class, intent);
+                                } else {
+                                    JumpToActivity(CaptureActivity.class, intent);
+                                }
+                            }
+                            UIHelper.showMessage(c, response.getMessage());
                             finish();
                         }
                     });

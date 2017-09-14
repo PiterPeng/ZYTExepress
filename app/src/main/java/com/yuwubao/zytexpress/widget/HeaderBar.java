@@ -26,6 +26,7 @@ public class HeaderBar extends RelativeLayout {
 
     private ImageView back;
     private TextView top_title;
+    private TextView top_small_title;
     private TextView top_leftTitle;
     private ImageButton top_right_btn;
     private TextView rightTitle;
@@ -53,6 +54,7 @@ public class HeaderBar extends RelativeLayout {
         View v = LayoutInflater.from(context).inflate(R.layout.headerbar, null);
         back = (ImageView) v.findViewById(R.id.btn_top_back);
         top_title = (TextView) v.findViewById(R.id.btn_top_title);
+        top_small_title = (TextView) v.findViewById(R.id.small_title);
         top_right_btn = (ImageButton) v.findViewById(R.id.img_top_right);
         rightTitle = (TextView) v.findViewById(R.id.right_title);
         top_leftTitle = (TextView) v.findViewById(R.id.tv_top_back);
@@ -182,6 +184,7 @@ public class HeaderBar extends RelativeLayout {
         }
     }
 
+
     /**
      * 设置是否隐藏标题
      *
@@ -218,6 +221,16 @@ public class HeaderBar extends RelativeLayout {
         rightTitle.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 显示并设置顶部副标题
+     *
+     * @param rTitle
+     */
+    public void setAndShowTopTitle(String rTitle) {
+        top_small_title.setText(rTitle);
+        top_small_title.setVisibility(View.VISIBLE);
+    }
+
     public TextView getRightTitle() {
         return rightTitle;
     }
@@ -234,6 +247,7 @@ public class HeaderBar extends RelativeLayout {
         rightTitle.setTextSize(size);
     }
 
+
     public RelativeLayout getRlMessage() {
         return rlMessage;
     }
@@ -244,5 +258,13 @@ public class HeaderBar extends RelativeLayout {
 
     public ImageButton getTop_right_btn() {
         return top_right_btn;
+    }
+
+    public TextView getTop_small_title() {
+        return top_small_title;
+    }
+
+    public void setTop_small_title(TextView top_small_title) {
+        this.top_small_title = top_small_title;
     }
 }

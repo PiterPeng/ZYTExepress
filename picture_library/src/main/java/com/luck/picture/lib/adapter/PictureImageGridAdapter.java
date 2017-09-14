@@ -45,7 +45,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean is_checked_num;
     int type;
 
-    public PictureImageGridAdapter(Context context,int type, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num) {
+    public PictureImageGridAdapter(Context context, int type, boolean showCamera, int maxSelectNum, int mode, boolean
+            enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num) {
         this.type = type;
         this.context = context;
         this.selectMode = mode;
@@ -95,7 +96,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_item_camera, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_image_grid_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_image_grid_item, parent,
+                    false);
             return new ViewHolder(view);
         }
     }
@@ -136,13 +138,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.rl_duration.setVisibility(View.VISIBLE);
                 contentHolder.tv_duration.setText(timeParse(duration));
             } else {
-                Glide.with(context)
-                        .load(path)
-                        .placeholder(R.drawable.image_placeholder)
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .centerCrop()
-                        .into(contentHolder.picture);
+                Glide.with(context).load(path).placeholder(R.drawable.image_placeholder).crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT).centerCrop().into(contentHolder.picture);
 
                 contentHolder.rl_duration.setVisibility(View.GONE);
             }
@@ -157,10 +154,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == FunctionConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == FunctionConfig.MODE_SINGLE ||
+                            enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == FunctionConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == FunctionConfig.MODE_SINGLE ||
+                            enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
@@ -184,7 +183,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             super(itemView);
             headerView = itemView;
             camera = (ImageView) itemView.findViewById(R.id.camera);
-            camera.setImageResource(type==LocalMediaLoader.TYPE_VIDEO?R.drawable.take_video:R.drawable.take_camera);
+            camera.setImageResource(type == LocalMediaLoader.TYPE_VIDEO ? R.drawable.take_video : R.drawable
+                    .take_camera);
         }
     }
 
@@ -240,7 +240,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         boolean isChecked = contentHolder.check.isSelected();
 
         if (selectImages.size() >= maxSelectNum && !isChecked) {
-            Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG)
+                    .show();
             return;
         }
         if (isChecked) {
@@ -283,9 +284,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 Animation animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
                 holder.check.startAnimation(animation);
             }
-            holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay2), PorterDuff.Mode.SRC_ATOP);
+            holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay2), PorterDuff.Mode
+                    .SRC_ATOP);
         } else {
-            holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay), PorterDuff.Mode.SRC_ATOP);
+            holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay), PorterDuff.Mode
+                    .SRC_ATOP);
         }
     }
 

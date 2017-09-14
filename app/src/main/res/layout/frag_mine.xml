@@ -159,6 +159,7 @@
                     android:background="@drawable/selector_login"
                     android:gravity="center"
                     android:padding="10dp"
+                    android:visibility="gone"
                     android:text="当前环境：测试"
                     android:textColor="@color/white"/>
 

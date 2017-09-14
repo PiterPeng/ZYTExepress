@@ -81,8 +81,9 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         bottomNavigationBar.setTabSelectedListener(this);
         bottomNavigationBar.setBackgroundResource(R.color.white);
         if (level > 1) {//网点登录
-            bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_writein, getString(R.string.tab_news)))
-                    .addItem(createItem(R.drawable.bottom_icon_user, getString(R.string.tab_services)))
+            bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_home, getString(R.string.tab_travel)))
+                    .addItem(createItem(R.drawable.bottom_icon_writein, getString(R.string.tab_news))).addItem
+                    (createItem(R.drawable.bottom_icon_user, getString(R.string.tab_services)))
                     .setFirstSelectedPosition(defaultPageIndex).initialise();
         } else {
             bottomNavigationBar.addItem(createItem(R.drawable.bottom_icon_home, getString(R.string.tab_travel)))
@@ -103,6 +104,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     void setUpPage() {
         rootPages = new ArrayList<>();
         if (level > 1) {//网点登录
+            rootPages.add(new HomeFragment());
             rootPages.add(new ShopStoreFragment());
             rootPages.add(new MineFragment());
         } else {
@@ -134,7 +136,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabSelected(int position) {
         pages.setCurrentItem(position);
-        headerBar.setVisibility(position == 1 ? View.GONE : View.VISIBLE);
+        headerBar.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
     }
 
     @Override

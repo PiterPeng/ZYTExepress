@@ -103,10 +103,14 @@ public class ProjectSelectActivity extends BaseActivity {
                         Intent intent = new Intent(c, PickUpActivity.class);
                         intent.putExtra("scanMode", resultBeanList.get(position).getScanMode());
                         intent.putExtra("id", resultBeanList.get(position).getId());
+                        intent.putExtra("customerName", resultBeanList.get(position).getCustomerName());
+                        intent.putExtra("projectName", resultBeanList.get(position).getProjectName());
                         startActivity(intent);
                     } else if (jumpType == HomeFragment.JUMP_TYPE_CAR_LIST) {
                         Intent intent = new Intent(c, IntoCarListActivity.class);
                         intent.putExtra("id", resultBeanList.get(position).getId());
+                        intent.putExtra("customerName", resultBeanList.get(position).getCustomerName());
+                        intent.putExtra("projectName", resultBeanList.get(position).getProjectName());
                         startActivity(intent);
                     }
                 }
