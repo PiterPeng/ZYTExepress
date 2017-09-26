@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimary"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:onClick="onBackClick"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:src="@drawable/back"/>
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/shape_radio_bg"
+            android:orientation="horizontal"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_radio_btn_leftt"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:text="已点"
+                android:textColor="@color/red"
+                android:textSize="14sp"/>
+
+            <RadioButton
+                android:id="@+id/rb_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_radio_btn_right"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:text="未点"
+                android:textColor="@color/red"
+                android:textSize="14sp"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/in_or_out"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="出库"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tableName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:text="入库单号："
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_16"
+            />
+
+        <TextView
+            android:id="@+id/tableName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="请选择入库单"
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_16"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_above"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_projectName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:text="项目名称："
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_16"
+            />
+
+        <TextView
+            android:id="@+id/projectName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="请选择项目"
+            android:textColor="@color/base_black"
+            android:textSize="@dimen/text_16"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_above"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/in_replace"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/activity_bg"
+        android:orientation="vertical"/>
+
+</LinearLayout>

@@ -2,6 +2,8 @@ package com.yuwubao.zytexpress;
 
 import java.io.File;
 
+import okhttp3.MediaType;
+
 /**
  * 应用程序配置类：用于保存用户相关信息及设置
  *
@@ -48,6 +50,8 @@ public class AppConfig {
     public final static String CODE_ID = "CODE_ID";
     public final static String CODE_FACE = "CODE_FACE";
     public final static String STATUS_NO = "STATUS_NO";
+    public final static String SCAN_ID = "SCAN_ID";
+    public final static String SCAN_INDEX = "SCAN_INDEX";
     public final static int SCAN_TYPE_CODE_69 = 69;
     public final static int SCAN_TYPE_CODE_SN = 70;
     public final static int SCAN_TYPE_CODE_CAR = 71;
@@ -67,6 +71,16 @@ public class AppConfig {
     public final static int SCAN_TYPE_CODE_SUBNO = 85;
     public final static int SCAN_TYPE_CODE_SUBNO2 = 86;
     public final static int SCAN_TYPE_CODE_TRANSFER = 87;
+    public final static int ENTER_TYPE_RESEND = 88;
+    public final static int ENTER_TYPE_IN_SN = 89;
+    public final static int ENTER_TYPE_IN_SN_69 = 90;
+    public final static int ENTER_TYPE_IN_SN_BUY = 91;
+    public final static int ENTER_TYPE_IN_SN_SELL = 92;
+    public final static int ENTER_TYPE_IN_SN_BUY_SELL = 93;
+    public final static int ENTER_TYPE_SN = 94;
+    public final static int SCAN_TYPE_CODE_BUY = 95;
+    public final static int SCAN_TYPE_CODE_SALE = 96;
+    public final static int SCAN_TYPE_CODE_CHUWEI = 97;
     public final static String SHOW_VOICE_69 = "请扫描六九码";
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
@@ -75,6 +89,9 @@ public class AppConfig {
     public final static String SHOW_VOICE_STORAGE = "请扫描储位号";
     public final static String SHOW_VOICE_SUB_No = "请扫描子单号";
     public final static String SHOW_VOICE_FACE_No = "请扫描子单号或SN码";
+    public final static String SHOW_VOICE_BUY = "请扫描买方料号";
+    public final static String SHOW_VOICE_SALE = "请扫描卖方料号";
+    public final static String SHOW_VOICE_CHUWEI = "请扫描储位号";
     /***PDA扫描SCAN****/
     public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" + ".broadcast";
     public static final String SCN_CUST_EX_SCODE = "scannerdata";
@@ -85,6 +102,7 @@ public class AppConfig {
     //--返回码值
     public static final int RESULT_OK = 0;//成功
     public static final int RESULT_LOGINOUT = 301;//异地登录
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     //--
     public static final String ISCHECKVERSION = "isCheckVersion";
@@ -96,9 +114,17 @@ public class AppConfig {
     public static final String PAGE_SIZE = "pageSize";// 每页显示条数
 
     //banner图临时图片url
-    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1498112530343&di=75a6c85b996763135fd2f4c8912f9ac5&imgtype=0&src=http%3A%2F%2Fs2.sinaimg.cn%2Fmiddle%2F46e725a4gb923374cc2e1%26690";
-    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1498112565619&di=c17e1eaefd9856758b1f9ebfb93a5631&imgtype=0&src=http%3A%2F%2Ffdfs.xmcdn.com%2Fgroup3%2FM0A%2F4D%2F29%2FwKgDslNH-Duyq6qeAAN26chjMPo905.png";
-    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1498112565608&di=fbc29ca41cc90fc9b98384a949c8137a&imgtype=0&src=http%3A%2F%2Fs10.sinaimg.cn%2Fmiddle%2F46e725a4gb9233aee3199%26690";
-    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1498112699467&di=dca8792ca998e36499533a7d7c6ba715&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D758347139%2C3687152%26fm%3D214%26gp%3D0.jpg";
+    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112530343&di=75a6c85b996763135fd2f4c8912f9ac5" +
+            "&imgtype=0&src=http%3A%2F%2Fs2.sinaimg.cn%2Fmiddle%2F46e725a4gb923374cc2e1%26690";
+    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565619&di=c17e1eaefd9856758b1f9ebfb93a5631" +
+            "&imgtype=0&src=http%3A%2F%2Ffdfs.xmcdn.com%2Fgroup3%2FM0A%2F4D%2F29%2FwKgDslNH-Duyq6qeAAN26chjMPo905.png";
+    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565608&di=fbc29ca41cc90fc9b98384a949c8137a" +
+            "&imgtype=0&src=http%3A%2F%2Fs10.sinaimg.cn%2Fmiddle%2F46e725a4gb9233aee3199%26690";
+    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" + "" +
+            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112699467&di=dca8792ca998e36499533a7d7c6ba715" +
+            "&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D758347139%2C3687152%26fm%3D214%26gp%3D0.jpg";
 
 }

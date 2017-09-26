@@ -11,8 +11,7 @@ public class BaseBean implements Serializable {
     private int status;//
     private String message;
 
-
-    public String getMessage() {
+public String getMessage() {
         return message;
     }
 

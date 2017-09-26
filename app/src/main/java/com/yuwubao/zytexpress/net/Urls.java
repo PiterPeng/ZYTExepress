@@ -8,7 +8,7 @@ package com.yuwubao.zytexpress.net;
  * @created 2017/2/4
  */
 public class Urls {
-    public static boolean TEST_MODE = false;// 当前连接服务器模式，测试模式还是产线模式
+    public static boolean TEST_MODE = true;// 当前连接服务器模式，测试模式还是产线模式
     /**
      * 默认的API头地址
      */
@@ -89,6 +89,35 @@ public class Urls {
     public static String BANNER_URLS = HEAD_URL + "sys/news/pda";
     //短信重发
     public static String RESENDSMS = HEAD_URL + "oms/order/resendSms";
+    //派件预知列表
+    public static String PAIJIAN_LIST = HEAD_URL + "oms/orderItem/orderDispatchPredictList";
+    //派件预知统计
+    public static String PAIJIAN_COUNT = HEAD_URL + "oms/orderItem/orderPredictStatistics";
+    // 获取出入库单列表
+    public static String GETINOUTLIST = HEAD_URL + "wms/pda/getInOutList";
+    // 获取出入库列表
+    public static String ISSCAN = HEAD_URL + "wms/pda/isScan";
+    // 根据出入库单id获取该出入库单下面的项目
+    public static String GETINOUTPROJECT = HEAD_URL + "wms/pda/getInOutProject";
+    //  根据项目获取扫描模式
+    public static String GETSCANMODE = HEAD_URL + "wms/pda/getScanMode";
+    //  出入库扫描
+    public static String SCAN = HEAD_URL + "wms/pda/scan";
+    //  扫描储位号
+    public static String SCANLOCATION = HEAD_URL + "wms/pda/scanLocation";
+    //  确认出入库数量
+    public static String GETCARTONS = HEAD_URL + "wms/pda/getCartons";
+    //  确认出入库
+    public static String CONFIRMWAREHOUSING = HEAD_URL + "wms/pda/confirmWarehousing";
+    //  盘存扫描根据类型获取盘存单
+    public static String GETINVENTORYLIST = HEAD_URL + "wms/pda/getInventoryList";
+    //  盘存扫描之前根据盘存单获取该盘存单下的项目
+    public static String GETPROJECT = HEAD_URL + "wms/pda/getProject";
+    //  盘存扫描
+    public static String INVENTORYSCAN = HEAD_URL + "wms/pda/inventoryScan";
+    //  盘存扫描列表
+    public static String GETINVENTORYITEMLIST = HEAD_URL + "wms/pda/getInventoryItemList";
+
 
     public static void change() {
         TEST_HEAD_URL = "http://192.168.100.123:8080/";
@@ -162,6 +191,16 @@ public class Urls {
         FINDAUTHEDCUSTOMERLIST = HEAD_URL + "ssm/customer/findDeptCustomerList";
 
         BANNER_URLS = HEAD_URL + "sys/news/pda";
+
+        RESENDSMS = HEAD_URL + "oms/order/resendSms";
+
+        PAIJIAN_LIST = HEAD_URL + "oms/orderItem/orderDispatchPredictList";
+
+        PAIJIAN_COUNT = HEAD_URL + "oms/orderItem/orderPredictStatistics";
+
+        GETINOUTLIST = HEAD_URL + "wms/pda/getInOutList";
+        GETINOUTPROJECT = HEAD_URL + "wms/pda/getInOutProject";
+        GETSCANMODE = HEAD_URL + "wms/pda/getScanMode";
 
     }
 

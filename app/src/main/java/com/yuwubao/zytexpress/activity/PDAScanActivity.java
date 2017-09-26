@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.CodeBean;
 import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
@@ -234,6 +235,9 @@ public class PDAScanActivity extends BaseActivity {
                                 case AppConfig.ENTER_TYPE_CAR:
                                     inToCar();
                                     break;
+                                case AppConfig.ENTER_TYPE_RESEND://短信重发
+                                    reSendSMS();
+                                    break;
                             }
                             break;
                         case AppConfig.SCAN_TYPE_CODE_CAR:
@@ -341,6 +345,9 @@ public class PDAScanActivity extends BaseActivity {
                                     break;
                                 case AppConfig.ENTER_TYPE_CAR:
                                     inToCar();
+                                    break;
+                                case AppConfig.ENTER_TYPE_RESEND://短信重发
+                                    reSendSMS();
                                     break;
                             }
                             break;
@@ -922,6 +929,30 @@ public class PDAScanActivity extends BaseActivity {
         intent.putExtra(AppConfig.ORDER_CODE, codeOrder);
         JumpToActivity(RejectionActivity.class, intent);
         finish();
+    }
+
+    /**
+     * 短信重发
+     */
+    private void reSendSMS() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            OkHttpUtils//
+                    .post()//
+                    .url(Urls.RESENDSMS)//
+                    .addParams("userId", user.getId() + "")//
+                    .addParams("sn", codeSN)//
+                    .tag(this)//
+                    .build()//
+                    .execute(new AppGsonCallback<CodeBean>(new RequestModel(c)) {
+                        @Override
+                        public void onResponseOK(CodeBean response, int id) {
+                            super.onResponseOK(response, id);
+                            int code = response.getResult();
+                            UIHelper.showCodeDialog(c, String.valueOf(code));
+                        }
+                    });
+        }
     }
 
     @Override

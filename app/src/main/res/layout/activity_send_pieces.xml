@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimary"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:id="@+id/ll_road_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp"
+                >
+
+                <TextView
+                    android:id="@+id/tv_road_case"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="日期"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_14"/>
+
+                <View
+                    android:id="@+id/v_road_case"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/shape_white_corner"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_news"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp"
+                >
+
+                <TextView
+                    android:id="@+id/tv_news"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="区域"
+                    android:textColor="@color/base_white"
+                    android:textSize="@dimen/text_14"
+                    />
+
+                <View
+                    android:id="@+id/v_news"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/shape_white_corner"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_weiquan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_weiquan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="项目"
+                    android:textColor="@color/base_white"
+                    android:textSize="@dimen/text_14"/>
+
+                <View
+                    android:id="@+id/v_weiquan"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/shape_white_corner"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="单号"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="接单"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="项目"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="区域"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="数量"
+                android:textColor="@color/base_black"
+                android:textSize="@dimen/text_16"/>
+
+        </LinearLayout>
+
+        <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+            android:id="@+id/swipeToLoadLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/activity_bg"
+            app:swipe_style="classic">
+
+            <include
+                android:id="@id/swipe_refresh_header"
+                layout="@layout/layout_twitter_header"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/swipe_target"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_bg"/>
+
+            <include
+                android:id="@id/swipe_load_more_footer"
+                layout="@layout/layout_classic_footer"/>
+        </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/base_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/base_blue_selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="本页总计："
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总数量\n（0）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总体积\n（0.00000m³）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+
+        <TextView
+            android:id="@+id/total_weight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="总重量\n（0.0kg）"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_14"/>
+    </LinearLayout>
+
+</LinearLayout>

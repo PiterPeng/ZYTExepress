@@ -1,12 +1,17 @@
 package com.yuwubao.zytexpress.helper;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +46,7 @@ public class UIHelper {
      */
     public static void showMessage(Context context, String message) {
         if (toast == null) {
-            toast = Toast.makeText(context, message,
-                    Toast.LENGTH_SHORT);
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
         } else {
             toast.setText(message);
@@ -60,8 +64,7 @@ public class UIHelper {
     }
 
     public static void dismissAppProgressBar(ProgressDialog progressDialog) {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        if (progressDialog != null) progressDialog.dismiss();
     }
 
     /**
@@ -91,12 +94,11 @@ public class UIHelper {
      * @param submitValus 按钮文字
      * @param okListener  点击事件
      */
-    public static void showMyCustomDialog(final Context context, String titleValus, String
-            submitValus, final View.OnClickListener okListener, final View.OnClickListener cancelListener) {
+    public static void showMyCustomDialog(final Context context, String titleValus, String submitValus, final View
+            .OnClickListener okListener, final View.OnClickListener cancelListener) {
 //        if (dialog == null) {
         dialog = new Dialog(context, R.style.dialogActivity);
-        View view = LayoutInflater.from(context).inflate(R.layout.my_custom_dialog_layout,
-                null);
+        View view = LayoutInflater.from(context).inflate(R.layout.my_custom_dialog_layout, null);
         TextView title = (TextView) view.findViewById(R.id.tv_custom_title);
         TextView submit = (TextView) view.findViewById(R.id.tv_custom_ok);
         ImageView delete = (ImageView) view.findViewById(R.id.iv_delete);
@@ -127,5 +129,31 @@ public class UIHelper {
 //        } else {
 //            dialog.show();
 //        }
+    }
+
+    public static void showCodeDialog(final Context context, final String code) {
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_code, null);
+        final EditText editText = (EditText) view.findViewById(R.id.edit_text);
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle("验证").setNegativeButton("取消", null)
+                .setPositiveButton("确定", null).setView(view).setCancelable(false).create();
+        alertDialog.show();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = editText.getText().toString().trim();
+                if (TextUtils.isEmpty(content)) {
+                    UIHelper.showMessage(context, "输入不能为空");
+                    return;
+                }
+                if (!TextUtils.equals(content, code)) {
+                    UIHelper.showMessage(context, "验证码错误");
+                    return;
+                }
+                UIHelper.showMessage(context, "操作成功！");
+                alertDialog.dismiss();
+                ((Activity) context).finish();
+            }
+        });
+
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/edit_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="5dp"
+          android:background="@drawable/shape_black_kuang_normal"
+          android:hint="请输入验证码"
+          android:lines="1"
+          android:orientation="vertical"
+          android:padding="10dp"
+          android:textColorHint="#CCCCCC"
+          android:textSize="@dimen/text_14"/>

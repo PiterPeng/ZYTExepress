@@ -67,6 +67,9 @@
         <activity android:name=".activity.InputActivity"/>
         <activity android:name=".activity.TMSActivity"/>
         <activity android:name=".activity.NiXActivity"/>
+        <activity android:name=".activity.SendPiecesActivity"/>
+        <activity android:name=".activity.NewInSaveActivity"/>
+        <activity android:name=".activity.PanCunActivity"/>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.View;
 
 import com.yuwubao.zytexpress.R;
-import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.widget.HeaderBar;
 
 import butterknife.BindView;
@@ -48,7 +47,7 @@ public class OMSActivity extends BaseActivity {
                 JumpToActivity(DisPatchAndCountActivity.class, intent);
                 break;
             case R.id.paijian:
-                UIHelper.showMessage(c, "敬请期待！");
+                JumpToActivity(SendPiecesActivity.class, intent);
                 break;
         }
     }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_black_kuang_normal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="总数"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/base_black"/>
+
+            <TextView
+                android:id="@+id/in_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"/>
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="未点"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/base_black"/>
+
+            <TextView
+                android:id="@+id/in_weiD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+        android:id="@+id/swipeToLoadLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/activity_bg"
+        app:swipe_style="classic">
+
+        <include
+            android:id="@id/swipe_refresh_header"
+            layout="@layout/layout_twitter_header"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/swipe_target"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/activity_bg"/>
+
+        <include
+            android:id="@id/swipe_load_more_footer"
+            layout="@layout/layout_classic_footer"/>
+    </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
+</LinearLayout>

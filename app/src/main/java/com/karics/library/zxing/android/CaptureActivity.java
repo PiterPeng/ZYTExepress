@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
@@ -30,9 +31,12 @@ import com.yuwubao.zytexpress.activity.RejectionActivity;
 import com.yuwubao.zytexpress.activity.SelectOneToBindActivity;
 import com.yuwubao.zytexpress.activity.ShowDetailsActivity;
 import com.yuwubao.zytexpress.activity.SignActivity;
+import com.yuwubao.zytexpress.bean.BaseBean;
+import com.yuwubao.zytexpress.bean.CodeBean;
 import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.ScanModeBean;
 import com.yuwubao.zytexpress.bean.Status2Bean;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.bean.TransferBackBean;
@@ -53,11 +57,19 @@ import java.util.Map;
 
 import okhttp3.Call;
 
+import static com.yuwubao.zytexpress.AppConfig.CURRENT_SCAN_TYPE;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_IN;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_SN;
+import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_SALE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_BUY;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CHUWEI;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_FACE_No;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SALE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SUB_No;
@@ -131,7 +143,12 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
         codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
         codeIDIntent = getIntent().getExtras().getString(AppConfig.CODE_ID);
+        scan_sale_intent = getIntent().getExtras().getString("scan_sale");
         inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
+        scanId = getIntent().getExtras().getInt(AppConfig.SCAN_ID);
+        index = getIntent().getExtras().getInt(AppConfig.SCAN_INDEX);
+        chuWeiId = getIntent().getExtras().getInt("id");
+        scanType = getIntent().getExtras().getString("type");
         codeFaceIntent = getIntent().getExtras().getString(AppConfig.CODE_FACE);
 
 
@@ -187,7 +204,40 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                     onResume();
                                     return;
                                 }
-                                check69IsInclude();
+                                switch (enterType) {
+                                    case ENTER_TYPE_SN:
+                                        inScanForSN69();
+                                        break;
+                                    default:
+                                        check69IsInclude();
+                                        break;
+                                }
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_BUY:
+                                scan_buy = input_no.getText().toString().trim();
+                                switch (enterType) {
+                                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                                        Intent intent = new Intent();
+                                        intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
+                                        intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
+                                        intent.putExtra("scan_buy", scan_buy);
+                                        JumpToActivity(CaptureActivity.class, intent);
+                                        break;
+                                    default:
+                                        inScanForSNBuy();
+                                        break;
+                                }
+                                break;
+                            case AppConfig.SCAN_TYPE_CODE_SALE:
+                                scan_sale = input_no.getText().toString().trim();
+                                switch (enterType) {
+                                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                                        inScanForSNBuyAndSale();
+                                        break;
+                                    default:
+                                        inScanForSNSale();
+                                        break;
+                                }
                                 break;
                             case AppConfig.SCAN_TYPE_CODE_SN:
                                 codeSN = input_no.getText().toString().trim();
@@ -229,6 +279,33 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                     case AppConfig.ENTER_TYPE_CAR:
                                         inToCar();
                                         break;
+                                    case AppConfig.ENTER_TYPE_RESEND://短信重发
+                                        reSendSMS();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
+                                        inScanForSN();
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
+                                        Intent intent = new Intent();
+                                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+                                        intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                        JumpToActivity(CaptureActivity.class, intent);
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
+                                        Intent intent1 = new Intent();
+                                        intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                                        intent1.putExtra(AppConfig.CODE_SN, codeSN);
+                                        JumpToActivity(CaptureActivity.class, intent1);
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
+                                        Intent intent2 = new Intent();
+                                        intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
+                                        intent2.putExtra(AppConfig.CODE_SN, codeSN);
+                                        JumpToActivity(CaptureActivity.class, intent2);
+                                        break;
+                                    case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
+                                        break;
+
                                 }
                                 break;
                             case AppConfig.SCAN_TYPE_CODE_CAR:
@@ -272,6 +349,187 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 });
             }
         });
+    }
+
+    /**
+     * 入库扫描方式只扫SN
+     */
+    private void inScanForSN() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(scanType.equals("pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSN, "", "",
+                        "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和69
+     */
+    private void inScanForSN69() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(scanType.equals("pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        code69, "", "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和买方料号
+     */
+    private void inScanForSNBuy() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(scanType.equals("pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", scan_buy, "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和买方料号以及卖方料号
+     */
+    private void inScanForSNBuyAndSale() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(scanType.equals("pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", scan_buy, scan_sale_intent)))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 点击扫描储位号
+     */
+    private void inScanForChuW() {
+        OkHttpUtils//
+                .post()//
+                .url(Urls.SCANLOCATION)//
+                .tag(this)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("ids", chuWeiId + "")//
+                .addParams("locationNo", scan_chuW)//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+
+    }
+
+    /**
+     * 入库扫描方式扫SN和卖方料号
+     */
+    private void inScanForSNSale() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(scanType.equals("pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", "", scan_sale)))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                        onPause();
+                        onResume();
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
     }
 
     @Override
@@ -398,7 +656,26 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         onResume();
                         return;
                     }
-                    check69IsInclude();
+                    switch (enterType) {
+                        case ENTER_TYPE_SN:
+                            inScanForSN69();
+                            break;
+                        default:
+                            check69IsInclude();
+                            break;
+                    }
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_BUY:
+                    scan_buy = rawResult.getText();
+                    inScanForSNBuy();
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_SALE:
+                    scan_sale = rawResult.getText();
+                    inScanForSNSale();
+                    break;
+                case AppConfig.SCAN_TYPE_CODE_CHUWEI:
+                    scan_chuW = rawResult.getText();
+                    inScanForChuW();
                     break;
                 case AppConfig.SCAN_TYPE_CODE_SN:
                     codeSN = rawResult.getText();
@@ -440,6 +717,33 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         case AppConfig.ENTER_TYPE_CAR:
                             inToCar();
                             break;
+                        case AppConfig.ENTER_TYPE_RESEND://短信重发
+                            reSendSMS();
+                            break;
+                        case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
+                            inScanForSN();
+                            break;
+                        case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
+                            Intent intent = new Intent();
+                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+                            intent.putExtra(AppConfig.CODE_SN, codeSN);
+                            JumpToActivity(CaptureActivity.class, intent);
+                            break;
+                        case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
+                            Intent intent1 = new Intent();
+                            intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                            intent1.putExtra(AppConfig.CODE_SN, codeSN);
+                            JumpToActivity(CaptureActivity.class, intent1);
+                            break;
+                        case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
+                            Intent intent2 = new Intent();
+                            intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
+                            intent2.putExtra(AppConfig.CODE_SN, codeSN);
+                            JumpToActivity(CaptureActivity.class, intent2);
+                            break;
+                        case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
+                            break;
+
                     }
                     break;
                 case AppConfig.SCAN_TYPE_CODE_CAR:
@@ -480,6 +784,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
             }
         }
     }
+
 
     /**
      * 复核子单号
@@ -991,6 +1296,30 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     }
 
     /**
+     * 短信重发
+     */
+    private void reSendSMS() {
+        User user = UserDao.getInstance().getLastUser();
+        if (user != null) {
+            OkHttpUtils//
+                    .post()//
+                    .url(Urls.RESENDSMS)//
+                    .addParams("userId", user.getId() + "")//
+                    .addParams("sn", codeSN)//
+                    .tag(this)//
+                    .build()//
+                    .execute(new AppGsonCallback<CodeBean>(new RequestModel(c)) {
+                        @Override
+                        public void onResponseOK(CodeBean response, int id) {
+                            super.onResponseOK(response, id);
+                            int code = response.getResult();
+                            UIHelper.showCodeDialog(c, String.valueOf(code));
+                        }
+                    });
+        }
+    }
+
+    /**
      * 盲扫-->检查69码是否备案
      */
     private void check69IsInclude() {
@@ -1106,20 +1435,18 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     String storageNo = "";//储位号
     String subNo = "";//子单号
     String faceNumber = "";//面单号
+    String scan_buy = "";//买方料号
+    String scan_sale = "";//卖方料号
+    String scan_sale_intent = "";//卖方料号
+    String scan_chuW = "";//储位号
+    String scanType = "";//扫描类型
     int currentType;//当前的扫描类型69 or SN
     int enterType;//进入类型 盲扫 or 制定扫描
     boolean isNiXiang = false;//是否是逆向
+    int scanId = 0;//当前扫描的出入库单id
+    int index = 0;//当前扫描的类型
+    int chuWeiId = 0;//扫描储位时的ID
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
-//                updateUI();
-                break;
-        }
-    }
 
     public void updateUI() {
         String voice = "";
@@ -1145,6 +1472,15 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_TRANSFER) {
             voice = SHOW_VOICE_FACE_No;
             text1 = SHOW_VOICE_FACE_No;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_BUY) {
+            voice = SHOW_VOICE_BUY;
+            text1 = SHOW_VOICE_BUY;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SALE) {
+            voice = SHOW_VOICE_SALE;
+            text1 = SHOW_VOICE_SALE;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_CHUWEI) {
+            voice = SHOW_VOICE_CHUWEI;
+            text1 = SHOW_VOICE_CHUWEI;
         }
         showVioce(voice);
         viewfinderView.setHintText1(text1);
@@ -1163,5 +1499,6 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         builder.setOnCancelListener(new FinishListener(this));
         builder.show();
     }
+
 
 }

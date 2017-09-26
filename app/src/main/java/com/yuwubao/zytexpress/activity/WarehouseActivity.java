@@ -80,22 +80,29 @@ public class WarehouseActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                 switch (position) {
-                    case 0:
-                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
-                        showDialog(intent);
+                    case 0://入库
+//                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
+//                        showDialog(intent);
+                        Intent i = new Intent();
+                        i.putExtra("TYPE_IN_OUT", 1);
+                        JumpToActivity(NewInSaveActivity.class, i);
+
                         break;
-                    case 1:
-                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_OUT);
-                        if (AppConfig.isPDA) {
-                            JumpToActivity(PDAScanActivity.class, intent);
-                        } else {
-                            JumpToActivity(CaptureActivity.class, intent);
-                        }
+                    case 1://出库
+//                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_OUT);
+//                        if (AppConfig.isPDA) {
+//                            JumpToActivity(PDAScanActivity.class, intent);
+//                        } else {
+//                            JumpToActivity(CaptureActivity.class, intent);
+//                        }
+                        Intent i1 = new Intent();
+                        i1.putExtra("TYPE_IN_OUT", 0);
+                        JumpToActivity(NewInSaveActivity.class, i1);
                         break;
-                    case 2:
-                        UIHelper.showMessage(c, "待开发");
+                    case 2://盘存
+                        JumpToActivity(PanCunActivity.class);
                         break;
-                    case 3:
+                    case 3://移库
                         UIHelper.showMessage(c, "待开发");
                         break;
                 }
