@@ -117,6 +117,12 @@ public class Urls {
     public static String INVENTORYSCAN = HEAD_URL + "wms/pda/inventoryScan";
     //  盘存扫描列表
     public static String GETINVENTORYITEMLIST = HEAD_URL + "wms/pda/getInventoryItemList";
+    //  移库
+    public static String TRANSFER = HEAD_URL + "wms/pda/transfer";
+    //  是否拆箱
+    public static String ISUNPACK = HEAD_URL + "wms/pda/isUnpack";
+    //  拆箱
+    public static String DEVANNING = HEAD_URL + "wms/pda/devanning";
 
 
     public static void change() {
@@ -201,6 +207,24 @@ public class Urls {
         GETINOUTLIST = HEAD_URL + "wms/pda/getInOutList";
         GETINOUTPROJECT = HEAD_URL + "wms/pda/getInOutProject";
         GETSCANMODE = HEAD_URL + "wms/pda/getScanMode";
+        //  出入库扫描
+        SCAN = HEAD_URL + "wms/pda/scan";
+
+        SCANLOCATION = HEAD_URL + "wms/pda/scanLocation";
+
+        GETCARTONS = HEAD_URL + "wms/pda/getCartons";
+
+        CONFIRMWAREHOUSING = HEAD_URL + "wms/pda/confirmWarehousing";
+
+        GETINVENTORYLIST = HEAD_URL + "wms/pda/getInventoryList";
+        GETPROJECT = HEAD_URL + "wms/pda/getProject";
+
+        INVENTORYSCAN = HEAD_URL + "wms/pda/inventoryScan";
+
+        GETINVENTORYITEMLIST = HEAD_URL + "wms/pda/getInventoryItemList";
+        TRANSFER = HEAD_URL + "wms/pda/transfer";
+        ISUNPACK = HEAD_URL + "wms/pda/isUnpack";
+        DEVANNING = HEAD_URL + "wms/pda/devanning";
 
     }
 

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
-import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -77,8 +76,8 @@ public class WarehouseActivity extends BaseActivity {
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                Intent intent = new Intent();
-                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+
+//                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
                 switch (position) {
                     case 0://入库
 //                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
@@ -103,7 +102,13 @@ public class WarehouseActivity extends BaseActivity {
                         JumpToActivity(PanCunActivity.class);
                         break;
                     case 3://移库
-                        UIHelper.showMessage(c, "待开发");
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_XIANG_HAO);
+                        if (AppConfig.isPDA) {
+                            JumpToActivity(PDAScanActivity.class, intent);
+                        } else {
+                            JumpToActivity(CaptureActivity.class, intent);
+                        }
                         break;
                 }
             }

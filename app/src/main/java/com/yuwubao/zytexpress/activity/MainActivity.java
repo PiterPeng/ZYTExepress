@@ -136,7 +136,10 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabSelected(int position) {
         pages.setCurrentItem(position);
-        headerBar.setVisibility(position == 1 ? View.GONE : View.VISIBLE);
+        if (level > 1) {//网点登录
+        } else {
+            headerBar.setVisibility(position == 1 || position == 2 ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override

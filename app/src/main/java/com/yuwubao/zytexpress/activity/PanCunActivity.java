@@ -26,6 +26,7 @@ import com.yuwubao.zytexpress.helper.UIHelper;
 import com.yuwubao.zytexpress.listener.OnItemClickListener;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
+import com.yuwubao.zytexpress.widget.HeaderBar;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.EmptyWrapper;
@@ -44,6 +45,8 @@ import butterknife.OnClick;
  */
 
 public class PanCunActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener {
+    @BindView(R.id.title)
+    HeaderBar title;
     @BindView(R.id.typeName)
     TextView typeName;
     @BindView(R.id.panName)
@@ -86,6 +89,7 @@ public class PanCunActivity extends BaseActivity implements OnRefreshListener, O
         if (user != null) {
             userId = String.valueOf(user.getId());
         }
+        title.setTitle("盘存");
         initDatas();
         setSwipe();
         setComAdapter();

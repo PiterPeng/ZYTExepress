@@ -7,6 +7,7 @@ import com.karics.library.zxing.android.CaptureActivity;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.activity.PDAScanActivity;
+import com.yuwubao.zytexpress.activity.ProjectSelectActivity;
 
 import butterknife.OnClick;
 
@@ -17,6 +18,9 @@ import butterknife.OnClick;
  */
 
 public class QueryFragment extends BaseFragement {
+
+    public static final int JUMP_TYPE_TIE_SCAN = 0x03;//贴标扫描
+    public static final int JUMP_TYPE_TIE_CHECK = 0x04;//贴标复核
 
     @Override
     protected int getContentResourseId() {
@@ -32,21 +36,28 @@ public class QueryFragment extends BaseFragement {
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
-            case R.id.scan://扫描
+            case R.id.scan://查件扫描
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_SCAN);
+                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent);
+                }
                 break;
-            case R.id.query://查询
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
+            case R.id.query://贴标扫描
+                Intent intent1 = new Intent();
+                intent1.putExtra("jumpType", JUMP_TYPE_TIE_SCAN);
+                JumpToActivity(ProjectSelectActivity.class, intent1);
+//                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
                 break;
             case R.id.check://复核
-                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CHECK);
+                Intent intent2 = new Intent();
+                intent2.putExtra("jumpType", JUMP_TYPE_TIE_CHECK);
+                JumpToActivity(ProjectSelectActivity.class, intent2);
+//                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CHECK);
                 break;
         }
-        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-        if (AppConfig.isPDA) {
-            JumpToActivity(PDAScanActivity.class, intent);
-        } else {
-            JumpToActivity(CaptureActivity.class, intent);
-        }
+
     }
 }

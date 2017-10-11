@@ -17,12 +17,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
+import com.yuwubao.zytexpress.bean.BaseBean;
 import com.yuwubao.zytexpress.bean.CodeBean;
 import com.yuwubao.zytexpress.bean.NewStatusBean;
 import com.yuwubao.zytexpress.bean.QueryBean;
 import com.yuwubao.zytexpress.bean.RequestModel;
+import com.yuwubao.zytexpress.bean.ScanModeBean;
 import com.yuwubao.zytexpress.bean.Status2Bean;
 import com.yuwubao.zytexpress.bean.StatusBean;
 import com.yuwubao.zytexpress.bean.TransferBackBean;
@@ -43,14 +46,25 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+import static com.yuwubao.zytexpress.AppConfig.CODE_SN;
+import static com.yuwubao.zytexpress.AppConfig.CURRENT_SCAN_TYPE;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_IN;
+import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_SN;
+import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_SALE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_BUY;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CAR;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_CHUWEI;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_FACE_No;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_ORDER;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SALE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SUB_No;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_XIANG_HAO;
+import static com.yuwubao.zytexpress.R.id.input_no;
 
 /**
  * Created by Peng on 2017/3/24
@@ -69,7 +83,7 @@ public class PDAScanActivity extends BaseActivity {
     @BindView(R.id.title)
     HeaderBar title;
     @BindView(R.id.scan_type)
-    TextView scanType;
+    TextView scan_type;
     ScanManager scanMgr;
 
     int orderId;//订单id
@@ -82,6 +96,10 @@ public class PDAScanActivity extends BaseActivity {
     String codeIDIntent = "";//id,接收
     String codeFaceIntent = "";//扫描类型（中转，分拨，揽件）
     String codeCar = "";//车号
+    String scan_buy = "";//买方料号
+    String scan_sale = "";//卖方料号
+    String scan_sale_intent = "";//卖方料号
+    String scan_buy_intent = "";//买方料号
     String codeOrder = "";//运单号
     String storageNo = "";//储位号
     String subNo = "";//子单号
@@ -90,6 +108,12 @@ public class PDAScanActivity extends BaseActivity {
     int enterType;//进入类型 盲扫 or 制定扫描
     private String userId;
     boolean isNiXiang = false;//是否是逆向
+    int scanId = 0;//当前扫描的出入库单id
+    int index = 0;//当前扫描的类型
+    int chuWeiId = 0;//扫描储位时的ID
+    String scanType = "";//扫描类型
+    String xiang_Hao = "";//箱号
+    String xiang_Hao_Intent = "";//传过来的箱号
 
     @Override
     protected int getContentResourseId() {
@@ -140,13 +164,22 @@ public class PDAScanActivity extends BaseActivity {
         orderId = getIntent().getExtras().getInt(AppConfig.ORDER_ID);
         scanMode = getIntent().getExtras().getInt(AppConfig.SCAN_MODE);
         isNiXiang = getIntent().getExtras().getBoolean(AppConfig.IS_NIXIANG);
-        currentType = getIntent().getExtras().getInt(AppConfig.CURRENT_SCAN_TYPE);
-        enterType = getIntent().getExtras().getInt(AppConfig.ENTER_TYPE);
+        currentType = getIntent().getExtras().getInt(CURRENT_SCAN_TYPE);
+        enterType = getIntent().getExtras().getInt(ENTER_TYPE);
         code69Intent = getIntent().getExtras().getString(AppConfig.CODE_69);
-        codeSNIntent = getIntent().getExtras().getString(AppConfig.CODE_SN);
+        codeSNIntent = getIntent().getExtras().getString(CODE_SN);
         codeIDIntent = getIntent().getExtras().getString(AppConfig.CODE_ID);
+        scan_sale_intent = getIntent().getExtras().getString("scan_sale");
+        scan_buy_intent = getIntent().getExtras().getString("scan_buy");
         inType = getIntent().getExtras().getInt(AppConfig.IN_TYPE);
+        scanId = getIntent().getExtras().getInt(AppConfig.SCAN_ID);
+        index = getIntent().getExtras().getInt(AppConfig.SCAN_INDEX);
+        Log.d("SCAN_INDEX", index + "");
+        chuWeiId = getIntent().getExtras().getInt("id");
+        scanType = getIntent().getExtras().getString("type");
+        xiang_Hao_Intent = getIntent().getExtras().getString("xiang_Hao");
         codeFaceIntent = getIntent().getExtras().getString(AppConfig.CODE_FACE);
+
     }
 
     private void setHeader() {
@@ -179,235 +212,464 @@ public class PDAScanActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             try {
                 if (intent.getAction().equals(AppConfig.SCN_CUST_ACTION_SCODE)) {
-                    //获取条码
-                    switch (currentType) {
-                        case AppConfig.SCAN_TYPE_CODE_69:
-                            code69 = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            if (!code69.toUpperCase().startsWith("69")) {
-                                UIHelper.showMessage(c, "六九码错误请重新扫描");
-                                return;
-                            }
-                            scan_code_69.setText("69码：" + code69);
-                            check69IsInclude();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SN:
-                            codeSN = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            if (codeSN.toUpperCase().startsWith("69")) {
-                                UIHelper.showMessage(c, "SN码错误请重新扫描");
-                                return;
-                            }
-                            if (TextUtils.isEmpty(code69Intent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("69码：" + code69Intent);
-                            }
-                            scan_code_sn.setText("SN码：" + codeSN);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            switch (enterType) {
-                                case AppConfig.ENTER_TYPE_MANGSAO:
-                                    blindSnForMangSao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_ZHISAO:
-                                    blindSnForZhiSao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_IN:
-                                    switch (inType) {
-                                        case AppConfig.IN_TYPE_THOERY:
-                                            inStorageForThoery();
-                                            break;
-                                        case AppConfig.IN_TYPE_FACT:
-                                            toScanStorageNo();
-                                            break;
-                                    }
-                                    break;
-                                case AppConfig.ENTER_TYPE_OUT:
-                                    outStorage();
-                                    break;
-                                case AppConfig.ENTER_TYPE_QUERY:
-                                    query();
-                                    break;
-                                case AppConfig.ENTER_TYPE_CHECK:
-                                    check();
-                                    break;
-                                case AppConfig.ENTER_TYPE_SCAN:
-                                    scan();
-                                    break;
-                                case AppConfig.ENTER_TYPE_CAR:
-                                    inToCar();
-                                    break;
-                                case AppConfig.ENTER_TYPE_RESEND://短信重发
-                                    reSendSMS();
-                                    break;
-                            }
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_CAR:
-                            codeCar = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            if (TextUtils.isEmpty(codeSNIntent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("SN码：" + codeSNIntent);
-                            }
-                            scan_code_sn.setText("车号：" + codeCar);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            switch (enterType) {
-                                case AppConfig.ENTER_TYPE_MANGSAO:
-                                    intoCarForMangsao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_ZHISAO:
-                                    intoCarForZhiSao();
-                                    break;
-                            }
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SIGN:
-                            codeOrder = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            enterSignActivity();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_REJECTION:
-                            codeOrder = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            enterRejectionActivity();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_STORAGE:
-                            storageNo = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            if (TextUtils.isEmpty(codeSNIntent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("SN码：" + codeSNIntent);
-                            }
-                            scan_code_sn.setText("储位号：" + storageNo);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            inStorage();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SUBNO:
-                            subNo = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            tieSubNo();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SUBNO2:
-                            subNo = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            checkSubNo();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_TRANSFER:
-                            faceNumber = intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE);
-                            transferScan();
-                            break;
-                    }
+                    handleResult(intent.getStringExtra(AppConfig.SCN_CUST_EX_SCODE));
                 } else if (intent.getAction().equals(ScanManager.ACTION_DECODE)) {
-                    switch (currentType) {
-                        case AppConfig.SCAN_TYPE_CODE_69:
-                            code69 = getScanResultCode(intent);
-                            if (!code69.toUpperCase().startsWith("69")) {
-                                UIHelper.showMessage(c, "六九码错误请重新扫描");
-                                return;
-                            }
-                            scan_code_69.setText("69码：" + code69);
-                            check69IsInclude();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SN:
-                            codeSN = getScanResultCode(intent);
-                            if (codeSN.toUpperCase().startsWith("69")) {
-                                UIHelper.showMessage(c, "SN码错误请重新扫描");
-                                return;
-                            }
-                            if (TextUtils.isEmpty(code69Intent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("69码：" + code69Intent);
-                            }
-                            scan_code_sn.setText("SN码：" + codeSN);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            switch (enterType) {
-                                case AppConfig.ENTER_TYPE_MANGSAO:
-                                    blindSnForMangSao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_ZHISAO:
-                                    blindSnForZhiSao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_IN:
-                                    switch (inType) {
-                                        case AppConfig.IN_TYPE_THOERY:
-                                            inStorageForThoery();
-                                            break;
-                                        case AppConfig.IN_TYPE_FACT:
-                                            toScanStorageNo();
-                                            break;
-                                    }
-                                    break;
-                                case AppConfig.ENTER_TYPE_OUT:
-                                    outStorage();
-                                    break;
-                                case AppConfig.ENTER_TYPE_QUERY:
-                                    query();
-                                    break;
-                                case AppConfig.ENTER_TYPE_CHECK:
-                                    check();
-                                    break;
-                                case AppConfig.ENTER_TYPE_SCAN:
-                                    scan();
-                                    break;
-                                case AppConfig.ENTER_TYPE_CAR:
-                                    inToCar();
-                                    break;
-                                case AppConfig.ENTER_TYPE_RESEND://短信重发
-                                    reSendSMS();
-                                    break;
-                            }
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_CAR:
-                            codeCar = getScanResultCode(intent);
-                            if (TextUtils.isEmpty(codeSNIntent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("SN码：" + codeSNIntent);
-                            }
-                            scan_code_sn.setText("车号：" + codeCar);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            switch (enterType) {
-                                case AppConfig.ENTER_TYPE_MANGSAO:
-                                    intoCarForMangsao();
-                                    break;
-                                case AppConfig.ENTER_TYPE_ZHISAO:
-                                    intoCarForZhiSao();
-                                    break;
-                            }
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SIGN:
-                            codeOrder = getScanResultCode(intent);
-                            enterSignActivity();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_REJECTION:
-                            codeOrder = getScanResultCode(intent);
-                            enterRejectionActivity();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_STORAGE:
-                            storageNo = getScanResultCode(intent);
-                            if (TextUtils.isEmpty(codeSNIntent)) {
-                                scan_code_69.setVisibility(View.GONE);
-                            } else {
-                                scan_code_69.setText("SN码：" + codeSNIntent);
-                            }
-                            scan_code_sn.setText("储位号：" + storageNo);
-                            scan_code_sn.setVisibility(View.VISIBLE);
-                            inStorage();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SUBNO:
-                            subNo = getScanResultCode(intent);
-                            tieSubNo();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_SUBNO2:
-                            subNo = getScanResultCode(intent);
-                            checkSubNo();
-                            break;
-                        case AppConfig.SCAN_TYPE_CODE_TRANSFER:
-                            faceNumber = getScanResultCode(intent);
-                            transferScan();
-                            break;
-                    }
+                    handleResult(getScanResultCode(intent));
                 }
-
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "PDA出错,请重试\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     };
+
+    /**
+     * 处理扫描成功后的结果
+     *
+     * @param resultCode
+     */
+    private void handleResult(String resultCode) {
+        //获取条码
+        switch (currentType) {
+            case AppConfig.SCAN_TYPE_CODE_69:
+                code69 = resultCode;
+                if (!code69.toUpperCase().startsWith("69")) {
+                    UIHelper.showMessage(c, "六九码错误请重新扫描");
+                    return;
+                }
+                scan_code_69.setText("69码：" + code69);
+                switch (enterType) {
+                    case ENTER_TYPE_SN:
+                        inScanForSN69();
+                        break;
+                    default:
+                        check69IsInclude();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_BUY:
+                scan_buy = resultCode;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                        Intent intent = new Intent();
+                        intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
+                        intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
+                        intent.putExtra("scan_buy", scan_buy);
+                        intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent.putExtra(CODE_SN, codeSNIntent);
+                        JumpToActivity(PDAScanActivity.class, intent);
+                        break;
+                    default:
+                        inScanForSNBuy();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SALE:
+                scan_sale = resultCode;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                        inScanForSNBuyAndSale();
+                        break;
+                    default:
+                        inScanForSNSale();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_CHUWEI:
+                storageNo = resultCode;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://移库进来
+                        UIHelper.showMyCustomDialog(c, "是否确认移库操作?" + "\n" + "箱号：" + xiang_Hao_Intent + "\n" + "新储位号："
+                                + storageNo, "确认", new View.OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                goYiKu();
+                            }
+                        }, null);
+                        break;
+                    default:
+                        inScanForChuW();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SN:
+                codeSN = resultCode;
+                if (codeSN.toUpperCase().startsWith("69")) {
+                    UIHelper.showMessage(c, "SN码错误请重新扫描");
+                    return;
+                }
+                if (TextUtils.isEmpty(code69Intent)) {
+                    scan_code_69.setVisibility(View.GONE);
+                } else {
+                    scan_code_69.setText("69码：" + code69Intent);
+                }
+                scan_code_sn.setText("SN码：" + codeSN);
+                scan_code_sn.setVisibility(View.VISIBLE);
+                switch (enterType) {
+                    case AppConfig.ENTER_TYPE_MANGSAO:
+                        blindSnForMangSao();
+                        break;
+                    case AppConfig.ENTER_TYPE_ZHISAO:
+                        blindSnForZhiSao();
+                        break;
+                    case ENTER_TYPE_IN:
+                        switch (inType) {
+                            case AppConfig.IN_TYPE_THOERY:
+                                inStorageForThoery();
+                                break;
+                            case AppConfig.IN_TYPE_FACT:
+                                toScanStorageNo();
+                                break;
+                        }
+                        break;
+                    case AppConfig.ENTER_TYPE_OUT:
+                        outStorage();
+                        break;
+                    case AppConfig.ENTER_TYPE_QUERY:
+                        query();
+                        break;
+                    case AppConfig.ENTER_TYPE_CHECK:
+                        check();
+                        break;
+                    case AppConfig.ENTER_TYPE_SCAN:
+                        scan();
+                        break;
+                    case AppConfig.ENTER_TYPE_CAR:
+                        inToCar();
+                        break;
+                    case AppConfig.ENTER_TYPE_RESEND://短信重发
+                        reSendSMS();
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
+                        inScanForSN();
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+                        intent.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(PDAScanActivity.class, intent);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
+                        Intent intent1 = new Intent();
+                        intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                        intent1.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent1.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(PDAScanActivity.class, intent1);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
+                        Intent intent2 = new Intent();
+                        intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
+                        intent2.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent2.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(PDAScanActivity.class, intent2);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
+                        Intent intent3 = new Intent();
+                        intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                        intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
+                        intent3.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent3.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(PDAScanActivity.class, intent3);
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_CAR:
+                codeCar = resultCode;
+                if (TextUtils.isEmpty(codeSNIntent)) {
+                    scan_code_69.setVisibility(View.GONE);
+                } else {
+                    scan_code_69.setText("SN码：" + codeSNIntent);
+                }
+                scan_code_sn.setText("车号：" + codeCar);
+                scan_code_sn.setVisibility(View.VISIBLE);
+                switch (enterType) {
+                    case AppConfig.ENTER_TYPE_MANGSAO:
+                        intoCarForMangsao();
+                        break;
+                    case AppConfig.ENTER_TYPE_ZHISAO:
+                        intoCarForZhiSao();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SIGN:
+                codeOrder = resultCode;
+                enterSignActivity();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_REJECTION:
+                codeOrder = resultCode;
+                enterRejectionActivity();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_STORAGE:
+                storageNo = resultCode;
+                if (TextUtils.isEmpty(codeSNIntent)) {
+                    scan_code_69.setVisibility(View.GONE);
+                } else {
+                    scan_code_69.setText("SN码：" + codeSNIntent);
+                }
+                scan_code_sn.setText("储位号：" + storageNo);
+                scan_code_sn.setVisibility(View.VISIBLE);
+                inStorage();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SUBNO:
+                subNo = resultCode;
+                tieSubNo();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SUBNO2:
+                subNo = resultCode;
+                checkSubNo();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_TRANSFER:
+                faceNumber = resultCode;
+                transferScan();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO:
+                xiang_Hao = resultCode;
+                Intent i = new Intent(c, PDAScanActivity.class);
+                i.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CHUWEI);
+                i.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
+                i.putExtra("xiang_Hao", xiang_Hao);
+                startActivity(i);
+                finish();
+                break;
+        }
+
+    }
+
+    /**
+     * 进行移库操作
+     */
+    private void goYiKu() {
+        OkHttpUtils//
+                .post()//
+                .url(Urls.TRANSFER)//
+                .tag(this)//
+                .addParams("userId", userId)//
+                .addParams("cartonNo", xiang_Hao_Intent)//
+                .addParams("whBinCode", storageNo)//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+
+    }
+
+    /**
+     * 入库扫描方式只扫SN
+     */
+    private void inScanForSN() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(TextUtils.equals(scanType, "pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSN, "", "",
+                        "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和69
+     */
+    private void inScanForSN69() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(TextUtils.equals(scanType, "pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        code69, "", "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和买方料号
+     */
+    private void inScanForSNBuy() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(TextUtils.equals(scanType, "pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", scan_buy, "")))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+                });
+    }
+
+    /**
+     * 入库扫描方式扫SN和买方料号以及卖方料号
+     */
+    private void inScanForSNBuyAndSale() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(TextUtils.equals(scanType, "pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", scan_buy_intent, scan_sale)))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+                });
+    }
+
+    /**
+     * 点击扫描储位号
+     */
+    private void inScanForChuW() {
+        OkHttpUtils//
+                .post()//
+                .url(Urls.SCANLOCATION)//
+                .tag(this)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("ids", chuWeiId + "")//
+                .addParams("locationNo", storageNo)//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+                });
+
+    }
+
+    /**
+     * 入库扫描方式扫SN和卖方料号
+     */
+    private void inScanForSNSale() {
+        OkHttpUtils//
+                .postString()//
+                .tag(this)//
+                .url(TextUtils.equals(scanType, "pancun") ? Urls.INVENTORYSCAN : Urls.SCAN)//
+                .mediaType(AppConfig.JSON)//
+                .content(new Gson().toJson(new ScanModeBean(Integer.parseInt(userId), scanId, index, codeSNIntent,
+                        "", "", scan_sale)))//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        super.onError(call, e, id);
+                        showVioce("请求超时");
+                    }
+
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        UIHelper.showMessage(c, response.getMessage());
+                        finish();
+                    }
+
+                    @Override
+                    public void onResponseOtherCase(BaseBean response, int id) {
+                        super.onResponseOtherCase(response, id);
+                        showVioce("请求超时");
+                    }
+                });
+    }
 
     /**
      * 中转扫描
@@ -444,9 +706,9 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void inToCar() {
         Intent intent = new Intent();
-        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
-        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
+        intent.putExtra(ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+        intent.putExtra(CODE_SN, codeSN);
         JumpToActivity(PDAScanActivity.class, intent);
         finish();
     }
@@ -493,6 +755,7 @@ public class PDAScanActivity extends BaseActivity {
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSNIntent)//
                 .addParams("subNo", subNo)//
+                .addParams("id", chuWeiId + "")//
                 .build()//
                 .execute(new AppGsonCallback<StatusBean>(new RequestModel(c)) {
                     @Override
@@ -592,8 +855,8 @@ public class PDAScanActivity extends BaseActivity {
                             if (list.size() == 1) {
                                 int mId = list.get(0).getId();
                                 Intent intent = new Intent();
-                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
-                                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                                intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                                intent.putExtra(ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
                                 intent.putExtra(AppConfig.CODE_69, code69);
                                 intent.putExtra(AppConfig.CODE_ID, String.valueOf(mId));
                                 JumpToActivity(PDAScanActivity.class, intent);
@@ -634,9 +897,9 @@ public class PDAScanActivity extends BaseActivity {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent();
-                                intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
-                                intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
-                                intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CAR);
+                                intent.putExtra(ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                                intent.putExtra(CODE_SN, codeSN);
                                 JumpToActivity(PDAScanActivity.class, intent);
                                 finish();
                             }
@@ -680,8 +943,8 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void toScanStorageNo() {
         Intent intent = new Intent();
-        intent.putExtra(AppConfig.CODE_SN, codeSN);
-        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_STORAGE);
+        intent.putExtra(CODE_SN, codeSN);
+        intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_STORAGE);
         JumpToActivity(PDAScanActivity.class, intent);
         finish();
     }
@@ -762,6 +1025,7 @@ public class PDAScanActivity extends BaseActivity {
                 .url(Urls.FREE_INQUIRY)//
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams("sn", codeSN)//
+                .addParams("id", chuWeiId + "")//
                 .build()//
                 .execute(new GenericsCallback<QueryBean>(new GsonSerializator()) {
                     @Override
@@ -811,9 +1075,8 @@ public class PDAScanActivity extends BaseActivity {
                                         @Override
                                         public void onClick(View v) {
                                             Intent intent = new Intent();
-                                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig
-                                                    .SCAN_TYPE_CODE_SUBNO);
-                                            intent.putExtra(AppConfig.CODE_SN, codeSN);
+                                            intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SUBNO);
+                                            intent.putExtra(CODE_SN, codeSN);
                                             JumpToActivity(PDAScanActivity.class, intent);
                                             finish();
                                         }
@@ -833,8 +1096,9 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void check() {
         Intent intent = new Intent();
-        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SUBNO2);
-        intent.putExtra(AppConfig.CODE_SN, codeSN);
+        intent.putExtra(CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SUBNO2);
+        intent.putExtra(CODE_SN, codeSN);
+        intent.putExtra("id", chuWeiId);
         JumpToActivity(PDAScanActivity.class, intent);
         finish();
     }
@@ -985,15 +1249,27 @@ public class PDAScanActivity extends BaseActivity {
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_TRANSFER) {
             voice = SHOW_VOICE_FACE_No;
             text1 = SHOW_VOICE_FACE_No;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_BUY) {
+            voice = SHOW_VOICE_BUY;
+            text1 = SHOW_VOICE_BUY;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_SALE) {
+            voice = SHOW_VOICE_SALE;
+            text1 = SHOW_VOICE_SALE;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_CHUWEI) {
+            voice = SHOW_VOICE_CHUWEI;
+            text1 = SHOW_VOICE_CHUWEI;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_XIANG_HAO) {
+            voice = SHOW_VOICE_XIANG_HAO;
+            text1 = SHOW_VOICE_XIANG_HAO;
         }
         showVioce(voice);
-        scanType.setText(text1);
+        scan_type.setText(text1);
     }
 
     @OnClick(R.id.input)
     public void onViewClicked() {
         View view = LayoutInflater.from(c).inflate(R.layout.dialog_shoudong, null);
-        final EditText input_no = (EditText) view.findViewById(R.id.input_no);
+        final EditText input = (EditText) view.findViewById(input_no);
 
         AlertDialog alertDialog = new AlertDialog.Builder(c).setView(view).setTitle("手动录入二维码").setPositiveButton
                 ("确定", null).setNegativeButton("取消", null).create();
@@ -1001,118 +1277,11 @@ public class PDAScanActivity extends BaseActivity {
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(input_no.getText().toString().trim())) {
+                if (TextUtils.isEmpty(input.getText().toString().trim())) {
                     UIHelper.showMessage(c, "输入不能为空");
                     return;
                 }
-                switch (currentType) {
-                    case AppConfig.SCAN_TYPE_CODE_69:
-                        code69 = input_no.getText().toString().trim();
-                        if (!code69.toUpperCase().startsWith("69")) {
-                            UIHelper.showMessage(c, "六九码错误请重新扫描");
-                            return;
-                        }
-                        scan_code_69.setText("69码：" + code69);
-                        check69IsInclude();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_SN:
-                        codeSN = input_no.getText().toString().trim();
-                        if (codeSN.toUpperCase().startsWith("69")) {
-                            UIHelper.showMessage(c, "SN码错误请重新扫描");
-                            return;
-                        }
-                        if (TextUtils.isEmpty(code69Intent)) {
-                            scan_code_69.setVisibility(View.GONE);
-                        } else {
-                            scan_code_69.setText("69码：" + code69Intent);
-                        }
-                        scan_code_sn.setText("SN码：" + codeSN);
-                        scan_code_sn.setVisibility(View.VISIBLE);
-                        switch (enterType) {
-                            case AppConfig.ENTER_TYPE_MANGSAO:
-                                blindSnForMangSao();
-                                break;
-                            case AppConfig.ENTER_TYPE_ZHISAO:
-                                blindSnForZhiSao();
-                                break;
-                            case AppConfig.ENTER_TYPE_IN:
-                                switch (inType) {
-                                    case AppConfig.IN_TYPE_THOERY:
-                                        inStorageForThoery();
-                                        break;
-                                    case AppConfig.IN_TYPE_FACT:
-                                        toScanStorageNo();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.ENTER_TYPE_OUT:
-                                outStorage();
-                                break;
-                            case AppConfig.ENTER_TYPE_QUERY:
-                                query();
-                                break;
-                            case AppConfig.ENTER_TYPE_CHECK:
-                                check();
-                                break;
-                            case AppConfig.ENTER_TYPE_SCAN:
-                                scan();
-                                break;
-                            case AppConfig.ENTER_TYPE_CAR:
-                                inToCar();
-                                break;
-                        }
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_CAR:
-                        codeCar = input_no.getText().toString().trim();
-                        if (TextUtils.isEmpty(codeSNIntent)) {
-                            scan_code_69.setVisibility(View.GONE);
-                        } else {
-                            scan_code_69.setText("SN码：" + codeSNIntent);
-                        }
-                        scan_code_sn.setText("车号：" + codeCar);
-                        scan_code_sn.setVisibility(View.VISIBLE);
-                        switch (enterType) {
-                            case AppConfig.ENTER_TYPE_MANGSAO:
-                                intoCarForMangsao();
-                                break;
-                            case AppConfig.ENTER_TYPE_ZHISAO:
-                                intoCarForZhiSao();
-                                break;
-                        }
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_SIGN:
-                        codeOrder = input_no.getText().toString().trim();
-                        enterSignActivity();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_REJECTION:
-                        codeOrder = input_no.getText().toString().trim();
-                        enterRejectionActivity();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_STORAGE:
-                        storageNo = input_no.getText().toString().trim();
-                        if (TextUtils.isEmpty(codeSNIntent)) {
-                            scan_code_69.setVisibility(View.GONE);
-                        } else {
-                            scan_code_69.setText("SN码：" + codeSNIntent);
-                        }
-                        scan_code_sn.setText("储位号：" + storageNo);
-                        scan_code_sn.setVisibility(View.VISIBLE);
-                        inStorage();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_SUBNO:
-                        subNo = input_no.getText().toString().trim();
-                        tieSubNo();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_SUBNO2:
-                        subNo = input_no.getText().toString().trim();
-                        checkSubNo();
-                        break;
-                    case AppConfig.SCAN_TYPE_CODE_TRANSFER:
-                        faceNumber = input_no.getText().toString().trim();
-                        transferScan();
-                        break;
-                }
-
+                handleResult(input.getText().toString().trim());
             }
         });
     }

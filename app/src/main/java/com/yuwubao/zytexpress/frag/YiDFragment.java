@@ -8,6 +8,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -83,8 +84,29 @@ public class YiDFragment extends BaseFragement implements OnLoadMoreListener, On
         public void onReceive(Context context, Intent intent) {
             id = intent.getExtras().getInt("id");
             onRefresh();
+            //判断是否有拆箱
+            getChaiX();
         }
     };
+
+    private void getChaiX() {
+        OkHttpUtils//
+                .get()//
+                .tag(this)//
+                .url(Urls.ISUNPACK)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("id", id + "")//
+                .build()//
+                .execute(new AppGsonCallback<BaseBean>(new RequestModel(c).setShowProgress(false)) {
+                    @Override
+                    public void onResponseOK(BaseBean response, int id) {
+                        super.onResponseOK(response, id);
+                        String key = response.getMessage();//0没有拆箱的，1有
+                        in_ChaX.setVisibility(TextUtils.equals("1", key) ? View.VISIBLE : View.GONE);
+                    }
+                });
+    }
+
     private int type;//0 出库 1 入库
 
     @Override
@@ -108,7 +130,6 @@ public class YiDFragment extends BaseFragement implements OnLoadMoreListener, On
         type = getArguments().getInt("type");
         inTo.setText(type == 0 ? "已出库" : "已入库");
         in_submit.setText(type == 0 ? "确认出库" : "确认入库");
-        in_ChaX.setVisibility(type == 0 ? View.VISIBLE : View.GONE);
     }
 
 
@@ -291,9 +312,31 @@ public class YiDFragment extends BaseFragement implements OnLoadMoreListener, On
                 sureInOrOut();
                 break;
             case R.id.in_ChaX://拆箱
-                UIHelper.showMessage(c, "拆箱");
+//                chaiXiang();
                 break;
         }
+    }
+
+    private void chaiXiang() {
+/*  @param caseNo 旧箱号
+*  @param devanningNo 拆分的新箱号
+*  @param num 拆分出去的数量
+*/
+        OkHttpUtils//
+                .post()//
+                .tag(this)//
+                .url(Urls.DEVANNING)//
+                .addParams(AppConfig.USER_ID, userId)//
+                .addParams("caseNo", userId)//
+                .addParams("devanningNo", userId)//
+                .addParams("num", userId)//
+                .build()//
+                .execute(new AppGsonCallback(new RequestModel(c)) {
+                    @Override
+                    public void onResponseOK(Object response, int id) {
+                        super.onResponseOK(response, id);
+                    }
+                });
     }
 
     /**

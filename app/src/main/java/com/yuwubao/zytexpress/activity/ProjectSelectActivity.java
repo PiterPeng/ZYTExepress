@@ -6,12 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.karics.library.zxing.android.CaptureActivity;
+import com.yuwubao.zytexpress.AppConfig;
 import com.yuwubao.zytexpress.R;
 import com.yuwubao.zytexpress.bean.ProjectListBack;
 import com.yuwubao.zytexpress.bean.RequestModel;
 import com.yuwubao.zytexpress.bean.User;
 import com.yuwubao.zytexpress.db.dao.UserDao;
 import com.yuwubao.zytexpress.frag.HomeFragment;
+import com.yuwubao.zytexpress.frag.QueryFragment;
 import com.yuwubao.zytexpress.net.AppGsonCallback;
 import com.yuwubao.zytexpress.net.Urls;
 import com.yuwubao.zytexpress.widget.HeaderBar;
@@ -99,19 +102,39 @@ public class ProjectSelectActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (!resultBeanList.isEmpty()) {
-                    if (jumpType == HomeFragment.JUMP_TYPE_PICK_UP) {
+                    if (jumpType == HomeFragment.JUMP_TYPE_PICK_UP) {//提货扫描
                         Intent intent = new Intent(c, PickUpActivity.class);
                         intent.putExtra("scanMode", resultBeanList.get(position).getScanMode());
                         intent.putExtra("id", resultBeanList.get(position).getId());
                         intent.putExtra("customerName", resultBeanList.get(position).getCustomerName());
                         intent.putExtra("projectName", resultBeanList.get(position).getProjectName());
                         startActivity(intent);
-                    } else if (jumpType == HomeFragment.JUMP_TYPE_CAR_LIST) {
+                    } else if (jumpType == HomeFragment.JUMP_TYPE_CAR_LIST) {//装车列表
                         Intent intent = new Intent(c, IntoCarListActivity.class);
                         intent.putExtra("id", resultBeanList.get(position).getId());
                         intent.putExtra("customerName", resultBeanList.get(position).getCustomerName());
                         intent.putExtra("projectName", resultBeanList.get(position).getProjectName());
                         startActivity(intent);
+                    } else if (jumpType == QueryFragment.JUMP_TYPE_TIE_SCAN) {//贴标扫描
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_QUERY);
+                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                        intent.putExtra("id", resultBeanList.get(position).getId());
+                        if (AppConfig.isPDA) {
+                            JumpToActivity(PDAScanActivity.class, intent);
+                        } else {
+                            JumpToActivity(CaptureActivity.class, intent);
+                        }
+                    } else if (jumpType == QueryFragment.JUMP_TYPE_TIE_CHECK) {//贴标复核
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_CHECK);
+                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SN);
+                        intent.putExtra("id", resultBeanList.get(position).getId());
+                        if (AppConfig.isPDA) {
+                            JumpToActivity(PDAScanActivity.class, intent);
+                        } else {
+                            JumpToActivity(CaptureActivity.class, intent);
+                        }
                     }
                 }
             }

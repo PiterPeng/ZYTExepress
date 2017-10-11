@@ -24,7 +24,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,6 +51,11 @@
                 android:src="@drawable/ic_above"/>
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/black"/>
+
         <LinearLayout
             android:id="@+id/ll_panName"
             android:layout_width="match_parent"
@@ -58,7 +63,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,6 +90,11 @@
                 android:src="@drawable/ic_above"/>
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/black"/>
+
         <LinearLayout
             android:id="@+id/ll_projectName"
             android:layout_width="match_parent"
@@ -92,7 +102,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -134,7 +144,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:text="账面数"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>
@@ -142,7 +152,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:background="@color/base_black"/>
 
                 <TextView
@@ -150,8 +160,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>
@@ -174,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:text="盘点数"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>
@@ -182,7 +192,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:background="@color/base_black"/>
 
                 <TextView
@@ -190,8 +200,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>
@@ -213,7 +223,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:text="差异"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>
@@ -221,7 +231,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:background="@color/base_black"/>
 
                 <TextView
@@ -229,8 +239,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14"/>

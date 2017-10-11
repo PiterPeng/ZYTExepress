@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="总数"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -30,7 +30,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/base_black"/>
 
             <TextView
@@ -38,8 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="0"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="已点"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -70,7 +70,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/base_black"/>
 
             <TextView
@@ -78,8 +78,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="0"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="未点"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -109,7 +109,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/base_black"/>
 
             <TextView
@@ -117,8 +117,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="0"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="已入库"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>
@@ -149,7 +149,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/base_black"/>
 
             <TextView
@@ -157,8 +157,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="0"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_14"/>

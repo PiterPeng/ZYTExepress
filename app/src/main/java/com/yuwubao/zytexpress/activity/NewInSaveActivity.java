@@ -53,6 +53,8 @@ public class NewInSaveActivity extends BaseActivity {
     TextView projectName;
     @BindView(R.id.in_or_out)
     TextView in_or_out;
+    @BindView(R.id.text_show)
+    TextView textShow;
 
     YiDFragment yiDFragment;
     WeiDFragment weiDFragment;
@@ -61,6 +63,7 @@ public class NewInSaveActivity extends BaseActivity {
 
     List<InTableBean.ResultBean> inTableBeenList, inTableBeenList1;
     int type;//０出库　１入库
+
 
     @Override
     protected int getContentResourseId() {
@@ -82,6 +85,7 @@ public class NewInSaveActivity extends BaseActivity {
     private void resolveIntent() {
         type = getIntent().getExtras().getInt("TYPE_IN_OUT");
         in_or_out.setText(type == 0 ? "出库" : "入库");
+        textShow.setText(type == 0 ? "出库单号：" : "入库单号：");
     }
 
     private void setFrag() {
@@ -209,7 +213,7 @@ public class NewInSaveActivity extends BaseActivity {
     @OnClick({R.id.ll_tableName, R.id.ll_projectName})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.ll_tableName:
+            case R.id.ll_tableName://出库单
                 DialogHelper.showPopupwindow(c, inTableBeenList, tableName, new OnItemClickListener() {
                     @Override
                     public void onItemClickListener(View view, RecyclerView.ViewHolder holder, int position) {
@@ -223,7 +227,7 @@ public class NewInSaveActivity extends BaseActivity {
                     }
                 });
                 break;
-            case R.id.ll_projectName:
+            case R.id.ll_projectName://项目
                 DialogHelper.showPopupwindow(c, inTableBeenList1, projectName, new OnItemClickListener() {
                     @Override
                     public void onItemClickListener(View view, RecyclerView.ViewHolder holder, int position) {
