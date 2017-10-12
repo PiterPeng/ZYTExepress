@@ -63,6 +63,7 @@ import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE;
 import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_IN;
 import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_SALE;
+import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_XIANG_HAO_N;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_BUY;
@@ -293,199 +294,12 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (TextUtils.isEmpty(input_no.getText().toString().trim())) {
+                        String code = input_no.getText().toString().trim();
+                        if (TextUtils.isEmpty(code)) {
                             UIHelper.showMessage(c, "输入不能为空");
                             return;
                         }
-                        switch (currentType) {
-                            case AppConfig.SCAN_TYPE_CODE_69:
-                                code69 = input_no.getText().toString().trim();
-                                if (!code69.toUpperCase().startsWith("69")) {
-                                    UIHelper.showMessage(c, "六九码错误请重新扫描");
-                                    onPause();
-                                    onResume();
-                                    return;
-                                }
-                                switch (enterType) {
-                                    case ENTER_TYPE_SN:
-                                        inScanForSN69();
-                                        break;
-                                    default:
-                                        check69IsInclude();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_BUY:
-                                scan_buy = input_no.getText().toString().trim();
-                                switch (enterType) {
-                                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
-                                        Intent intent = new Intent();
-                                        intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
-                                        intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
-                                        intent.putExtra("scan_buy", scan_buy);
-                                        intent.putExtra(AppConfig.SCAN_INDEX, index);
-                                        intent.putExtra(CODE_SN, codeSNIntent);
-                                        JumpToActivity(CaptureActivity.class, intent);
-                                        break;
-                                    default:
-                                        inScanForSNBuy();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_SALE:
-                                scan_sale = input_no.getText().toString().trim();
-                                switch (enterType) {
-                                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
-                                        inScanForSNBuyAndSale();
-                                        break;
-                                    default:
-                                        inScanForSNSale();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_CHUWEI:
-                                scan_chuW = input_no.getText().toString().trim();
-                                switch (enterType) {
-                                    case ENTER_TYPE_IN://移库进来
-                                        UIHelper.showMyCustomDialog(c, "是否确认移库操作?" + "\n" + "箱号：" + xiang_Hao_Intent + "\n" +
-                                                "新储位号：" + scan_chuW, "确认", new View.OnClickListener() {
-
-
-                                            @Override
-                                            public void onClick(View v) {
-                                                goYiKu();
-                                            }
-                                        }, null);
-                                        break;
-                                    default:
-                                        inScanForChuW();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_SN:
-                                codeSN = input_no.getText().toString().trim();
-                                if (codeSN.toUpperCase().startsWith("69")) {
-                                    UIHelper.showMessage(c, "SN码错误请重新扫描");
-                                    onPause();
-                                    onResume();
-                                    return;
-                                }
-                                switch (enterType) {
-                                    case AppConfig.ENTER_TYPE_MANGSAO:
-                                        blindSnForMangSao();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_ZHISAO:
-                                        blindSnForZhiSao();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN:
-                                        switch (inType) {
-                                            case AppConfig.IN_TYPE_THOERY:
-                                                inStorageForThoery();
-                                                break;
-                                            case AppConfig.IN_TYPE_FACT:
-                                                toScanStorageNo();
-                                                break;
-                                        }
-                                        break;
-                                    case AppConfig.ENTER_TYPE_OUT:
-                                        outStorage();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_QUERY:
-                                        query();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_CHECK:
-                                        check();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_SCAN:
-                                        scan();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_CAR:
-                                        inToCar();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_RESEND://短信重发
-                                        reSendSMS();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
-                                        inScanForSN();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
-                                        Intent intent = new Intent();
-                                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
-                                        intent.putExtra(AppConfig.CODE_SN, codeSN);
-                                        intent.putExtra(AppConfig.SCAN_INDEX, index);
-                                        JumpToActivity(CaptureActivity.class, intent);
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
-                                        Intent intent1 = new Intent();
-                                        intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
-                                        intent1.putExtra(AppConfig.CODE_SN, codeSN);
-                                        intent1.putExtra(AppConfig.SCAN_INDEX, index);
-                                        JumpToActivity(CaptureActivity.class, intent1);
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
-                                        Intent intent2 = new Intent();
-                                        intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
-                                        intent2.putExtra(AppConfig.CODE_SN, codeSN);
-                                        intent2.putExtra(AppConfig.SCAN_INDEX, index);
-                                        JumpToActivity(CaptureActivity.class, intent2);
-                                        break;
-                                    case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
-                                        Intent intent3 = new Intent();
-                                        intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
-                                        intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
-                                        intent3.putExtra(AppConfig.CODE_SN, codeSN);
-                                        intent3.putExtra(AppConfig.SCAN_INDEX, index);
-                                        JumpToActivity(CaptureActivity.class, intent3);
-                                        break;
-
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_CAR:
-                                codeCar = input_no.getText().toString().trim();
-                                switch (enterType) {
-                                    case AppConfig.ENTER_TYPE_MANGSAO:
-                                        intoCarForMangsao();
-                                        break;
-                                    case AppConfig.ENTER_TYPE_ZHISAO:
-                                        intoCarForZhiSao();
-                                        break;
-                                }
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_SIGN:
-                                codeOrder = input_no.getText().toString().trim();
-                                enterSignActivity();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_REJECTION:
-                                codeOrder = input_no.getText().toString().trim();
-                                enterRejectionActivity();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_STORAGE:
-                                storageNo = input_no.getText().toString().trim();
-                                inStorage();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_SUBNO:
-                                subNo = input_no.getText().toString().trim();
-                                tieSubNo();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_SUBNO2:
-                                subNo = input_no.getText().toString().trim();
-                                checkSubNo();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_TRANSFER:
-                                faceNumber = input_no.getText().toString().trim();
-                                transferScan();
-                                break;
-                            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO:
-                                xiang_Hao = input_no.getText().toString().trim();
-                                Intent i = new Intent(c, CaptureActivity.class);
-                                i.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CHUWEI);
-                                i.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
-                                i.putExtra("xiang_Hao", xiang_Hao);
-                                startActivity(i);
-                                finish();
-                                break;
-
-                        }
+                        simpleCode(code);
                     }
                 });
             }
@@ -507,195 +321,268 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         if (fromLiveScan) {
             beepManager.playBeepSoundAndVibrate();
             Toast.makeText(this, "扫描成功", Toast.LENGTH_SHORT).show();
-            switch (currentType) {
-                case AppConfig.SCAN_TYPE_CODE_69:
-                    code69 = rawResult.getText();
-                    if (!code69.toUpperCase().startsWith("69")) {
-                        UIHelper.showMessage(c, "六九码错误请重新扫描");
-                        onPause();
-                        onResume();
-                        return;
-                    }
-                    switch (enterType) {
-                        case ENTER_TYPE_SN:
-                            inScanForSN69();
-                            break;
-                        default:
-                            check69IsInclude();
-                            break;
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_BUY:
-                    scan_buy = rawResult.getText();
-                    switch (enterType) {
-                        case ENTER_TYPE_IN://扫描方式为买方和卖方料号
-                            Intent intent = new Intent();
-                            intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
-                            intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
-                            intent.putExtra(AppConfig.SCAN_INDEX, index);
-                            intent.putExtra("scan_buy", scan_buy);
-                            intent.putExtra(CODE_SN, codeSNIntent);
-                            JumpToActivity(CaptureActivity.class, intent);
-                            break;
-                        default:
-                            inScanForSNBuy();
-                            break;
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_SALE:
-                    scan_sale = rawResult.getText();
-                    switch (enterType) {
-                        case ENTER_TYPE_IN://扫描方式为买方和卖方料号
-                            inScanForSNBuyAndSale();
-                            break;
-                        default:
-                            inScanForSNSale();
-                            break;
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_CHUWEI:
-                    scan_chuW = rawResult.getText();
-                    switch (enterType) {
-                        case ENTER_TYPE_IN://移库进来
-                            UIHelper.showMyCustomDialog(c, "是否确认移库操作?" + "\n" + "箱号：" + xiang_Hao_Intent + "\n" +
-                                    "新储位号：" + scan_chuW, "确认", new View.OnClickListener() {
-
-
-                                @Override
-                                public void onClick(View v) {
-                                    goYiKu();
-                                }
-                            }, null);
-                            break;
-                        default:
-                            inScanForChuW();
-                            break;
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_SN:
-                    codeSN = rawResult.getText();
-                    if (codeSN.toUpperCase().startsWith("69")) {
-                        UIHelper.showMessage(c, "SN码错误请重新扫描");
-                        onPause();
-                        onResume();
-                        return;
-                    }
-                    switch (enterType) {
-                        case AppConfig.ENTER_TYPE_MANGSAO:
-                            blindSnForMangSao();
-                            break;
-                        case AppConfig.ENTER_TYPE_ZHISAO:
-                            blindSnForZhiSao();
-                            break;
-                        case AppConfig.ENTER_TYPE_IN:
-                            switch (inType) {
-                                case AppConfig.IN_TYPE_THOERY:
-                                    inStorageForThoery();
-                                    break;
-                                case AppConfig.IN_TYPE_FACT:
-                                    toScanStorageNo();
-                                    break;
-                            }
-                            break;
-                        case AppConfig.ENTER_TYPE_OUT:
-                            outStorage();
-                            break;
-                        case AppConfig.ENTER_TYPE_QUERY:
-                            query();
-                            break;
-                        case AppConfig.ENTER_TYPE_CHECK:
-                            check();
-                            break;
-                        case AppConfig.ENTER_TYPE_SCAN:
-                            scan();
-                            break;
-                        case AppConfig.ENTER_TYPE_CAR:
-                            inToCar();
-                            break;
-                        case AppConfig.ENTER_TYPE_RESEND://短信重发
-                            reSendSMS();
-                            break;
-                        case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
-                            inScanForSN();
-                            break;
-                        case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
-                            Intent intent = new Intent();
-                            intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
-                            intent.putExtra(AppConfig.CODE_SN, codeSN);
-                            intent.putExtra(AppConfig.SCAN_INDEX, index);
-                            JumpToActivity(CaptureActivity.class, intent);
-                            break;
-                        case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
-                            Intent intent1 = new Intent();
-                            intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
-                            intent1.putExtra(AppConfig.CODE_SN, codeSN);
-                            intent1.putExtra(AppConfig.SCAN_INDEX, index);
-                            JumpToActivity(CaptureActivity.class, intent1);
-                            break;
-                        case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
-                            Intent intent2 = new Intent();
-                            intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
-                            intent2.putExtra(AppConfig.CODE_SN, codeSN);
-                            intent2.putExtra(AppConfig.SCAN_INDEX, index);
-                            JumpToActivity(CaptureActivity.class, intent2);
-                            break;
-                        case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
-                            Intent intent3 = new Intent();
-                            intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
-                            intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
-                            intent3.putExtra(AppConfig.CODE_SN, codeSN);
-                            intent3.putExtra(AppConfig.SCAN_INDEX, index);
-                            JumpToActivity(CaptureActivity.class, intent3);
-                            break;
-
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_CAR:
-                    codeCar = rawResult.getText();
-                    switch (enterType) {
-                        case AppConfig.ENTER_TYPE_MANGSAO:
-                            intoCarForMangsao();
-                            break;
-                        case AppConfig.ENTER_TYPE_ZHISAO:
-                            intoCarForZhiSao();
-                            break;
-                    }
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_SIGN:
-                    codeOrder = rawResult.getText();
-                    enterSignActivity();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_REJECTION:
-                    codeOrder = rawResult.getText();
-                    enterRejectionActivity();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_STORAGE:
-                    storageNo = rawResult.getText();
-                    inStorage();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_SUBNO:
-                    subNo = rawResult.getText();
-                    tieSubNo();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_SUBNO2:
-                    subNo = rawResult.getText();
-                    checkSubNo();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_TRANSFER:
-                    faceNumber = rawResult.getText();
-                    transferScan();
-                    break;
-                case AppConfig.SCAN_TYPE_CODE_XIANG_HAO:
-                    xiang_Hao = rawResult.getText();
-                    Intent i = new Intent(this, CaptureActivity.class);
-                    i.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CHUWEI);
-                    i.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
-                    i.putExtra("xiang_Hao", xiang_Hao);
-                    startActivity(i);
-                    finish();
-                    break;
-            }
+            simpleCode(rawResult.getText());
         }
+    }
+
+    /**
+     * 合并处理结果
+     *
+     * @param code
+     */
+    private void simpleCode(String code) {
+        switch (currentType) {
+            case AppConfig.SCAN_TYPE_CODE_69:
+                code69 = code;
+                if (!code69.toUpperCase().startsWith("69")) {
+                    UIHelper.showMessage(c, "六九码错误请重新扫描");
+                    onPause();
+                    onResume();
+                    return;
+                }
+                switch (enterType) {
+                    case ENTER_TYPE_SN:
+                        inScanForSN69();
+                        break;
+                    default:
+                        check69IsInclude();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_BUY:
+                scan_buy = code;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                        Intent intent = new Intent();
+                        intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
+                        intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
+                        intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent.putExtra("scan_buy", scan_buy);
+                        intent.putExtra(CODE_SN, codeSNIntent);
+                        JumpToActivity(CaptureActivity.class, intent);
+                        break;
+                    default:
+                        inScanForSNBuy();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SALE:
+                scan_sale = code;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://扫描方式为买方和卖方料号
+                        inScanForSNBuyAndSale();
+                        break;
+                    default:
+                        inScanForSNSale();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_CHUWEI:
+                scan_chuW = code;
+                switch (enterType) {
+                    case ENTER_TYPE_IN://移库进来
+                        UIHelper.showMyCustomDialog(c, "是否确认移库操作?" + "\n" + "箱号：" + xiang_Hao_Intent + "\n" + "新储位号："
+                                + scan_chuW, "确认", new View.OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                goYiKu();
+                            }
+                        }, null);
+                        break;
+                    default:
+                        inScanForChuW();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SN:
+                codeSN = code;
+                if (codeSN.toUpperCase().startsWith("69")) {
+                    UIHelper.showMessage(c, "SN码错误请重新扫描");
+                    onPause();
+                    onResume();
+                    return;
+                }
+                switch (enterType) {
+                    case AppConfig.ENTER_TYPE_MANGSAO:
+                        blindSnForMangSao();
+                        break;
+                    case AppConfig.ENTER_TYPE_ZHISAO:
+                        blindSnForZhiSao();
+                        break;
+                    case AppConfig.ENTER_TYPE_IN:
+                        switch (inType) {
+                            case AppConfig.IN_TYPE_THOERY:
+                                inStorageForThoery();
+                                break;
+                            case AppConfig.IN_TYPE_FACT:
+                                toScanStorageNo();
+                                break;
+                        }
+                        break;
+                    case AppConfig.ENTER_TYPE_OUT:
+                        outStorage();
+                        break;
+                    case AppConfig.ENTER_TYPE_QUERY:
+                        query();
+                        break;
+                    case AppConfig.ENTER_TYPE_CHECK:
+                        check();
+                        break;
+                    case AppConfig.ENTER_TYPE_SCAN:
+                        scan();
+                        break;
+                    case AppConfig.ENTER_TYPE_CAR:
+                        inToCar();
+                        break;
+                    case AppConfig.ENTER_TYPE_RESEND://短信重发
+                        reSendSMS();
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN://已点：只扫SN
+                        inScanForSN();
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_69://已点：SN+69
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
+                        intent.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(CaptureActivity.class, intent);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
+                        Intent intent1 = new Intent();
+                        intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                        intent1.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent1.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(CaptureActivity.class, intent1);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
+                        Intent intent2 = new Intent();
+                        intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
+                        intent2.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent2.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(CaptureActivity.class, intent2);
+                        break;
+                    case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
+                        Intent intent3 = new Intent();
+                        intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
+                        intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
+                        intent3.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent3.putExtra(AppConfig.SCAN_INDEX, index);
+                        JumpToActivity(CaptureActivity.class, intent3);
+                        break;
+
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_CAR:
+                codeCar = code;
+                switch (enterType) {
+                    case AppConfig.ENTER_TYPE_MANGSAO:
+                        intoCarForMangsao();
+                        break;
+                    case AppConfig.ENTER_TYPE_ZHISAO:
+                        intoCarForZhiSao();
+                        break;
+                }
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SIGN:
+                codeOrder = code;
+                enterSignActivity();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_REJECTION:
+                codeOrder = code;
+                enterRejectionActivity();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_STORAGE:
+                storageNo = code;
+                inStorage();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SUBNO:
+                subNo = code;
+                tieSubNo();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_SUBNO2:
+                subNo = code;
+                checkSubNo();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_TRANSFER:
+                faceNumber = code;
+                transferScan();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO:
+                xiang_Hao = code;
+                Intent i = new Intent(this, CaptureActivity.class);
+                i.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_CHUWEI);
+                i.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
+                i.putExtra("xiang_Hao", xiang_Hao);
+                startActivity(i);
+                finish();
+                break;
+            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO_O:
+                xiang_Hao = code;
+                Intent intent4 = new Intent();
+                intent4.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_XIANG_HAO_N);
+                intent4.putExtra("xiang_Hao", xiang_Hao);
+                JumpToActivity(CaptureActivity.class, intent4);
+                break;
+            case SCAN_TYPE_CODE_XIANG_HAO_N:
+                xiang_Hao_N = code;
+                chaiXiang();
+                break;
+        }
+    }
+
+    /**
+     * 拆箱
+     */
+    private void chaiXiang() {
+        /*
+        *  @param caseNo 旧箱号
+        *  @param devanningNo 拆分的新箱号
+        *  @param num 拆分出去的数量
+        */
+        showVioce("请输入拆箱数量");
+        View view = LayoutInflater.from(c).inflate(R.layout.dialog_shoudong, null);
+        final EditText input_no = (EditText) view.findViewById(R.id.input_no);
+        input_no.setHint("请输入数量");
+        AlertDialog alertDialog = new AlertDialog.Builder(c).setTitle("拆箱数量").setView(view).setPositiveButton("确定",
+                null).setNegativeButton("取消", null).create();
+        alertDialog.show();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = input_no.getText().toString().trim();
+                if (TextUtils.isEmpty(number)) {
+                    UIHelper.showMessage(c, "输入不能为空");
+                    return;
+                }
+                OkHttpUtils//
+                        .post()//
+                        .tag(this)//
+                        .url(Urls.DEVANNING)//
+                        .addParams(AppConfig.USER_ID, userId)//
+                        .addParams("caseNo", xiang_Hao_Intent)//
+                        .addParams("devanningNo", xiang_Hao_N)//
+                        .addParams("num", number)//
+                        .build()//
+                        .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+
+                            @Override
+                            public void onResponseOtherCase(BaseBean response, int id) {
+                                super.onResponseOtherCase(response, id);
+                                showVioce("请求超时");
+                            }
+
+                            @Override
+                            public void onResponseOK(BaseBean response, int id) {
+                                super.onResponseOK(response, id);
+                                UIHelper.showMessage(c, response.getMessage());
+                                finish();
+                            }
+                        });
+            }
+        });
+
     }
 
     /**
@@ -1744,6 +1631,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
     String subNo = "";//子单号
     String faceNumber = "";//面单号
     String xiang_Hao = "";//箱号
+    String xiang_Hao_N = "";//新的箱号
     String xiang_Hao_Intent = "";//传过来的箱号
     String scan_buy = "";//买方料号
     String scan_sale = "";//卖方料号

@@ -81,6 +81,8 @@ public class AppConfig {
     public final static int SCAN_TYPE_CODE_SALE = 96;
     public final static int SCAN_TYPE_CODE_CHUWEI = 97;
     public final static int SCAN_TYPE_CODE_XIANG_HAO = 98;
+    public final static int SCAN_TYPE_CODE_XIANG_HAO_O = 99;
+    public final static int SCAN_TYPE_CODE_XIANG_HAO_N = 100;
     public final static String SHOW_VOICE_69 = "请扫描六九码";
     public final static String SHOW_TEXT_69 = "请扫描69码";
     public final static String SHOW_VOICE_SN = "请扫描SN码";
@@ -93,6 +95,8 @@ public class AppConfig {
     public final static String SHOW_VOICE_SALE = "请扫描卖方料号";
     public final static String SHOW_VOICE_CHUWEI = "请扫描储位号";
     public final static String SHOW_VOICE_XIANG_HAO = "请扫描箱号";
+    public final static String SHOW_VOICE_XIANG_HAO_O = "请扫描原始箱号";
+    public final static String SHOW_VOICE_XIANG_HAO_N = "请扫描新箱号";
     /***PDA扫描SCAN****/
     public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice" + ".broadcast";
     public static final String SCN_CUST_EX_SCODE = "scannerdata";
@@ -113,19 +117,5 @@ public class AppConfig {
     //--分页 请求参数
     public static final String CURRENT_PAGE = "page";// 当前第几页
     public static final String PAGE_SIZE = "pageSize";// 每页显示条数
-
-    //banner图临时图片url
-    public static final String BANNER_IAMGE_URL_01 = "https://timgsa.baidu" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112530343&di=75a6c85b996763135fd2f4c8912f9ac5" +
-            "&imgtype=0&src=http%3A%2F%2Fs2.sinaimg.cn%2Fmiddle%2F46e725a4gb923374cc2e1%26690";
-    public static final String BANNER_IAMGE_URL_02 = "https://timgsa.baidu" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565619&di=c17e1eaefd9856758b1f9ebfb93a5631" +
-            "&imgtype=0&src=http%3A%2F%2Ffdfs.xmcdn.com%2Fgroup3%2FM0A%2F4D%2F29%2FwKgDslNH-Duyq6qeAAN26chjMPo905.png";
-    public static final String BANNER_IAMGE_URL_03 = "https://timgsa.baidu" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112565608&di=fbc29ca41cc90fc9b98384a949c8137a" +
-            "&imgtype=0&src=http%3A%2F%2Fs10.sinaimg.cn%2Fmiddle%2F46e725a4gb9233aee3199%26690";
-    public static final String BANNER_IAMGE_URL_04 = "https://timgsa.baidu" + "" + "" + "" + "" +
-            ".com/timg?image&quality=80&size=b9999_10000&sec=1498112699467&di=dca8792ca998e36499533a7d7c6ba715" +
-            "&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D758347139%2C3687152%26fm%3D214%26gp%3D0.jpg";
 
 }

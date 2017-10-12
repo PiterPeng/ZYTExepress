@@ -52,6 +52,7 @@ import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE;
 import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_IN;
 import static com.yuwubao.zytexpress.AppConfig.ENTER_TYPE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_SALE;
+import static com.yuwubao.zytexpress.AppConfig.SCAN_TYPE_CODE_XIANG_HAO_N;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_TEXT_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_69;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_BUY;
@@ -64,7 +65,10 @@ import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SN;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_STORAGE;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_SUB_No;
 import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_XIANG_HAO;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_XIANG_HAO_N;
+import static com.yuwubao.zytexpress.AppConfig.SHOW_VOICE_XIANG_HAO_O;
 import static com.yuwubao.zytexpress.R.id.input_no;
+import static com.zhy.http.okhttp.OkHttpUtils.post;
 
 /**
  * Created by Peng on 2017/3/24
@@ -113,6 +117,7 @@ public class PDAScanActivity extends BaseActivity {
     int chuWeiId = 0;//扫描储位时的ID
     String scanType = "";//扫描类型
     String xiang_Hao = "";//箱号
+    String xiang_Hao_N = "";//新的箱号
     String xiang_Hao_Intent = "";//传过来的箱号
 
     @Override
@@ -293,6 +298,17 @@ public class PDAScanActivity extends BaseActivity {
                         break;
                 }
                 break;
+            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO_O:
+                xiang_Hao = resultCode;
+                Intent intent4 = new Intent();
+                intent4.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_XIANG_HAO_N);
+                intent4.putExtra("xiang_Hao", xiang_Hao);
+                JumpToActivity(PDAScanActivity.class, intent4);
+                break;
+            case AppConfig.SCAN_TYPE_CODE_XIANG_HAO_N:
+                xiang_Hao_N = resultCode;
+                chaiXiang();
+                break;
             case AppConfig.SCAN_TYPE_CODE_SN:
                 codeSN = resultCode;
                 if (codeSN.toUpperCase().startsWith("69")) {
@@ -438,11 +454,61 @@ public class PDAScanActivity extends BaseActivity {
     }
 
     /**
+     * 拆箱
+     */
+    private void chaiXiang() {
+        /*
+        *  @param caseNo 旧箱号
+        *  @param devanningNo 拆分的新箱号
+        *  @param num 拆分出去的数量
+        */
+        View view = LayoutInflater.from(c).inflate(R.layout.dialog_shoudong, null);
+        final EditText input_no = (EditText) view.findViewById(R.id.input_no);
+        input_no.setHint("请输入数量");
+        AlertDialog alertDialog = new AlertDialog.Builder(c).setTitle("拆箱数量").setView(view)
+                .setPositiveButton("确定", null).setNegativeButton("取消", null).create();
+        alertDialog.show();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = input_no.getText().toString().trim();
+                if (TextUtils.isEmpty(number)) {
+                    UIHelper.showMessage(c, "输入不能为空");
+                    return;
+                }
+                OkHttpUtils//
+                        .post()//
+                        .tag(this)//
+                        .url(Urls.DEVANNING)//
+                        .addParams(AppConfig.USER_ID, userId)//
+                        .addParams("caseNo", xiang_Hao_Intent)//
+                        .addParams("devanningNo", xiang_Hao_N)//
+                        .addParams("num", number)//
+                        .build()//
+                        .execute(new AppGsonCallback<BaseBean>(new RequestModel(c)) {
+
+                            @Override
+                            public void onResponseOtherCase(BaseBean response, int id) {
+                                super.onResponseOtherCase(response, id);
+                                showVioce("请求超时");
+                            }
+                            @Override
+                            public void onResponseOK(BaseBean response, int id) {
+                                super.onResponseOK(response, id);
+                                UIHelper.showMessage(c,response.getMessage());
+                            }
+                        });
+            }
+        });
+
+    }
+
+    /**
      * 进行移库操作
      */
     private void goYiKu() {
-        OkHttpUtils//
-                .post()//
+        //
+                post()//
                 .url(Urls.TRANSFER)//
                 .tag(this)//
                 .addParams("userId", userId)//
@@ -606,8 +672,8 @@ public class PDAScanActivity extends BaseActivity {
      * 点击扫描储位号
      */
     private void inScanForChuW() {
-        OkHttpUtils//
-                .post()//
+        //
+                post()//
                 .url(Urls.SCANLOCATION)//
                 .tag(this)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -879,8 +945,8 @@ public class PDAScanActivity extends BaseActivity {
      * 盲扫-->配货
      */
     private void blindSnForMangSao() {
-        OkHttpUtils//
-                .post()//
+        //
+                post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
                 .addParams("code", codeIDIntent)//
@@ -918,8 +984,8 @@ public class PDAScanActivity extends BaseActivity {
      * 指定扫-->配货
      */
     private void blindSnForZhiSao() {
-        OkHttpUtils //
-                .post()//
+        //
+                post()//
                 .tag(this)//
                 .url(isNiXiang ? Urls.RE_BLIND_SN_CODE_ZHISAO : Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams(isNiXiang ? "orderItemId" : "id", String.valueOf(orderId))//
@@ -953,8 +1019,8 @@ public class PDAScanActivity extends BaseActivity {
      * 货物出库
      */
     private void outStorage() {
-        OkHttpUtils//
-                .post()//
+        //
+                post()//
                 .tag(this)//
                 .url(Urls.OUT_STORAGE)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -975,7 +1041,7 @@ public class PDAScanActivity extends BaseActivity {
      * 理论入库
      */
     private void inStorageForThoery() {
-        OkHttpUtils.post()//
+        post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE_THOERY)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -996,8 +1062,8 @@ public class PDAScanActivity extends BaseActivity {
      * 货物入库
      */
     private void inStorage() {
-        OkHttpUtils//
-                .post()//
+        //
+                post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE)//
                 .addParams("sn", codeSNIntent)//
@@ -1201,8 +1267,8 @@ public class PDAScanActivity extends BaseActivity {
     private void reSendSMS() {
         User user = UserDao.getInstance().getLastUser();
         if (user != null) {
-            OkHttpUtils//
-                    .post()//
+            //
+                    post()//
                     .url(Urls.RESENDSMS)//
                     .addParams("userId", user.getId() + "")//
                     .addParams("sn", codeSN)//
@@ -1261,6 +1327,12 @@ public class PDAScanActivity extends BaseActivity {
         } else if (currentType == AppConfig.SCAN_TYPE_CODE_XIANG_HAO) {
             voice = SHOW_VOICE_XIANG_HAO;
             text1 = SHOW_VOICE_XIANG_HAO;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_XIANG_HAO_O) {
+            voice = SHOW_VOICE_XIANG_HAO_O;
+            text1 = SHOW_VOICE_XIANG_HAO_O;
+        } else if (currentType == AppConfig.SCAN_TYPE_CODE_XIANG_HAO_N) {
+            voice = SHOW_VOICE_XIANG_HAO_N;
+            text1 = SHOW_VOICE_XIANG_HAO_N;
         }
         showVioce(voice);
         scan_type.setText(text1);

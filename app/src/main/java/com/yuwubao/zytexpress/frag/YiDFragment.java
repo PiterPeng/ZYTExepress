@@ -312,31 +312,15 @@ public class YiDFragment extends BaseFragement implements OnLoadMoreListener, On
                 sureInOrOut();
                 break;
             case R.id.in_ChaX://拆箱
-//                chaiXiang();
+                Intent intent1 = new Intent();
+                intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_XIANG_HAO_O);
+                if (AppConfig.isPDA) {
+                    JumpToActivity(PDAScanActivity.class, intent1);
+                } else {
+                    JumpToActivity(CaptureActivity.class, intent1);
+                }
                 break;
         }
-    }
-
-    private void chaiXiang() {
-/*  @param caseNo 旧箱号
-*  @param devanningNo 拆分的新箱号
-*  @param num 拆分出去的数量
-*/
-        OkHttpUtils//
-                .post()//
-                .tag(this)//
-                .url(Urls.DEVANNING)//
-                .addParams(AppConfig.USER_ID, userId)//
-                .addParams("caseNo", userId)//
-                .addParams("devanningNo", userId)//
-                .addParams("num", userId)//
-                .build()//
-                .execute(new AppGsonCallback(new RequestModel(c)) {
-                    @Override
-                    public void onResponseOK(Object response, int id) {
-                        super.onResponseOK(response, id);
-                    }
-                });
     }
 
     /**
