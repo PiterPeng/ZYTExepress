@@ -357,6 +357,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
                         intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
                         intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent.putExtra(AppConfig.SCAN_ID, scanId);
                         intent.putExtra("scan_buy", scan_buy);
                         intent.putExtra(CODE_SN, codeSNIntent);
                         JumpToActivity(CaptureActivity.class, intent);
@@ -447,6 +448,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
                         intent.putExtra(AppConfig.CODE_SN, codeSN);
                         intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent.putExtra(AppConfig.SCAN_ID, scanId);
                         JumpToActivity(CaptureActivity.class, intent);
                         break;
                     case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
@@ -454,6 +456,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
                         intent1.putExtra(AppConfig.CODE_SN, codeSN);
                         intent1.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent1.putExtra(AppConfig.SCAN_ID, scanId);
                         JumpToActivity(CaptureActivity.class, intent1);
                         break;
                     case AppConfig.ENTER_TYPE_IN_SN_SELL://已点：SN+卖方料号
@@ -461,6 +464,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
                         intent2.putExtra(AppConfig.CODE_SN, codeSN);
                         intent2.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent2.putExtra(AppConfig.SCAN_ID, scanId);
                         JumpToActivity(CaptureActivity.class, intent2);
                         break;
                     case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
@@ -468,6 +472,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                         intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
                         intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
                         intent3.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent3.putExtra(AppConfig.SCAN_ID, scanId);
                         intent3.putExtra(AppConfig.SCAN_INDEX, index);
                         JumpToActivity(CaptureActivity.class, intent3);
                         break;
@@ -1508,6 +1513,7 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 .url(Urls.SEARCH_69_CODE)//
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams("code", code69)//
+                .addParams("id", codeIDIntent)//
                 .build()//
                 .execute(new AppGsonCallback<NewStatusBean>(new RequestModel(c)) {
                     @Override

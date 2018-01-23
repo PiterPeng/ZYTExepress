@@ -259,6 +259,7 @@ public class PDAScanActivity extends BaseActivity {
                         intent.putExtra(CURRENT_SCAN_TYPE, SCAN_TYPE_CODE_SALE);
                         intent.putExtra(ENTER_TYPE, ENTER_TYPE_IN);
                         intent.putExtra("scan_buy", scan_buy);
+                        intent.putExtra(AppConfig.SCAN_ID, scanId);
                         intent.putExtra(AppConfig.SCAN_INDEX, index);
                         intent.putExtra(CODE_SN, codeSNIntent);
                         JumpToActivity(PDAScanActivity.class, intent);
@@ -365,12 +366,14 @@ public class PDAScanActivity extends BaseActivity {
                         intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
                         intent.putExtra(AppConfig.CODE_SN, codeSN);
                         intent.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent.putExtra(AppConfig.SCAN_ID, scanId);
                         JumpToActivity(PDAScanActivity.class, intent);
                         break;
                     case AppConfig.ENTER_TYPE_IN_SN_BUY://已点：SN+买方料号
                         Intent intent1 = new Intent();
                         intent1.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
                         intent1.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent1.putExtra(AppConfig.SCAN_ID, scanId);
                         intent1.putExtra(AppConfig.SCAN_INDEX, index);
                         JumpToActivity(PDAScanActivity.class, intent1);
                         break;
@@ -379,6 +382,7 @@ public class PDAScanActivity extends BaseActivity {
                         intent2.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_SALE);
                         intent2.putExtra(AppConfig.CODE_SN, codeSN);
                         intent2.putExtra(AppConfig.SCAN_INDEX, index);
+                        intent2.putExtra(AppConfig.SCAN_ID, scanId);
                         JumpToActivity(PDAScanActivity.class, intent2);
                         break;
                     case AppConfig.ENTER_TYPE_IN_SN_BUY_SELL://已点：SN+买方料号+卖方料号
@@ -386,6 +390,7 @@ public class PDAScanActivity extends BaseActivity {
                         intent3.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_BUY);
                         intent3.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_IN);
                         intent3.putExtra(AppConfig.CODE_SN, codeSN);
+                        intent3.putExtra(AppConfig.SCAN_ID, scanId);
                         intent3.putExtra(AppConfig.SCAN_INDEX, index);
                         JumpToActivity(PDAScanActivity.class, intent3);
                         break;
@@ -465,8 +470,8 @@ public class PDAScanActivity extends BaseActivity {
         View view = LayoutInflater.from(c).inflate(R.layout.dialog_shoudong, null);
         final EditText input_no = (EditText) view.findViewById(R.id.input_no);
         input_no.setHint("请输入数量");
-        AlertDialog alertDialog = new AlertDialog.Builder(c).setTitle("拆箱数量").setView(view)
-                .setPositiveButton("确定", null).setNegativeButton("取消", null).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(c).setTitle("拆箱数量").setView(view).setPositiveButton("确定",
+                null).setNegativeButton("取消", null).create();
         alertDialog.show();
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -492,10 +497,11 @@ public class PDAScanActivity extends BaseActivity {
                                 super.onResponseOtherCase(response, id);
                                 showVioce("请求超时");
                             }
+
                             @Override
                             public void onResponseOK(BaseBean response, int id) {
                                 super.onResponseOK(response, id);
-                                UIHelper.showMessage(c,response.getMessage());
+                                UIHelper.showMessage(c, response.getMessage());
                             }
                         });
             }
@@ -508,7 +514,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void goYiKu() {
         //
-                post()//
+        post()//
                 .url(Urls.TRANSFER)//
                 .tag(this)//
                 .addParams("userId", userId)//
@@ -673,7 +679,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void inScanForChuW() {
         //
-                post()//
+        post()//
                 .url(Urls.SCANLOCATION)//
                 .tag(this)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -909,6 +915,7 @@ public class PDAScanActivity extends BaseActivity {
                 .url(Urls.SEARCH_69_CODE)//
                 .addParams(AppConfig.USER_ID, userId)//
                 .addParams("code", code69)//
+                .addParams("id", codeIDIntent)//
                 .build()//
                 .execute(new AppGsonCallback<NewStatusBean>(new RequestModel(c)) {
                     @Override
@@ -946,7 +953,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void blindSnForMangSao() {
         //
-                post()//
+        post()//
                 .tag(this)//
                 .url(Urls.BLIND_SN_CODE)//
                 .addParams("code", codeIDIntent)//
@@ -985,7 +992,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void blindSnForZhiSao() {
         //
-                post()//
+        post()//
                 .tag(this)//
                 .url(isNiXiang ? Urls.RE_BLIND_SN_CODE_ZHISAO : Urls.BLIND_SN_CODE_ZHISAO)//
                 .addParams(isNiXiang ? "orderItemId" : "id", String.valueOf(orderId))//
@@ -1020,7 +1027,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void outStorage() {
         //
-                post()//
+        post()//
                 .tag(this)//
                 .url(Urls.OUT_STORAGE)//
                 .addParams(AppConfig.USER_ID, userId)//
@@ -1063,7 +1070,7 @@ public class PDAScanActivity extends BaseActivity {
      */
     private void inStorage() {
         //
-                post()//
+        post()//
                 .tag(this)//
                 .url(Urls.IN_STORAGE)//
                 .addParams("sn", codeSNIntent)//
@@ -1268,7 +1275,7 @@ public class PDAScanActivity extends BaseActivity {
         User user = UserDao.getInstance().getLastUser();
         if (user != null) {
             //
-                    post()//
+            post()//
                     .url(Urls.RESENDSMS)//
                     .addParams("userId", user.getId() + "")//
                     .addParams("sn", codeSN)//

@@ -84,6 +84,7 @@ public class MangScanFragment extends BaseFragement implements OnRefreshListener
                 Intent intent = new Intent();
                 intent.putExtra(AppConfig.CURRENT_SCAN_TYPE, AppConfig.SCAN_TYPE_CODE_69);
                 intent.putExtra(AppConfig.ENTER_TYPE, AppConfig.ENTER_TYPE_MANGSAO);
+                intent.putExtra(AppConfig.CODE_ID, id);
                 if (AppConfig.isPDA) {
                     JumpToActivity(PDAScanActivity.class, intent);
                 } else {
