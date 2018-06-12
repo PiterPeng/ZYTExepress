@@ -172,6 +172,7 @@ public class YiDFragment extends BaseFragement implements OnLoadMoreListener, On
                     position) {
                 String binCode = o.getWhBinCode() == null ? "" : "" + o.getWhBinCode();
                 holder.setText(R.id.in_chu_wei, type == 0 ? "外包号：" : "储位号：" + binCode);
+                holder.setText(R.id.scan_chu_wei, type == 0 ? "外包号" : "储位号");
                 holder.setText(R.id.in_SN, "SN：" + o.getSn());
                 holder.setText(R.id.in_PO, "PO号：" + o.getPo());
                 holder.setText(R.id.in_liao_hao, "料号：" + o.getCustomerPartNo());
